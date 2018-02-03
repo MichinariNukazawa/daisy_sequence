@@ -32,11 +32,21 @@ window.onload = function(e){
 		'kind':		'message',
 		'id':		3,
 		'y':		120,
-		'start':	{'lifeline': 'Object1'},
+		'start':	{'lifeline': 'Object1'},	// lifeline to lifeline
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'none',
 		'message_kind':	'sync',
 		'text':		'messageB',
+	},
+	{
+		'kind':		'message',
+		'id':		3,
+		'y':		150,
+		'start':	{'lifeline': 'Object2'},	// turnback to lifeline
+		'end':		{'lifeline': 'Object2'},
+		'end_kind':	'none',
+		'message_kind':	'sync',
+		'text':		'messageC',
 	},
 	];
 
@@ -155,21 +165,27 @@ function draw_message(draw, current_diagram, message)
 		alert('nop');
 	}
 
-	var line = draw.line(
-			position.x,
-			position.y,
-			position.x + position.width,
-			position.y + position.height)
-		.stroke({
-			'width': '2',
-		});
+	if(message.start.hasOwnProperty('lifeline')
+			&& message.end.hasOwnProperty('lifeline')
+			&& message.start.lifeline == message.end.lifeline){
+		draw_message_turnback(draw, position);
+	}else{
+		var line = draw.line(
+				position.x,
+				position.y,
+				position.x + position.width,
+				position.y + position.height)
+			.stroke({
+				'width': '2',
+			});
 
-	draw_message_array_of_foot(draw, position, message.message_kind);
+		draw_message_array_of_foot(draw, position, message.message_kind);
 
-	if(is_found){
-		let point_head = get_message_point_head(position);
-		let size = 16;
-		draw.circle(size).move(point_head.x - (size/2), point_head.y - (size/2))
+		if(is_found){
+			let point_head = get_message_point_head(position);
+			let size = 16;
+			draw.circle(size).move(point_head.x - (size/2), point_head.y - (size/2))
+		}
 	}
 
 	let text_point = {'x': position.x, 'y': position.y};
@@ -180,6 +196,23 @@ function draw_message(draw, current_diagram, message)
 	text_point.x += text_offset;
 	text_point.y += text_offset;
 	let text = draw.text(message.text).move(text_point.x, text_point.y);
+}
+
+function draw_message_turnback(draw, position)
+{
+	console.log(position);
+
+	const height = 10;
+	const points = [
+		position.x, position.y,
+		position.x + 100, position.y + 0,
+		position.x + 100, position.y + height,
+		position.x + 0, position.y + height,
+	];
+	let polyline = draw.polyline(points).stroke({ width: 2, }).fill('none');
+
+	const point = {'x': position.x, 'y': position.y + height};
+	let array_polyline = draw_array_top(draw, point, [6, 6], true);
 }
 
 function get_lifeline_from_name(current_diagram, lifeline)
@@ -216,6 +249,12 @@ function draw_message_array_of_foot(draw, position, message_kind)
 		point = {'x': position.x + position.width, 'y': position.y + position.height};
 		offset = [-8, -8];
 	}
+
+	let polyline = draw_array_top(draw, point, offset, ('sync' == message_kind));
+}
+
+function draw_array_top(draw, point, offset, is_fill)
+{
 	let points = [
 		point.x + offset[0], point.y + offset[1],
 		point.x, point.y,
@@ -223,8 +262,10 @@ function draw_message_array_of_foot(draw, position, message_kind)
 	];
 
 	let polyline = draw.polyline(points).stroke({ width: 3, linecap: 'round', });
-	if('sync' != message_kind){
+	if(!is_fill){
 		polyline.fill('none').plot();
 	}
+
+	return polyline;
 }
 
