@@ -71,6 +71,16 @@ window.onload = function(e){
 	{
 		'kind':		'message',
 		'id':		3,
+		'y':		250,
+		'start':	{'lifeline': 'Object1'},
+		'end':		{'position_x': 280},				// lost
+		'end_kind':	'none',
+		'message_kind':	'async',					// async
+		'text':		'messageF',
+	},
+	{
+		'kind':		'message',
+		'id':		3,
 		'y':		300,
 		'start':	{'lifeline': 'Object1'},
 		'end':		{'lifeline': 'Object2'},
