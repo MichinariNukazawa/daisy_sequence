@@ -3,7 +3,7 @@
 var SVG = require('svg.js');
 
 window.onload = function(e){
-	let diagram = [
+	let diagram_elements = [
 	{
 		'kind': 'lifeline',
 		'id': 0,
@@ -70,34 +70,39 @@ window.onload = function(e){
 	},
 	];
 
-	let doc = {
+	let diagram = {
 		'width': 400,
 		'height': 350,
-		'diagram_index': 0,
+		'diagram_elements': diagram_elements,
+	};
+
+	let doc = {
+		'diagram_history_index': 0,
 		'diagram_history': [diagram],
 	};
 
-	let draw = SVG('drawing').size(doc.width, doc.height);
-	let rect = draw.rect(doc.width, doc.height).attr({
+	let current_diagram = doc.diagram_history[doc.diagram_history_index];
+
+	let draw = SVG('drawing').size(current_diagram.width, current_diagram.height);
+	let rect = draw.rect(current_diagram.width, current_diagram.height).attr({
 		'stroke':		'#ddd',
 		'fill-opacity':		'0',
 		'stroke-width':		'2',
 	});
 
-	let current_diagram = doc.diagram_history[doc.diagram_index];
-	for(let i = 0; i < current_diagram.length; i++){
-		if('lifeline' == current_diagram[i].kind){
-			draw_timeline(draw, current_diagram[i]);
-		}else if('message' == current_diagram[i].kind){
-			draw_message(draw, current_diagram, current_diagram[i]);
+	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
+		if('lifeline' == current_diagram.diagram_elements[i].kind){
+			draw_timeline(draw, current_diagram, current_diagram.diagram_elements[i]);
+		}else if('message' == current_diagram.diagram_elements[i].kind){
+			draw_message(draw, current_diagram, current_diagram.diagram_elements[i]);
 		}else{
-			error.log("%d %d", i, current_diagram[i].kind);
+			console.error("%d %d", i, current_diagram.diagram_elements[i].kind);
 			alert('internal error');
 		}
 	}
 }
 
-function draw_timeline(draw, timeline)
+function draw_timeline(draw, current_diagram, timeline)
 {
 	let text = draw.text(timeline.text).move(timeline.x, timeline.y).font({
 		'fill': '#000' ,
@@ -122,7 +127,8 @@ function draw_timeline(draw, timeline)
 	draw.rect(box.width, box.height).move(box.x, box.y)
 		.attr(attr).radius(radius);
 
-	let height = 300;
+	const height_offset = 10;
+	let height = current_diagram.height - box.y - height_offset;
 	let line_position = {
 		// 'x': box.x + (box.width / 2),
 		'x': b.x,
@@ -162,13 +168,13 @@ function draw_message(draw, current_diagram, message)
 	}else if(message.start.hasOwnProperty('lifeline')){
 		let lifeline = get_lifeline_from_name(current_diagram, message.start.lifeline);
 		if(null == lifeline){
-			error.log(message.start);
+			console.error(message.start);
 			alert('bug');
 			return;
 		}
 		position.x = lifeline.x;
 	}else{
-		error.log(message.start);
+		console.error(message.start);
 		alert('bug');
 	}
 
@@ -177,7 +183,7 @@ function draw_message(draw, current_diagram, message)
 	if(message.end.hasOwnProperty('lifeline')){
 		let lifeline = get_lifeline_from_name(current_diagram, message.end.lifeline);
 		if(null == lifeline){
-			error.log(message.end);
+			console.error(message.end);
 			alert('bug');
 			return;
 		}
@@ -254,10 +260,10 @@ function draw_message_turnback(draw, position)
 
 function get_lifeline_from_name(current_diagram, lifeline)
 {
-	for(let i = 0; i < current_diagram.length; i++){
-		if('lifeline' == current_diagram[i].kind){
-			if(lifeline == current_diagram[i].text){
-				return current_diagram[i];
+	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
+		if('lifeline' == current_diagram.diagram_elements[i].kind){
+			if(lifeline == current_diagram.diagram_elements[i].text){
+				return current_diagram.diagram_elements[i];
 			}
 		}
 	}
