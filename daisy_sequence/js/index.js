@@ -31,7 +31,17 @@ window.onload = function(e){
 	{
 		'kind':		'message',
 		'id':		3,
-		'y':		120,
+		'y':		110,
+		'start':	{'lifeline': 'Object1'},
+		'end':		{'lifeline': 'Object2'},
+		'end_kind':	'create',			// create lifeline
+		'message_kind':	'sync',
+		'text':		'create lifeline',
+	},
+	{
+		'kind':		'message',
+		'id':		3,
+		'y':		160,
 		'start':	{'lifeline': 'Object1'},	// lifeline to lifeline
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'none',
@@ -41,7 +51,7 @@ window.onload = function(e){
 	{
 		'kind':		'message',
 		'id':		3,
-		'y':		150,
+		'y':		190,
 		'start':	{'lifeline': 'Object2'},	// turnback to lifeline
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'none',
@@ -51,7 +61,7 @@ window.onload = function(e){
 	{
 		'kind':		'message',
 		'id':		3,
-		'y':		170,
+		'y':		220,
 		'start':	{'lifeline': 'Object2'},
 		'end':		{'lifeline': 'Object1'},
 		'end_kind':	'none',
@@ -61,7 +71,7 @@ window.onload = function(e){
 	{
 		'kind':		'message',
 		'id':		3,
-		'y':		220,
+		'y':		270,
 		'start':	{'lifeline': 'Object1'},
 		'end':		{'position_x': 280},				// lost
 		'end_kind':	'none',
@@ -71,7 +81,7 @@ window.onload = function(e){
 	{
 		'kind':		'message',
 		'id':		3,
-		'y':		250,
+		'y':		300,
 		'start':	{'lifeline': 'Object1'},
 		'end':		{'position_x': 280},				// lost
 		'end_kind':	'none',
@@ -81,7 +91,7 @@ window.onload = function(e){
 	{
 		'kind':		'message',
 		'id':		3,
-		'y':		300,
+		'y':		350,
 		'start':	{'lifeline': 'Object1'},
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'stop',						// stop to lifeline
@@ -122,6 +132,27 @@ window.onload = function(e){
 	}
 }
 
+function get_message_by_timeline_end(current_diagram, timeline_name)
+{
+	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
+		let element = current_diagram.diagram_elements[i];
+		if('message' != element.kind){
+			continue;
+		}
+		if(! element.end.hasOwnProperty('lifeline')){
+			continue;
+		}
+		if(timeline_name != element.end.lifeline){
+			continue;
+		}
+		if('stop' == element.end_kind){
+			return element;
+		}
+	}
+
+	return null;
+}
+
 function draw_timeline(draw, current_diagram, timeline)
 {
 	let text = draw.text(timeline.text).move(timeline.x, timeline.y).font({
@@ -148,23 +179,7 @@ function draw_timeline(draw, current_diagram, timeline)
 		.attr(attr).radius(radius);
 
 	const height_offset = 10;
-	let message_by_the_end = null;
-	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
-		let element = current_diagram.diagram_elements[i];
-		if('message' != element.kind){
-			continue;
-		}
-		if(! element.end.hasOwnProperty('lifeline')){
-			continue;
-		}
-		if(timeline.text != element.end.lifeline){
-			continue;
-		}
-		if('stop' == element.end_kind){
-			message_by_the_end = element;
-			break;
-		}
-	}
+	let message_by_the_end = get_message_by_timeline_end(current_diagram, timeline.text);
 
 	let line_point = {
 		// 'x': box.x + (box.width / 2),
