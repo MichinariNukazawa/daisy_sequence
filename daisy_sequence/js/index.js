@@ -58,6 +58,16 @@ window.onload = function(e){
 		'message_kind':	'reply',	// reply
 		'text':		'messageD',
 	},
+	{
+		'kind':		'message',
+		'id':		3,
+		'y':		220,
+		'start':	{'lifeline': 'Object1'},
+		'end':		{'position_x': 280},				// lost
+		'end_kind':	'none',
+		'message_kind':	'sync',
+		'text':		'messageE',
+	},
 	];
 
 	let doc = {
@@ -138,6 +148,7 @@ function draw_timeline(draw, timeline)
 function draw_message(draw, current_diagram, message)
 {
 	let is_found = false;
+	let is_lost = false;
 
 	var position = {
 		'x': 0,
@@ -171,6 +182,9 @@ function draw_message(draw, current_diagram, message)
 			return;
 		}
 		position.width = lifeline.x - position.x;
+	}else if(message.end.hasOwnProperty('position_x')){
+		position.width = message.end.position_x;
+		is_lost = true;
 	}else{
 		alert('nop');
 	}
@@ -198,9 +212,16 @@ function draw_message(draw, current_diagram, message)
 		draw_message_array_of_foot(draw, position, message.message_kind);
 
 		if(is_found){
-			let point_head = get_message_point_head(position);
-			let size = 16;
-			draw.circle(size).move(point_head.x - (size/2), point_head.y - (size/2))
+			const size = 16;
+			const point_head = get_message_point_head(position, [(size/2), 0]);
+			draw.circle(size).move(point_head.x - (size/2), point_head.y - (size/2));
+		}
+		if(is_lost){
+			const size = 16;
+			const point_foot = get_message_point_foot(position, [(size/2), 0]);
+			draw.circle(size).move(point_foot.x - (size/2), point_foot.y - (size/2))
+				//.fill('none').stroke('#00f');
+				.fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 		}
 	}
 
@@ -245,15 +266,32 @@ function get_lifeline_from_name(current_diagram, lifeline)
 	return null;
 }
 
-function get_message_point_head(position)
+function get_message_point_head(position, offset)
 {
 	let point;
 	if(0 < position.width){
 		point = {'x': position.x, 'y': position.y};
+		point.x += offset[0];
+		point.y += offset[1];
 	}else{
 		point = {'x': position.x + position.width, 'y': position.y + position.height};
+		point.x -= offset[0];
+		point.y -= offset[1];
 	}
 
+	return point;
+}
+
+function get_message_point_foot(position, offset)
+{
+	let point = {'x': position.x + position.width, 'y': position.y + position.height};
+	if(0 < position.width){
+		point.x += offset[0];
+		point.y += offset[1];
+	}else{
+		point.x -= offset[0];
+		point.y -= offset[1];
+	}
 	return point;
 }
 
