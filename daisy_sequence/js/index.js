@@ -28,11 +28,21 @@ window.onload = function(e){
 		'message_kind':	'sync',
 		'text':		'messageA',
 	},
+	{
+		'kind':		'message',
+		'id':		3,
+		'y':		120,
+		'start':	{'lifeline': 'Object1'},
+		'end':		{'lifeline': 'Object2'},
+		'end_kind':	'none',
+		'message_kind':	'sync',
+		'text':		'messageB',
+	},
 	];
 
 	let doc = {
 		'width': 400,
-		'height': 300,
+		'height': 350,
 		'diagram_index': 0,
 		'diagram_history': [diagram],
 	};
@@ -82,7 +92,7 @@ function draw_timeline(draw, timeline)
 	draw.rect(box.width, box.height).move(box.x, box.y)
 		.attr(attr).radius(radius);
 
-	let height = 100;
+	let height = 300;
 	let line_position = {
 		// 'x': box.x + (box.width / 2),
 		'x': b.x,
@@ -118,8 +128,17 @@ function draw_message(draw, current_diagram, message)
 	if(message.start.hasOwnProperty('position_x')){
 		position.x = message.start.position_x;
 		is_found = true;
+	}else if(message.start.hasOwnProperty('lifeline')){
+		let lifeline = get_lifeline_from_name(current_diagram, message.start.lifeline);
+		if(null == lifeline){
+			error.log(message.start);
+			alert('bug');
+			return;
+		}
+		position.x = lifeline.x;
 	}else{
-		alert('nop');
+		error.log(message.start);
+		alert('bug');
 	}
 
 	position.y = message.y;
@@ -127,6 +146,7 @@ function draw_message(draw, current_diagram, message)
 	if(message.end.hasOwnProperty('lifeline')){
 		let lifeline = get_lifeline_from_name(current_diagram, message.end.lifeline);
 		if(null == lifeline){
+			error.log(message.end);
 			alert('bug');
 			return;
 		}
@@ -156,7 +176,8 @@ function draw_message(draw, current_diagram, message)
 	if(position.width < 0){
 		text_point.x += position.width;
 	}
-	const text_offset = 10;
+	const text_offset = 8;
+	text_point.x += text_offset;
 	text_point.y += text_offset;
 	let text = draw.text(message.text).move(text_point.x, text_point.y);
 }
