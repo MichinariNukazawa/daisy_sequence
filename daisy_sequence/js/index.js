@@ -3,13 +3,6 @@
 var SVG = require('svg.js');
 
 window.onload = function(e){
-	let draw = SVG('drawing').size(400, 300);
-	let rect = draw.rect(400, 300).attr({
-		'stroke':		'#ddd',
-		'fill-opacity':		'0',
-		'stroke-width':		'2',
-	});
-
 	let diagram = [
 	{
 		'kind': 'lifeline',
@@ -27,8 +20,24 @@ window.onload = function(e){
 	},
 	];
 
-	draw_timeline(draw, diagram[0]);
-	draw_timeline(draw, diagram[1]);
+	let doc = {
+		'width': 400,
+		'height': 300,
+		'diagram_index': 0,
+		'diagram_history': [diagram],
+	};
+
+	let draw = SVG('drawing').size(doc.width, doc.height);
+	let rect = draw.rect(doc.width, doc.height).attr({
+		'stroke':		'#ddd',
+		'fill-opacity':		'0',
+		'stroke-width':		'2',
+	});
+
+	let current_diagram = doc.diagram_history[doc.diagram_index];
+	for(let i = 0; i < current_diagram.length; i++){
+		draw_timeline(draw, current_diagram[i]);
+	}
 }
 
 function draw_timeline(draw, timeline)
