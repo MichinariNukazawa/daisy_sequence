@@ -48,6 +48,16 @@ window.onload = function(e){
 		'message_kind':	'sync',
 		'text':		'messageC',
 	},
+	{
+		'kind':		'message',
+		'id':		3,
+		'y':		170,
+		'start':	{'lifeline': 'Object2'},
+		'end':		{'lifeline': 'Object1'},
+		'end_kind':	'none',
+		'message_kind':	'reply',	// reply
+		'text':		'messageD',
+	},
 	];
 
 	let doc = {
@@ -179,6 +189,12 @@ function draw_message(draw, current_diagram, message)
 				'width': '2',
 			});
 
+		if('reply' == message.message_kind){
+			line.attr({
+				'stroke-dasharray':	'10',
+			});
+		}
+
 		draw_message_array_of_foot(draw, position, message.message_kind);
 
 		if(is_found){
@@ -243,10 +259,10 @@ function get_message_point_head(position)
 
 function draw_message_array_of_foot(draw, position, message_kind)
 {
-	let point = {'x': position.x, 'y': position.y};
+	console.log(position);
+	let point = {'x': position.x + position.width, 'y': position.y + position.height};
 	let offset = [8, 8];
 	if(0 < position.width){
-		point = {'x': position.x + position.width, 'y': position.y + position.height};
 		offset = [-8, -8];
 	}
 
