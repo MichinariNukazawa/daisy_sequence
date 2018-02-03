@@ -68,11 +68,21 @@ window.onload = function(e){
 		'message_kind':	'sync',
 		'text':		'messageE',
 	},
+	{
+		'kind':		'message',
+		'id':		3,
+		'y':		300,
+		'start':	{'lifeline': 'Object1'},
+		'end':		{'lifeline': 'Object2'},
+		'end_kind':	'stop',						// stop to lifeline
+		'message_kind':	'sync',
+		'text':		'messageG',
+	},
 	];
 
 	let diagram = {
 		'width': 400,
-		'height': 350,
+		'height': 450,
 		'diagram_elements': diagram_elements,
 	};
 
@@ -128,25 +138,47 @@ function draw_timeline(draw, current_diagram, timeline)
 		.attr(attr).radius(radius);
 
 	const height_offset = 10;
-	let height = current_diagram.height - box.y - height_offset;
-	let line_position = {
+	let message_by_the_end = null;
+	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
+		let element = current_diagram.diagram_elements[i];
+		if('message' != element.kind){
+			continue;
+		}
+		if(! element.end.hasOwnProperty('lifeline')){
+			continue;
+		}
+		if(timeline.text != element.end.lifeline){
+			continue;
+		}
+		if('stop' == element.end_kind){
+			message_by_the_end = element;
+			break;
+		}
+	}
+
+	let line_point = {
 		// 'x': box.x + (box.width / 2),
 		'x': b.x,
 		'y': box.y + (box.height),
-		'width': 0,
-		'height': height,
 	};
+	let y_end;
+	if(null == message_by_the_end){
+		y_end = current_diagram.height - height_offset;
+	}else{
+		y_end = message_by_the_end.y;
+	}
 	var line = draw.line(
-			line_position.x,
-			line_position.y,
-			line_position.x + line_position.width,
-			line_position.y + line_position.height)
+			line_point.x,
+			line_point.y,
+			line_point.x + 0,
+			y_end
+			)
 		.stroke({
 			'width': '2',
 		})
 	.attr({
 		'stroke-opacity':	'0.6',
-		'stroke-dasharray':	'10',
+		'stroke-dasharray':	'5',
 	});
 
 }
@@ -215,7 +247,11 @@ function draw_message(draw, current_diagram, message)
 			});
 		}
 
-		draw_message_array_of_foot(draw, position, message.message_kind);
+		if('stop' != message.end_kind){
+			draw_message_array_of_foot(draw, position, message.message_kind);
+		}else{
+			draw_message_stop_icon_of_foot(draw, position);
+		}
 
 		if(is_found){
 			const size = 16;
@@ -327,5 +363,21 @@ function draw_array_top(draw, point, offset, is_fill)
 	}
 
 	return polyline;
+}
+
+function draw_message_stop_icon_of_foot(draw, position)
+{
+	const size = 16;
+	const point_foot = get_message_point_foot(position, [0, 0]);
+	let l0 = [
+		point_foot.x - (size/2), point_foot.y - (size/2),
+		point_foot.x + (size/2), point_foot.y + (size/2),
+	];
+	draw.line(l0).fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
+	let l1 = [
+		point_foot.x + (size/2), point_foot.y - (size/2),
+		point_foot.x - (size/2), point_foot.y + (size/2),
+	];
+	draw.line(l1).fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 }
 
