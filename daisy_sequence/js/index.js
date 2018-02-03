@@ -7,14 +7,14 @@ window.onload = function(e){
 	{
 		'kind': 'lifeline',
 		'id': 0,
-		'x': 100,
+		'x': 150,
 		'y': 30,
 		'text': 'Object1'
 	},
 	{
 		'kind': 'lifeline',
 		'id': 1,
-		'x': 250,
+		'x': 300,
 		'y': 30,
 		'text': 'Object2'
 	},
@@ -27,6 +27,10 @@ window.onload = function(e){
 		'end_kind':	'none',
 		'message_kind':	'sync',
 		'text':		'message\nfrom found',
+		'spec':		{
+			'y_offset': 0,
+			'end':{'height': 300},
+		},
 	},
 	{
 		'kind':		'message',
@@ -35,22 +39,26 @@ window.onload = function(e){
 		'start':	{'lifeline': 'Object1'},
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'create',			// create lifeline
-		'message_kind':	'sync',
+		'message_kind':	'async',
 		'text':		'create lifeline',
 	},
 	{
 		'kind':		'message',
-		'id':		3,
+		'id':		4,
 		'y':		160,
 		'start':	{'lifeline': 'Object1'},	// lifeline to lifeline
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'none',
 		'message_kind':	'sync',
 		'text':		'lifeline to lifeline',
+		'spec':		{
+			'y_offset': 0,
+			'end':{'reply': null},
+		},
 	},
 	{
 		'kind':		'message',
-		'id':		3,
+		'id':		5,
 		'y':		190,
 		'start':	{'lifeline': 'Object2'},	// turnback to lifeline
 		'end':		{'lifeline': 'Object2'},
@@ -60,7 +68,7 @@ window.onload = function(e){
 	},
 	{
 		'kind':		'message',
-		'id':		3,
+		'id':		6,
 		'y':		220,
 		'start':	{'lifeline': 'Object2'},
 		'end':		{'lifeline': 'Object1'},
@@ -70,7 +78,7 @@ window.onload = function(e){
 	},
 	{
 		'kind':		'message',
-		'id':		3,
+		'id':		7,
 		'y':		270,
 		'start':	{'lifeline': 'Object1'},
 		'end':		{'position_x': 280},				// lost
@@ -80,7 +88,7 @@ window.onload = function(e){
 	},
 	{
 		'kind':		'message',
-		'id':		3,
+		'id':		8,
 		'y':		300,
 		'start':	{'lifeline': 'Object1'},
 		'end':		{'position_x': 280},				// lost
@@ -90,7 +98,7 @@ window.onload = function(e){
 	},
 	{
 		'kind':		'message',
-		'id':		3,
+		'id':		9,
 		'y':		350,
 		'start':	{'lifeline': 'Object1'},
 		'end':		{'lifeline': 'Object2'},
@@ -101,7 +109,7 @@ window.onload = function(e){
 	];
 
 	let diagram = {
-		'width': 400,
+		'width': 500,
 		'height': 450,
 		'diagram_elements': diagram_elements,
 	};
@@ -132,7 +140,28 @@ window.onload = function(e){
 	}
 }
 
-function get_message_by_timeline_end(current_diagram, timeline_name)
+function get_message_of_timeline_create(current_diagram, timeline_name)
+{
+	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
+		let element = current_diagram.diagram_elements[i];
+		if('message' != element.kind){
+			continue;
+		}
+		if(! element.end.hasOwnProperty('lifeline')){
+			continue;
+		}
+		if(timeline_name != element.end.lifeline){
+			continue;
+		}
+		if('create' == element.end_kind){
+			return element;
+		}
+	}
+
+	return null;
+}
+
+function get_message_of_timeline_end(current_diagram, timeline_name)
 {
 	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
 		let element = current_diagram.diagram_elements[i];
@@ -155,6 +184,11 @@ function get_message_by_timeline_end(current_diagram, timeline_name)
 
 function draw_timeline(draw, current_diagram, timeline)
 {
+	let message_of_create = get_message_of_timeline_create(current_diagram, timeline.text);
+	if(null !== message_of_create){
+		timeline.y = message_of_create.y;
+	}
+
 	let text = draw.text(timeline.text).move(timeline.x, timeline.y).font({
 		'fill': '#000' ,
 		'size': '150%'
@@ -179,7 +213,7 @@ function draw_timeline(draw, current_diagram, timeline)
 		.attr(attr).radius(radius);
 
 	const height_offset = 10;
-	let message_by_the_end = get_message_by_timeline_end(current_diagram, timeline.text);
+	let message_of_end = get_message_of_timeline_end(current_diagram, timeline.text);
 
 	let line_point = {
 		// 'x': box.x + (box.width / 2),
@@ -187,10 +221,10 @@ function draw_timeline(draw, current_diagram, timeline)
 		'y': box.y + (box.height),
 	};
 	let y_end;
-	if(null == message_by_the_end){
+	if(null == message_of_end){
 		y_end = current_diagram.height - height_offset;
 	}else{
-		y_end = message_by_the_end.y;
+		y_end = message_of_end.y;
 	}
 	var line = draw.line(
 			line_point.x,
@@ -300,6 +334,54 @@ function draw_message(draw, current_diagram, message)
 	text_point.x += text_offset;
 	text_point.y += text_offset;
 	let text = draw.text(message.text).move(text_point.x, text_point.y);
+
+	if(message.hasOwnProperty('spec') && null !== message.spec){
+		draw_spec(draw, current_diagram, message, position);
+	}
+}
+
+function draw_spec(draw, current_diagram, message, parent_message_position)
+{
+	if(! (message.hasOwnProperty('spec') && null !== message.spec)){
+		console.error('bug');
+		return;
+	}
+
+	const attr = {
+		'stroke':		'#000',
+		'fill':			'#fff',
+		'stroke-width':		'1.2',
+	};
+
+	const width = 5;
+	let height = 0;
+	if(message.spec.end.hasOwnProperty('height')){
+		height = message.spec.end.height;
+	}else if(message.spec.end.hasOwnProperty('reply')){
+		let message_of_end = get_message_of_timeline_end(current_diagram, message.end.lifeline);
+		if(null != message_of_end){
+			height = message_of_end.y - message.y;
+		}
+	}
+	if(height < 0){
+		console.error(message);
+		console.log(message);
+		return;
+	}
+	if(0 == height){
+		console.error(message);
+		console.log(message);
+		return;
+	}
+
+	let foot_point = get_message_point_foot(parent_message_position, [0,0])
+	let box = {
+		'x':		foot_point.x - 1,
+		'y':		foot_point.y + message.spec.y_offset,
+		'width':	width,
+		'height':	height,
+	};
+	draw.rect(box.width, box.height).move(box.x, box.y).attr(attr);
 }
 
 function draw_message_turnback(draw, position)

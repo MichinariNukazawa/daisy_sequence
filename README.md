@@ -62,16 +62,17 @@ UML Strict Mode(UML準拠)
 	end_kind,	// [none, create, stop]
 	message_kind,		// [sync, async, reply]
 	text,		// message text
+	spec,		// spec object(optional)
 }
 
-### ExecutionSpecification
+### ExecutionSpecification (spec)
 {
 	// x is parent_message.x
 	// y is parent_message.y - this.y_offset,
 	// width is zero.
-	height,
-	parent_message,
+	// parent_message,
 	y_offset,	// this y position from parent_message.y offset
+	end,		// height or 'reply'
 }
 
 ### Flugment
