@@ -1,0 +1,17 @@
+{
+  "name": "daisy_sequence",
+  "version": "0.0.1",
+  "description": "UML sequence diagram editor",
+  "main": "index.js",
+  "scripts": {
+    "build": "electron .",
+    "test": "npm test"
+  },
+  "repository": "<project_name>",
+  "author": "michinari.nukazawa@gmail.com",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "electron": "^1.7.12",
+    "svg.js": "^2.6.3"
+  }
+}

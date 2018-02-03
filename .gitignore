@@ -1,0 +1,58 @@
+
+.*
+!.gitkeep
+!.gitignore
+tags
+
+*~
+*.back
+# patch command backup file
+*.rej
+*.orig
+
+# cash
+*~
+
+# tmporary
+tmp/
+temp/
+gabage/
+work/
+log/
+
+# object files
+*.d
+*.o
+*.a
+*.exe
+*.app
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# doxygen
+doxygen/
+
+*.txt
+
+
+node_modules/
+daisy_sequence-*/
+release/
+daisy_sequence/package-lock.json
+
