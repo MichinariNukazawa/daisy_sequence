@@ -43,6 +43,7 @@ UML Strict Mode(UML準拠)
 
 ### Lifeline
 {
+	kind, id,
 	x,
 	y,
 	// width is text.BBox().width
