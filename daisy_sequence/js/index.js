@@ -22,11 +22,11 @@ window.onload = function(e){
 		'kind':		'message',
 		'id':		2,
 		'y':		70,
-		'start':	{'position_x': 20},		// for found
+		'start':	{'position_x': 20},		// from found
 		'end':		{'lifeline': 'Object1'},
 		'end_kind':	'none',
 		'message_kind':	'sync',
-		'text':		'messageA',
+		'text':		'message\nfrom found',
 	},
 	{
 		'kind':		'message',
@@ -36,7 +36,7 @@ window.onload = function(e){
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'none',
 		'message_kind':	'sync',
-		'text':		'messageB',
+		'text':		'lifeline to lifeline',
 	},
 	{
 		'kind':		'message',
@@ -46,7 +46,7 @@ window.onload = function(e){
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'none',
 		'message_kind':	'sync',
-		'text':		'messageC',
+		'text':		'turnback',
 	},
 	{
 		'kind':		'message',
@@ -56,7 +56,7 @@ window.onload = function(e){
 		'end':		{'lifeline': 'Object1'},
 		'end_kind':	'none',
 		'message_kind':	'reply',	// reply
-		'text':		'messageD',
+		'text':		'message of reply',
 	},
 	{
 		'kind':		'message',
@@ -66,7 +66,7 @@ window.onload = function(e){
 		'end':		{'position_x': 280},				// lost
 		'end_kind':	'none',
 		'message_kind':	'sync',
-		'text':		'messageE',
+		'text':		'message to lost',
 	},
 	{
 		'kind':		'message',
@@ -76,7 +76,7 @@ window.onload = function(e){
 		'end':		{'position_x': 280},				// lost
 		'end_kind':	'none',
 		'message_kind':	'async',					// async
-		'text':		'messageF',
+		'text':		'message async to lost',
 	},
 	{
 		'kind':		'message',
@@ -86,7 +86,7 @@ window.onload = function(e){
 		'end':		{'lifeline': 'Object2'},
 		'end_kind':	'stop',						// stop to lifeline
 		'message_kind':	'sync',
-		'text':		'messageG',
+		'text':		'stop to lifeline',
 	},
 	];
 
