@@ -60,7 +60,7 @@ UML Strict Mode(UML準拠)
 	start,		// Lifeline or positon{x} for found
 	end,		// Lifeline or positon{x} for lost
 	end_kind,	// [none, create, stop]
-	kind,		// [sync, async, reply]
+	message_kind,		// [sync, async, reply]
 	text,		// message text
 }
 

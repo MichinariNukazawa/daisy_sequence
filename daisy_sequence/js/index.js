@@ -18,6 +18,16 @@ window.onload = function(e){
 		'y': 30,
 		'text': 'Object2'
 	},
+	{
+		'kind':		'message',
+		'id':		2,
+		'y':		70,
+		'start':	{'position_x': 20},		// for found
+		'end':		{'lifeline': 'Object1'},
+		'end_kind':	'none',
+		'message_kind':	'sync',
+		'text':		'messageA',
+	},
 	];
 
 	let doc = {
@@ -36,7 +46,14 @@ window.onload = function(e){
 
 	let current_diagram = doc.diagram_history[doc.diagram_index];
 	for(let i = 0; i < current_diagram.length; i++){
-		draw_timeline(draw, current_diagram[i]);
+		if('lifeline' == current_diagram[i].kind){
+			draw_timeline(draw, current_diagram[i]);
+		}else if('message' == current_diagram[i].kind){
+			draw_message(draw, current_diagram, current_diagram[i]);
+		}else{
+			error.log("%d %d", i, current_diagram[i].kind);
+			alert('internal error');
+		}
 	}
 }
 
@@ -67,7 +84,8 @@ function draw_timeline(draw, timeline)
 
 	let height = 100;
 	let line_position = {
-		'x': box.x + (box.width / 2),
+		// 'x': box.x + (box.width / 2),
+		'x': b.x,
 		'y': box.y + (box.height),
 		'width': 0,
 		'height': height,
@@ -85,5 +103,107 @@ function draw_timeline(draw, timeline)
 		'stroke-dasharray':	'10',
 	});
 
+}
+
+function draw_message(draw, current_diagram, message)
+{
+	let is_found = false;
+
+	var position = {
+		'x': 0,
+		'y': 0,
+		'width': 0,
+		'height': 0,
+	};
+	if(message.start.hasOwnProperty('position_x')){
+		position.x = message.start.position_x;
+		is_found = true;
+	}else{
+		alert('nop');
+	}
+
+	position.y = message.y;
+
+	if(message.end.hasOwnProperty('lifeline')){
+		let lifeline = get_lifeline_from_name(current_diagram, message.end.lifeline);
+		if(null == lifeline){
+			alert('bug');
+			return;
+		}
+		position.width = lifeline.x - position.x;
+	}else{
+		alert('nop');
+	}
+
+	var line = draw.line(
+			position.x,
+			position.y,
+			position.x + position.width,
+			position.y + position.height)
+		.stroke({
+			'width': '2',
+		});
+
+	draw_message_array_of_foot(draw, position, message.message_kind);
+
+	if(is_found){
+		let point_head = get_message_point_head(position);
+		let size = 16;
+		draw.circle(size).move(point_head.x - (size/2), point_head.y - (size/2))
+	}
+
+	let text_point = {'x': position.x, 'y': position.y};
+	if(position.width < 0){
+		text_point.x += position.width;
+	}
+	const text_offset = 10;
+	text_point.y += text_offset;
+	let text = draw.text(message.text).move(text_point.x, text_point.y);
+}
+
+function get_lifeline_from_name(current_diagram, lifeline)
+{
+	for(let i = 0; i < current_diagram.length; i++){
+		if('lifeline' == current_diagram[i].kind){
+			if(lifeline == current_diagram[i].text){
+				return current_diagram[i];
+			}
+		}
+	}
+
+	alert('bug');
+	return null;
+}
+
+function get_message_point_head(position)
+{
+	let point;
+	if(0 < position.width){
+		point = {'x': position.x, 'y': position.y};
+	}else{
+		point = {'x': position.x + position.width, 'y': position.y + position.height};
+	}
+
+	return point;
+}
+
+function draw_message_array_of_foot(draw, position, message_kind)
+{
+	let point = {'x': position.x, 'y': position.y};
+	let offset = [8, 8];
+	if(0 < position.width){
+		point = {'x': position.x + position.width, 'y': position.y + position.height};
+		offset = [-8, -8];
+	}
+	let points = [
+		point.x + offset[0], point.y + offset[1],
+		point.x, point.y,
+		point.x + offset[0], point.y - offset[1],
+	];
+
+	let polyline = draw.polyline(points).stroke({ width: 3, linecap: 'round', });
+	if('sync' != message_kind){
+		polyline.fill('none').plot();
+	}
 }
 
