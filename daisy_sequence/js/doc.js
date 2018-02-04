@@ -126,6 +126,86 @@ function doc_init()
 }
 
 
+function get_current_doc()
+{
+	return doc;
+}
+
+function doc_undo(current_doc)
+{
+	if(null === current_doc){
+		console.error("undo error");
+		return;
+	}
+
+	if(0 < current_doc.diagram_history_index){
+		current_doc.diagram_history_index--;
+	}else{
+		console.log("no undo history: %d %d",
+				current_doc.diagram_history_index,
+				current_doc.diagram_history.length);
+	}
+}
+
+function doc_redo(current_doc)
+{
+	if(null === current_doc){
+		console.error('redo error');
+		return;
+	}
+
+	if((current_doc.diagram_history_index + 1) < current_doc.diagram_history.length){
+		current_doc.diagram_history_index++;
+	}else{
+		console.log("no redo history: %d %d",
+				current_doc.diagram_history_index,
+				current_doc.diagram_history.length);
+	}
+}
+
+function deepClone(obj)
+{
+	return JSON.parse(JSON.stringify(obj))
+}
+
+function doc_history_add(current_doc)
+{
+	if(null === current_doc){
+		console.error();
+		return;
+	}
+
+	/*
+	const deepClone = obj => {
+		let r = {};
+		for(var name in obj){
+			if(typeof obj[name] === 'object'){
+				r[name] = deepClone(obj[name]);
+			}else{
+				r[name] = obj[name];
+			}
+		}
+		return r;
+	}
+	*/
+
+	let hist = deepClone(current_doc.diagram_history[(current_doc.diagram_history_index)]);
+	current_doc.diagram_history[current_doc.diagram_history_index + 1] = hist;
+	current_doc.diagram_history_index++;
+	current_doc.diagram_history.length = current_doc.diagram_history_index + 1;
+}
+
+function doc_history_add_cancel(current_doc)
+{
+	if(null === current_doc){
+		console.error();
+		return;
+	}
+
+	current_doc.diagram_history_index--;
+	current_doc.diagram_history.length = current_doc.diagram_history_index + 1;
+}
+
 function get_current_diagram()
 {
 	return doc.diagram_history[doc.diagram_history_index];

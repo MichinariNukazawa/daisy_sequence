@@ -32,11 +32,21 @@ window.onload = function(e){
 	});
 
 	rendering(draw, current_diagram);
+	show_history();
 
 	// document.addEventListener('mousemove', callback);
 	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
 	document.getElementById('drawing').addEventListener('mousedown', callback_mousedown_drawing);
 	document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
+}
+
+function show_history()
+{
+	let current_doc = get_current_doc();
+	let s = sprintf("history: %d/%d",
+				current_doc.diagram_history_index + 1,
+				current_doc.diagram_history.length);
+	document.getElementById('history_info').textContent = s;
 }
 
 function rendering(draw, current_diagram)
@@ -62,6 +72,9 @@ function callback_mousedown_drawing(e){
 	console.log('%d %d', point.x, point.y);
 	*/
 
+	doc_history_add(get_current_doc());
+	show_history();
+
 	mouse_state.is_down = true;
 
 	let current_diagram = get_current_diagram();
@@ -72,6 +85,13 @@ function callback_mousedown_drawing(e){
 
 function callback_mouseup_drawing(e){
 	mouse_state.is_down = false;
+
+	if(null === edit_state.element){
+		// is not editing
+		doc_history_add_cancel(get_current_doc());
+		show_history();
+	}
+	rerendering();
 }
 
 function callback_mousemove_drawing(e){
@@ -99,6 +119,11 @@ function callback_mousemove_drawing(e){
 	};
 	move_element(get_current_diagram(), edit_state.element, move);
 
+	rerendering();
+}
+
+function rerendering()
+{
 	get_draw().clear();
 	rendering(get_draw(), get_current_diagram());
 }
