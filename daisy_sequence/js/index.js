@@ -52,6 +52,7 @@ window.onload = function(e){
 		'message_kind':	'sync',
 		'text':		'message\nfrom found',
 		'spec':		{
+			'kind': 'spec',
 			'y_offset': 0,
 			'end':{'height': 300},
 		},
@@ -76,6 +77,7 @@ window.onload = function(e){
 		'message_kind':	'sync',
 		'text':		'lifeline to lifeline',
 		'spec':		{
+			'kind': 'spec',
 			'y_offset': 0,
 			'end':{'reply': null},
 		},
@@ -174,24 +176,80 @@ function rendering(draw, current_diagram)
 	}
 }
 
+function rect_abs(src_rect)
+{
+	let rect = Object.assign({}, src_rect);
+	if(rect.width < 0){
+		rect.x = src_rect.x - src_rect.width;
+		rect.width = src_rect.width * -1;
+	}
+	if(rect.height < 0){
+		rect.y = src_rect.y - src_rect.height;
+		rect.height = src_rect.height * -1;
+	}
+
+	return rect;
+}
+
+function is_touch_rect(rect, point, offset)
+{
+	let collision_rect = Object.assign({}, rect);
+	collision_rect = rect_abs(collision_rect);
+	collision_rect.x -= offset[0];
+	collision_rect.y -= offset[1];
+	collision_rect.width += offset[0];
+	collision_rect.height += offset[1];
+
+	if(collision_rect.x < point.x
+			&& point.x < (collision_rect.x + collision_rect.width)
+			&& collision_rect.y < point.y
+			&& point.y < (collision_rect.y + collision_rect.height)){
+		return true;
+	}
+
+	return false;
+}
+
+function is_touch_element_by_work_rect(element, point)
+{
+	if(! element.hasOwnProperty('work')){
+		return false;
+	}
+	if(! element.work.hasOwnProperty('rect')){
+		return false;
+	}
+
+	let collision_rect = Object.assign({}, element.work.rect);
+
+	let offset = [0, 0];
+	if('spec' == element.kind){
+		offset = [16, 16];
+	}
+
+	if(is_touch_rect(collision_rect, point, offset)){
+		return true;
+	}
+
+
+	return false;
+}
+
 function get_diagram_element_of_touch(current_diagram, point)
 {
 	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
 		const element = current_diagram.diagram_elements[i];
 
-		if(! element.hasOwnProperty('work')){
-			continue
-		}
-		if(! element.work.hasOwnProperty('rect')){
-			continue
+		if(is_touch_element_by_work_rect(element, point)){
+			return element;
 		}
 
-		console.log(element.work.rect);
-		if(element.work.rect.x < point.x
-				&& point.x < (element.work.rect.x + element.work.rect.width)
-				&& element.work.rect.y < point.y
-				&& point.y < (element.work.rect.y + element.work.rect.height)){
-			return element;
+		if('message' == element.kind){
+			if(! element.hasOwnProperty('spec')){
+				continue;
+			}
+			if(is_touch_element_by_work_rect(element.spec, point)){
+				return element.spec;
+			}
 		}
 	}
 
@@ -211,7 +269,6 @@ function callback_mousedown_drawing(e){
 
 	let current_diagram = get_current_diagram();
 	let element = get_diagram_element_of_touch(current_diagram, mouse_state.point);
-	console.log(element);
 
 	edit_state.element = element;
 }
@@ -254,6 +311,12 @@ function move_element(current_diagram, element, move)
 	if('lifeline' == element.kind){
 		element.x += move.x;
 		element.y += move.y;
+	}else if('message' == element.kind){
+		element.y += move.y;
+	}else if('spec' == element.kind){
+		if(element.hasOwnProperty('end') && element.end.hasOwnProperty('height')){
+			element.end.height += move.y;
+		}
 	}
 }
 
@@ -332,7 +395,7 @@ function draw_timeline(draw, current_diagram, timeline)
 	if(! timeline.hasOwnProperty('work')){
 		timeline.work = {};
 	}
-	timeline.work.rect = box;
+	timeline.work.rect = Object.assign({}, box);
 
 	const height_offset = 10;
 	let message_of_end = get_message_of_timeline_end(current_diagram, timeline.text);
@@ -408,6 +471,13 @@ function draw_message(draw, current_diagram, message)
 		alert('nop');
 	}
 
+	if(! message.hasOwnProperty('work')){
+		message.work = {};
+	}
+	message.work.rect = Object.assign({}, position);
+	message.work.rect.y -= 16;
+	message.work.rect.height = 16;
+
 	if(message.start.hasOwnProperty('lifeline')
 			&& message.end.hasOwnProperty('lifeline')
 			&& message.start.lifeline == message.end.lifeline){
@@ -469,6 +539,8 @@ function draw_spec(draw, current_diagram, message, parent_message_position)
 		return;
 	}
 
+	let spec = message.spec;
+
 	const attr = {
 		'stroke':		'#000',
 		'fill':			'#fff',
@@ -477,9 +549,9 @@ function draw_spec(draw, current_diagram, message, parent_message_position)
 
 	const width = 5;
 	let height = 0;
-	if(message.spec.end.hasOwnProperty('height')){
-		height = message.spec.end.height;
-	}else if(message.spec.end.hasOwnProperty('reply')){
+	if(spec.end.hasOwnProperty('height')){
+		height = spec.end.height;
+	}else if(spec.end.hasOwnProperty('reply')){
 		let message_of_end = get_message_of_timeline_end(current_diagram, message.end.lifeline);
 		if(null != message_of_end){
 			height = message_of_end.y - message.y;
@@ -499,11 +571,16 @@ function draw_spec(draw, current_diagram, message, parent_message_position)
 	let foot_point = get_message_point_foot(parent_message_position, [0,0])
 	let box = {
 		'x':		foot_point.x - 1,
-		'y':		foot_point.y + message.spec.y_offset,
+		'y':		foot_point.y + spec.y_offset,
 		'width':	width,
 		'height':	height,
 	};
 	draw.rect(box.width, box.height).move(box.x, box.y).attr(attr);
+
+	if(! spec.hasOwnProperty('work')){
+		spec.work = {};
+	}
+	spec.work.rect = Object.assign({}, box);
 }
 
 function draw_message_turnback(draw, position)
