@@ -211,6 +211,17 @@ function get_current_diagram()
 	return doc.diagram_history[doc.diagram_history_index];
 }
 
+function rect_expand(src_rect, offset)
+{
+	let rect = Object.assign({}, src_rect);
+	rect.x -= offset[0];
+	rect.y -= offset[1];
+	rect.width += (offset[0] * 2);
+	rect.height += (offset[1] * 2);
+
+	return rect;
+}
+
 function rect_abs(src_rect)
 {
 	let rect = Object.assign({}, src_rect);
@@ -230,10 +241,7 @@ function is_touch_rect(rect, point, offset)
 {
 	let collision_rect = Object.assign({}, rect);
 	collision_rect = rect_abs(collision_rect);
-	collision_rect.x -= offset[0];
-	collision_rect.y -= offset[1];
-	collision_rect.width += offset[0];
-	collision_rect.height += offset[1];
+	collision_rect = rect_expand(collision_rect, offset);
 
 	if(collision_rect.x < point.x
 			&& point.x < (collision_rect.x + collision_rect.width)
@@ -245,16 +253,26 @@ function is_touch_rect(rect, point, offset)
 	return false;
 }
 
-function is_touch_element_by_work_rect(element, point)
+function get_rect_from_element(element)
 {
 	if(! element.hasOwnProperty('work')){
-		return false;
+		return null;
 	}
 	if(! element.work.hasOwnProperty('rect')){
+		return null;
+	}
+
+	return element.work.rect;
+}
+
+function is_touch_element_by_work_rect(element, point)
+{
+	let rect = get_rect_from_element(element);
+	if(null == rect){
 		return false;
 	}
 
-	let collision_rect = Object.assign({}, element.work.rect);
+	let collision_rect = Object.assign({}, rect);
 
 	let offset = [0, 0];
 	if('spec' == element.kind){

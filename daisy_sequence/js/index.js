@@ -61,6 +61,21 @@ function rendering(draw, current_diagram)
 			alert('internal error');
 		}
 	}
+
+	// focusing
+	if(null !== edit_state.element){
+		let rect = get_rect_from_element(edit_state.element);
+		if(null == rect){
+			alert('internal error');
+		}else{
+			rect = rect_expand(rect, [3,3]);
+			let rect_ = draw.rect(rect.width, rect.height).move(rect.x, rect.y).attr({
+				'stroke':		'#3af',
+				'fill-opacity':		'0',
+				'stroke-width':		'1.5',
+	});
+		}
+	}
 }
 
 function callback_mousedown_drawing(e){
