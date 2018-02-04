@@ -2,6 +2,8 @@
 
 var SVG = require('svg.js');
 const sprintf = require('sprintf-js').sprintf;
+let doc_collection = new DocCollection();
+let current_doc_id = -1;
 
 let draw = null;
 
@@ -21,23 +23,41 @@ function get_draw()
 
 
 window.onload = function(e){
-	doc_init();
-	let current_diagram = get_current_diagram();
+	doc_collection.init();
+	current_doc_id = doc_collection.create_doc();
+	let doc = doc_collection.get_doc_from_id(current_doc_id);
+	let diagram = doc_get_diagram(doc);
 
-	draw = SVG('drawing').size(current_diagram.width, current_diagram.height);
-	let rect = draw.rect(current_diagram.width, current_diagram.height).attr({
+	draw = SVG('drawing').size(diagram.width, diagram.height);
+	let rect = draw.rect(diagram.width, diagram.height).attr({
 		'stroke':		'#ddd',
 		'fill-opacity':		'0',
 		'stroke-width':		'2',
 	});
 
-	rendering(draw, current_diagram);
+	rendering(draw, diagram);
 	show_history();
 
 	// document.addEventListener('mousemove', callback);
 	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
 	document.getElementById('drawing').addEventListener('mousedown', callback_mousedown_drawing);
 	document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
+}
+
+function get_current_doc()
+{
+	return doc_collection.get_doc_from_id(current_doc_id);
+}
+
+function get_current_diagram()
+{
+	let doc = get_current_doc();
+	if(null === doc){
+		console.error('');
+		return null;
+	}
+
+	return doc.diagram_history[doc.diagram_history_index];
 }
 
 function show_history()
@@ -49,22 +69,22 @@ function show_history()
 	document.getElementById('history_info').textContent = s;
 }
 
-function rendering(draw, current_diagram)
+function rendering(draw, diagram)
 {
-	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
-		if('lifeline' == current_diagram.diagram_elements[i].kind){
-			draw_timeline(draw, current_diagram, current_diagram.diagram_elements[i]);
-		}else if('message' == current_diagram.diagram_elements[i].kind){
-			draw_message(draw, current_diagram, current_diagram.diagram_elements[i]);
+	for(let i = 0; i < diagram.diagram_elements.length; i++){
+		if('lifeline' == diagram.diagram_elements[i].kind){
+			draw_timeline(draw, diagram, diagram.diagram_elements[i]);
+		}else if('message' == diagram.diagram_elements[i].kind){
+			draw_message(draw, diagram, diagram.diagram_elements[i]);
 		}else{
-			console.error("%d %d", i, current_diagram.diagram_elements[i].kind);
+			console.error("%d %d", i, diagram.diagram_elements[i].kind);
 			alert('internal error');
 		}
 	}
 
 	// focusing
 	if(null !== edit_state.element){
-		let rect = get_rect_from_element(edit_state.element);
+		let rect = Element.get_rect(edit_state.element);
 		if(null == rect){
 			alert('internal error');
 		}else{
@@ -87,13 +107,13 @@ function callback_mousedown_drawing(e){
 	console.log('%d %d', point.x, point.y);
 	*/
 
-	doc_history_add(get_current_doc());
+	Doc.history_add(get_current_doc());
 	show_history();
 
 	mouse_state.is_down = true;
 
-	let current_diagram = get_current_diagram();
-	let element = get_diagram_element_of_touch(current_diagram, mouse_state.point);
+	let diagram = get_current_diagram();
+	let element = Diagram.get_element_of_touch(diagram, mouse_state.point);
 
 	edit_state.element = element;
 }
@@ -103,7 +123,7 @@ function callback_mouseup_drawing(e){
 
 	if(null === edit_state.element){
 		// is not editing
-		doc_history_add_cancel(get_current_doc());
+		Doc.history_add_cancel(get_current_doc());
 		show_history();
 	}
 	rerendering();
@@ -143,9 +163,9 @@ function rerendering()
 	rendering(get_draw(), get_current_diagram());
 }
 
-function draw_timeline(draw, current_diagram, timeline)
+function draw_timeline(draw, diagram, timeline)
 {
-	let message_of_create = get_message_of_timeline_create(current_diagram, timeline.text);
+	let message_of_create = get_message_of_timeline_create(diagram, timeline.text);
 	if(null !== message_of_create){
 		timeline.y = message_of_create.y;
 	}
@@ -179,7 +199,7 @@ function draw_timeline(draw, current_diagram, timeline)
 	timeline.work.rect = Object.assign({}, box);
 
 	const height_offset = 10;
-	let message_of_end = get_message_of_timeline_end(current_diagram, timeline.text);
+	let message_of_end = get_message_of_timeline_end(diagram, timeline.text);
 
 	let line_point = {
 		// 'x': box.x + (box.width / 2),
@@ -188,7 +208,7 @@ function draw_timeline(draw, current_diagram, timeline)
 	};
 	let y_end;
 	if(null == message_of_end){
-		y_end = current_diagram.height - height_offset;
+		y_end = diagram.height - height_offset;
 	}else{
 		y_end = message_of_end.y;
 	}
@@ -208,7 +228,7 @@ function draw_timeline(draw, current_diagram, timeline)
 
 }
 
-function draw_message(draw, current_diagram, message)
+function draw_message(draw, diagram, message)
 {
 	let is_found = false;
 	let is_lost = false;
@@ -223,7 +243,7 @@ function draw_message(draw, current_diagram, message)
 		position.x = message.start.position_x;
 		is_found = true;
 	}else if(message.start.hasOwnProperty('lifeline')){
-		let lifeline = get_lifeline_from_name(current_diagram, message.start.lifeline);
+		let lifeline = get_lifeline_from_name(diagram, message.start.lifeline);
 		if(null == lifeline){
 			console.error(message.start);
 			alert('bug');
@@ -238,7 +258,7 @@ function draw_message(draw, current_diagram, message)
 	position.y = message.y;
 
 	if(message.end.hasOwnProperty('lifeline')){
-		let lifeline = get_lifeline_from_name(current_diagram, message.end.lifeline);
+		let lifeline = get_lifeline_from_name(diagram, message.end.lifeline);
 		if(null == lifeline){
 			console.error(message.end);
 			alert('bug');
@@ -309,11 +329,11 @@ function draw_message(draw, current_diagram, message)
 	let text = draw.text(message.text).move(text_point.x, text_point.y);
 
 	if(message.hasOwnProperty('spec') && null !== message.spec){
-		draw_spec(draw, current_diagram, message, position);
+		draw_spec(draw, diagram, message, position);
 	}
 }
 
-function draw_spec(draw, current_diagram, message, parent_message_position)
+function draw_spec(draw, diagram, message, parent_message_position)
 {
 	if(! (message.hasOwnProperty('spec') && null !== message.spec)){
 		console.error('bug');
@@ -333,7 +353,7 @@ function draw_spec(draw, current_diagram, message, parent_message_position)
 	if(spec.end.hasOwnProperty('height')){
 		height = spec.end.height;
 	}else if(spec.end.hasOwnProperty('reply')){
-		let message_of_end = get_message_of_timeline_end(current_diagram, message.end.lifeline);
+		let message_of_end = get_message_of_timeline_end(diagram, message.end.lifeline);
 		if(null != message_of_end){
 			height = message_of_end.y - message.y;
 		}

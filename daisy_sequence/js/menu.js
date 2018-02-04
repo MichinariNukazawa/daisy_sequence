@@ -52,7 +52,7 @@ var template = [
 		click: function () {
 			let current_doc = get_current_doc();
 			if(null !== current_doc){
-				doc_undo(current_doc);
+				Doc.undo(current_doc);
 				rerendering();
 				show_history();
 			}
@@ -64,7 +64,7 @@ var template = [
 		click: function () {
 			let current_doc = get_current_doc();
 			if(null !== current_doc){
-				doc_redo(current_doc);
+				Doc.redo(current_doc);
 				rerendering();
 				show_history();
 			}

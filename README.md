@@ -31,6 +31,16 @@ UML Strict Mode(UML準拠)
 
 # データ構造
 
+DocCollection{
+	Doc docs[]{
+		int diagram_history_index;
+		Diagram diagram_history[];
+	};
+
+	DocId create_doc();
+	Doc get_doc_from_id();
+};
+
 ## ドキュメント構造
 {
 	index,				//current diagram

@@ -2,7 +2,31 @@
 
 let doc = null;
 
-function doc_init()
+class DocCollection{
+	constructor()
+	{
+		this.docs = [];
+		this.docs[0] = get_default_doc();
+	}
+
+	init(){}
+
+	create_doc()
+	{
+		return 0; // doc_id
+	}
+
+	get_doc_from_id(doc_id)
+	{
+		if(undefined === this.docs[doc_id]){
+			return null;
+		}else{
+			return this.docs[doc_id];
+		}
+	}
+};
+
+function get_default_doc()
 {
 	let diagram_elements = [
 	{
@@ -122,94 +146,157 @@ function doc_init()
 		'diagram_history': [diagram],
 	};
 
-	let current_diagram = get_current_diagram();
-}
-
-
-function get_current_doc()
-{
 	return doc;
 }
 
-function doc_undo(current_doc)
+function doc_get_diagram(doc)
 {
-	if(null === current_doc){
-		console.error("undo error");
-		return;
+	if(null === doc){
+		console.error('');
+		return null;
 	}
 
-	if(0 < current_doc.diagram_history_index){
-		current_doc.diagram_history_index--;
-	}else{
-		console.log("no undo history: %d %d",
-				current_doc.diagram_history_index,
-				current_doc.diagram_history.length);
-	}
-}
-
-function doc_redo(current_doc)
-{
-	if(null === current_doc){
-		console.error('redo error');
-		return;
-	}
-
-	if((current_doc.diagram_history_index + 1) < current_doc.diagram_history.length){
-		current_doc.diagram_history_index++;
-	}else{
-		console.log("no redo history: %d %d",
-				current_doc.diagram_history_index,
-				current_doc.diagram_history.length);
-	}
-}
-
-function deepClone(obj)
-{
-	return JSON.parse(JSON.stringify(obj))
-}
-
-function doc_history_add(current_doc)
-{
-	if(null === current_doc){
-		console.error();
-		return;
-	}
-
-	/*
-	const deepClone = obj => {
-		let r = {};
-		for(var name in obj){
-			if(typeof obj[name] === 'object'){
-				r[name] = deepClone(obj[name]);
-			}else{
-				r[name] = obj[name];
-			}
-		}
-		return r;
-	}
-	*/
-
-	let hist = deepClone(current_doc.diagram_history[(current_doc.diagram_history_index)]);
-	current_doc.diagram_history[current_doc.diagram_history_index + 1] = hist;
-	current_doc.diagram_history_index++;
-	current_doc.diagram_history.length = current_doc.diagram_history_index + 1;
-}
-
-function doc_history_add_cancel(current_doc)
-{
-	if(null === current_doc){
-		console.error();
-		return;
-	}
-
-	current_doc.diagram_history_index--;
-	current_doc.diagram_history.length = current_doc.diagram_history_index + 1;
-}
-
-function get_current_diagram()
-{
 	return doc.diagram_history[doc.diagram_history_index];
 }
+
+/** doc を操作するstatic methodの集合 */
+class Doc{
+	static undo(current_doc)
+	{
+		if(null === current_doc){
+			console.error("undo error");
+			return;
+		}
+
+		if(0 < current_doc.diagram_history_index){
+			current_doc.diagram_history_index--;
+		}else{
+			console.log("no undo history: %d %d",
+					current_doc.diagram_history_index,
+					current_doc.diagram_history.length);
+		}
+	}
+
+	static redo(current_doc)
+	{
+		if(null === current_doc){
+			console.error('redo error');
+			return;
+		}
+
+		if((current_doc.diagram_history_index + 1) < current_doc.diagram_history.length){
+			current_doc.diagram_history_index++;
+		}else{
+			console.log("no redo history: %d %d",
+					current_doc.diagram_history_index,
+					current_doc.diagram_history.length);
+		}
+	}
+
+	static history_add(current_doc)
+	{
+		if(null === current_doc){
+			console.error();
+			return;
+		}
+
+		let hist = this.deep_clone_(current_doc.diagram_history[(current_doc.diagram_history_index)]);
+		current_doc.diagram_history[current_doc.diagram_history_index + 1] = hist;
+		current_doc.diagram_history_index++;
+		current_doc.diagram_history.length = current_doc.diagram_history_index + 1;
+	}
+
+	static deep_clone_(obj)
+	{
+		/*
+		   const this.deep_clone_ = obj => {
+		   let r = {};
+		   for(var name in obj){
+		   if(typeof obj[name] === 'object'){
+		   r[name] = this.deep_clone_(obj[name]);
+		   }else{
+		   r[name] = obj[name];
+		   }
+		   }
+		   return r;
+		   }
+		 */
+
+		return JSON.parse(JSON.stringify(obj))
+	}
+
+	static history_add_cancel(current_doc)
+	{
+		if(null === current_doc){
+			console.error();
+			return;
+		}
+
+		current_doc.diagram_history_index--;
+		current_doc.diagram_history.length = current_doc.diagram_history_index + 1;
+	}
+};
+
+class Diagram{
+	static get_element_of_touch(diagram, point)
+	{
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			const element = diagram.diagram_elements[i];
+
+			if(Diagram.is_touch_element_by_work_rect_(element, point)){
+				return element;
+			}
+
+			if('message' == element.kind){
+				if(! element.hasOwnProperty('spec')){
+					continue;
+				}
+				if(Diagram.is_touch_element_by_work_rect_(element.spec, point)){
+					return element.spec;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	static is_touch_element_by_work_rect_(element, point)
+	{
+		let rect = Element.get_rect(element);
+		if(null == rect){
+			return false;
+		}
+
+		let collision_rect = Object.assign({}, rect);
+
+		let offset = [0, 0];
+		if('spec' == element.kind){
+			offset = [16, 16];
+		}
+
+		if(rect_is_touch(collision_rect, point, offset)){
+			return true;
+		}
+
+		return false;
+	}
+};
+
+class Element{
+	static get_rect(element)
+	{
+		if(! element.hasOwnProperty('work')){
+			return null;
+		}
+		if(! element.work.hasOwnProperty('rect')){
+			return null;
+		}
+
+		return element.work.rect;
+	}
+};
+
+/**** ############### ****/
 
 function rect_expand(src_rect, offset)
 {
@@ -237,7 +324,7 @@ function rect_abs(src_rect)
 	return rect;
 }
 
-function is_touch_rect(rect, point, offset)
+function rect_is_touch(rect, point, offset)
 {
 	let collision_rect = Object.assign({}, rect);
 	collision_rect = rect_abs(collision_rect);
@@ -251,62 +338,6 @@ function is_touch_rect(rect, point, offset)
 	}
 
 	return false;
-}
-
-function get_rect_from_element(element)
-{
-	if(! element.hasOwnProperty('work')){
-		return null;
-	}
-	if(! element.work.hasOwnProperty('rect')){
-		return null;
-	}
-
-	return element.work.rect;
-}
-
-function is_touch_element_by_work_rect(element, point)
-{
-	let rect = get_rect_from_element(element);
-	if(null == rect){
-		return false;
-	}
-
-	let collision_rect = Object.assign({}, rect);
-
-	let offset = [0, 0];
-	if('spec' == element.kind){
-		offset = [16, 16];
-	}
-
-	if(is_touch_rect(collision_rect, point, offset)){
-		return true;
-	}
-
-
-	return false;
-}
-
-function get_diagram_element_of_touch(current_diagram, point)
-{
-	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
-		const element = current_diagram.diagram_elements[i];
-
-		if(is_touch_element_by_work_rect(element, point)){
-			return element;
-		}
-
-		if('message' == element.kind){
-			if(! element.hasOwnProperty('spec')){
-				continue;
-			}
-			if(is_touch_element_by_work_rect(element.spec, point)){
-				return element.spec;
-			}
-		}
-	}
-
-	return null;
 }
 
 function move_element(current_diagram, element, move)
