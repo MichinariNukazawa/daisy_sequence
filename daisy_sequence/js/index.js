@@ -1,6 +1,30 @@
 'use strict';
 
 var SVG = require('svg.js');
+const sprintf = require('sprintf-js').sprintf;
+
+let doc = null;
+let draw = null;
+
+let edit_state = {
+	'element': null,
+};
+
+let mouse_state = {
+	'point': { 'x': 0, 'y': 0, },
+	'is_down': false,
+};
+
+function get_draw()
+{
+	return draw;
+}
+
+function get_current_diagram()
+{
+	return doc.diagram_history[doc.diagram_history_index];
+}
+
 
 window.onload = function(e){
 	let diagram_elements = [
@@ -114,20 +138,30 @@ window.onload = function(e){
 		'diagram_elements': diagram_elements,
 	};
 
-	let doc = {
+	doc = {
 		'diagram_history_index': 0,
 		'diagram_history': [diagram],
 	};
 
-	let current_diagram = doc.diagram_history[doc.diagram_history_index];
+	let current_diagram = get_current_diagram();
 
-	let draw = SVG('drawing').size(current_diagram.width, current_diagram.height);
+	draw = SVG('drawing').size(current_diagram.width, current_diagram.height);
 	let rect = draw.rect(current_diagram.width, current_diagram.height).attr({
 		'stroke':		'#ddd',
 		'fill-opacity':		'0',
 		'stroke-width':		'2',
 	});
 
+	rendering(draw, current_diagram);
+
+	// document.addEventListener('mousemove', callback);
+	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
+	document.getElementById('drawing').addEventListener('mousedown', callback_mousedown_drawing);
+	document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
+}
+
+function rendering(draw, current_diagram)
+{
 	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
 		if('lifeline' == current_diagram.diagram_elements[i].kind){
 			draw_timeline(draw, current_diagram, current_diagram.diagram_elements[i]);
@@ -137,6 +171,89 @@ window.onload = function(e){
 			console.error("%d %d", i, current_diagram.diagram_elements[i].kind);
 			alert('internal error');
 		}
+	}
+}
+
+function get_diagram_element_of_touch(current_diagram, point)
+{
+	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
+		const element = current_diagram.diagram_elements[i];
+
+		if(! element.hasOwnProperty('work')){
+			continue
+		}
+		if(! element.work.hasOwnProperty('rect')){
+			continue
+		}
+
+		console.log(element.work.rect);
+		if(element.work.rect.x < point.x
+				&& point.x < (element.work.rect.x + element.work.rect.width)
+				&& element.work.rect.y < point.y
+				&& point.y < (element.work.rect.y + element.work.rect.height)){
+			return element;
+		}
+	}
+
+	return null;
+}
+
+function callback_mousedown_drawing(e){
+	/*
+	let point = {
+		'x': e.clientX,
+		'y': e.clientY,
+	};
+	console.log('%d %d', point.x, point.y);
+	*/
+
+	mouse_state.is_down = true;
+
+	let current_diagram = get_current_diagram();
+	let element = get_diagram_element_of_touch(current_diagram, mouse_state.point);
+	console.log(element);
+
+	edit_state.element = element;
+}
+
+function callback_mouseup_drawing(e){
+	mouse_state.is_down = false;
+}
+
+function callback_mousemove_drawing(e){
+	let point = {
+		'x': e.offsetX,
+		'y': e.offsetY,
+	};
+	let s = sprintf('(%3d,%3d) %s', point.x, point.y, (mouse_state.is_down)? 'down':'up' );
+
+	document.getElementById('mouse_position').textContent = s;
+
+	mouse_state.point = point;
+
+	if(! mouse_state.is_down){
+		return;
+	}
+
+	if(null == edit_state.element){
+		return;
+	}
+
+	const move = {
+		'x': e.movementX,
+		'y': e.movementY,
+	};
+	move_element(get_current_diagram(), edit_state.element, move);
+
+	get_draw().clear();
+	rendering(get_draw(), get_current_diagram());
+}
+
+function move_element(current_diagram, element, move)
+{
+	if('lifeline' == element.kind){
+		element.x += move.x;
+		element.y += move.y;
 	}
 }
 
@@ -211,6 +328,11 @@ function draw_timeline(draw, current_diagram, timeline)
 	};
 	draw.rect(box.width, box.height).move(box.x, box.y)
 		.attr(attr).radius(radius);
+
+	if(! timeline.hasOwnProperty('work')){
+		timeline.work = {};
+	}
+	timeline.work.rect = box;
 
 	const height_offset = 10;
 	let message_of_end = get_message_of_timeline_end(current_diagram, timeline.text);
@@ -386,8 +508,6 @@ function draw_spec(draw, current_diagram, message, parent_message_position)
 
 function draw_message_turnback(draw, position)
 {
-	console.log(position);
-
 	const height = 10;
 	const points = [
 		position.x, position.y,
@@ -446,7 +566,6 @@ function get_message_point_foot(position, offset)
 
 function draw_message_array_of_foot(draw, position, message_kind)
 {
-	console.log(position);
 	let point = {'x': position.x + position.width, 'y': position.y + position.height};
 	let offset = [8, 8];
 	if(0 < position.width){

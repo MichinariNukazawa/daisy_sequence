@@ -12,6 +12,7 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "electron": "^1.7.12",
+    "sprintf-js": "^1.1.1",
     "svg.js": "^2.6.3"
   }
 }
