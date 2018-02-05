@@ -23,7 +23,6 @@ function get_draw()
 
 
 window.onload = function(e){
-	doc_collection.init();
 	current_doc_id = doc_collection.create_doc();
 	let doc = doc_collection.get_doc_from_id(current_doc_id);
 	let diagram = Doc.get_diagram(doc);
@@ -66,8 +65,8 @@ function show_history()
 {
 	let current_doc = get_current_doc();
 	let s = sprintf("history: %d/%d",
-				current_doc.diagram_history_index + 1,
-				current_doc.diagram_historys.length);
+				current_doc.diagram_history_index,
+				current_doc.diagram_historys.length - 1);
 	document.getElementById('history_info').textContent = s;
 }
 

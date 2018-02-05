@@ -1,15 +1,11 @@
 'use strict';
 
-let doc = null;
-
 class DocCollection{
 	constructor()
 	{
 		this.docs = [];
 		this.docs[0] = get_default_doc();
 	}
-
-	init(){}
 
 	create_doc()
 	{
@@ -180,7 +176,7 @@ class Doc{
 		if(0 < current_doc.diagram_history_index){
 			current_doc.diagram_history_index--;
 		}else{
-			console.log("no undo history: %d %d",
+			console.debug("no undo history: %d %d",
 					current_doc.diagram_history_index,
 					current_doc.diagram_historys.length);
 		}
@@ -196,7 +192,7 @@ class Doc{
 		if((current_doc.diagram_history_index + 1) < current_doc.diagram_historys.length){
 			current_doc.diagram_history_index++;
 		}else{
-			console.log("no redo history: %d %d",
+			console.debug("no redo history: %d %d",
 					current_doc.diagram_history_index,
 					current_doc.diagram_historys.length);
 		}
@@ -218,9 +214,8 @@ class Doc{
 	static deep_clone_(obj)
 	{
 		/*
-		   const this.deep_clone_ = obj => {
 		   let r = {};
-		   for(var name in obj){
+		   for(let name in obj){
 		   if(typeof obj[name] === 'object'){
 		   r[name] = this.deep_clone_(obj[name]);
 		   }else{
@@ -228,7 +223,6 @@ class Doc{
 		   }
 		   }
 		   return r;
-		   }
 		 */
 
 		return JSON.parse(JSON.stringify(obj))
