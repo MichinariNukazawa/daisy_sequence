@@ -42,6 +42,8 @@ window.onload = function(e){
 	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
 	document.getElementById('drawing').addEventListener('mousedown', callback_mousedown_drawing);
 	document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
+
+	document.getElementById('add-lifeline').addEventListener('click', callback_clicked_add_lifeline, false);
 }
 
 function get_current_doc()
@@ -153,6 +155,37 @@ function callback_mousemove_drawing(e){
 		'y': e.movementY,
 	};
 	move_element(get_current_diagram(), edit_state.element, move);
+
+	rerendering();
+}
+
+function callback_clicked_add_lifeline()
+{
+	let diagram = get_current_diagram();
+
+	let i = 0;
+	let lifeline_name;
+	let exist_lifeline;
+	do{
+		lifeline_name = 'New Lifeline' + i;
+		exist_lifeline = Diagram.get_lifeline_from_name(diagram, lifeline_name);
+		i++;
+	}while(null !== exist_lifeline);
+
+	let data = {
+		'text': lifeline_name,
+		'x': diagram.width - 150,
+	};
+	let lifeline = Lifeline.create(data);
+	if(null === lifeline){
+		console.error();
+		return;
+	}
+
+	if(! Diagram.add_element(diagram, lifeline)){
+		console.error();
+		return;
+	}
 
 	rerendering();
 }

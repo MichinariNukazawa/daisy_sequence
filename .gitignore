@@ -49,6 +49,7 @@ log/
 doxygen/
 
 *.txt
+*.ai
 
 
 node_modules/

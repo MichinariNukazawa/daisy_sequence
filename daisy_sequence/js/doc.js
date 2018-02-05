@@ -280,6 +280,28 @@ class Diagram{
 
 		return false;
 	}
+
+	static get_lifeline_from_name(diagram, lifeline_name)
+	{
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			const element = diagram.diagram_elements[i];
+			if('lifeline' !== element.kind){
+				continue;
+			}
+			if(lifeline_name === element.text){
+				return element;
+			}
+		}
+
+		return null;
+	}
+
+	static add_element(diagram, element)
+	{
+		diagram.diagram_elements.push(element);
+
+		return true;
+	}
 };
 
 class Element{
@@ -293,6 +315,24 @@ class Element{
 		}
 
 		return element.work.rect;
+	}
+};
+
+class Lifeline{
+	static create(src)
+	{
+		// default lifeline
+		let lifeline = {
+			'kind': 'lifeline',
+			'id': 0,
+			'x': 100,
+			'y': 30,
+			'text': 'Lifeline -'
+		};
+
+		lifeline = Object.assign(lifeline, src);
+
+		return lifeline;
 	}
 };
 
