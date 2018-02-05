@@ -141,26 +141,35 @@ function get_default_doc()
 		'diagram_elements': diagram_elements,
 	};
 
-	doc = {
+	let focus = {
+		'element': null,
+	};
+
+	let diagram_history = {
+		'diagram': diagram,
+		'focus': focus,
+	};
+
+	let doc = {
 		'diagram_history_index': 0,
-		'diagram_history': [diagram],
+		'diagram_historys': [diagram_history],
 	};
 
 	return doc;
 }
 
-function doc_get_diagram(doc)
-{
-	if(null === doc){
-		console.error('');
-		return null;
-	}
-
-	return doc.diagram_history[doc.diagram_history_index];
-}
-
 /** doc を操作するstatic methodの集合 */
 class Doc{
+	static get_diagram(doc)
+	{
+		if(null === doc){
+			console.error('');
+			return null;
+		}
+
+		return doc.diagram_historys[doc.diagram_history_index].diagram;
+	}
+
 	static undo(current_doc)
 	{
 		if(null === current_doc){
@@ -173,7 +182,7 @@ class Doc{
 		}else{
 			console.log("no undo history: %d %d",
 					current_doc.diagram_history_index,
-					current_doc.diagram_history.length);
+					current_doc.diagram_historys.length);
 		}
 	}
 
@@ -184,12 +193,12 @@ class Doc{
 			return;
 		}
 
-		if((current_doc.diagram_history_index + 1) < current_doc.diagram_history.length){
+		if((current_doc.diagram_history_index + 1) < current_doc.diagram_historys.length){
 			current_doc.diagram_history_index++;
 		}else{
 			console.log("no redo history: %d %d",
 					current_doc.diagram_history_index,
-					current_doc.diagram_history.length);
+					current_doc.diagram_historys.length);
 		}
 	}
 
@@ -200,10 +209,10 @@ class Doc{
 			return;
 		}
 
-		let hist = this.deep_clone_(current_doc.diagram_history[(current_doc.diagram_history_index)]);
-		current_doc.diagram_history[current_doc.diagram_history_index + 1] = hist;
+		let hist = this.deep_clone_(current_doc.diagram_historys[(current_doc.diagram_history_index)]);
+		current_doc.diagram_historys[current_doc.diagram_history_index + 1] = hist;
 		current_doc.diagram_history_index++;
-		current_doc.diagram_history.length = current_doc.diagram_history_index + 1;
+		current_doc.diagram_historys.length = current_doc.diagram_history_index + 1;
 	}
 
 	static deep_clone_(obj)
@@ -233,7 +242,7 @@ class Doc{
 		}
 
 		current_doc.diagram_history_index--;
-		current_doc.diagram_history.length = current_doc.diagram_history_index + 1;
+		current_doc.diagram_historys.length = current_doc.diagram_history_index + 1;
 	}
 };
 

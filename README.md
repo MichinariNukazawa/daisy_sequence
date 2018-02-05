@@ -28,17 +28,52 @@ UML Strict Mode(UML準拠)
 複合フラグメントの種別ごとの形状(Memoを重ねれば足りるはず)
 重ね順の並び替え
 
+# 楽ちんの皮算用
+- asterとか使ってたから、シーケンス図エディタのドメインがざっくりわかる
+- vecterion\_vge設計用でUML準拠を目指さないので必要な機能しか作らなくてすむ
+- その他UI等の詳細も妥協していける
+ (ex. lifelineが中央寄せより配置計算しやすい左寄せ)
+- javascriptなのでfree()考えなくていい
+- electronなので描画にSVGとSVGライブラリが使える
+- その他nodeの便利ライブラリが使える
+- save/openはドキュメントのオブジェクトをjsonで書き出す/読み込むだけ
+- exportは描画しているsvgを書き出すだけ
+- export pngもnodeにラスタライズ機能が何か用意されてるはず
+- electronなのでwin/mac/linuxがワンソース
+- ステート管理などはvecterion\_vgeの経験があるので流用できる
+- electronの配布パッケージはlina\_dictoの経験があるので流用できる
+- lina\_dictoの経験から、javascriptでも、そんなにパフォーマンス/リソースを気にせず作れるはず
+ (特にUndo/Redoはドキュメントのdeepcopyベースでいけると思う)
+
 
 # データ構造
 
 DocCollection{
 	Doc docs[]{
 		int diagram_history_index;
-		Diagram diagram_history[];
+		DiagramHistory diagram_historys[]{
+			Diagram diagram;		//!< stateless diagram document structure
+			Focus focus{
+				Element element;
+			};
+
+			DiagramHistory DiagramHistory.create_copy();
+		};
+
+		Doc create();			//!< create new doc
+		Diagram get_diagram(doc);	//!< in current history
+		Focus get_focus(doc);		//!< in current history
+
+		//! history system
+		void add_event_listener_history_change(doc, function(doc, 'undo'/'redo'));
+		void undo(doc);
+		void redo(doc);
+		void add_history(doc);
+		/* etc.. */
 	};
 
 	DocId create_doc();
-	Doc get_doc_from_id();
+	Doc get_doc_from_id(docId);
 };
 
 ## ドキュメント構造

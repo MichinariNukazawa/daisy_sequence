@@ -26,7 +26,7 @@ window.onload = function(e){
 	doc_collection.init();
 	current_doc_id = doc_collection.create_doc();
 	let doc = doc_collection.get_doc_from_id(current_doc_id);
-	let diagram = doc_get_diagram(doc);
+	let diagram = Doc.get_diagram(doc);
 
 	draw = SVG('drawing').size(diagram.width, diagram.height);
 	let rect = draw.rect(diagram.width, diagram.height).attr({
@@ -59,7 +59,7 @@ function get_current_diagram()
 		return null;
 	}
 
-	return doc.diagram_history[doc.diagram_history_index];
+	return Doc.get_diagram(doc);
 }
 
 function show_history()
@@ -67,7 +67,7 @@ function show_history()
 	let current_doc = get_current_doc();
 	let s = sprintf("history: %d/%d",
 				current_doc.diagram_history_index + 1,
-				current_doc.diagram_history.length);
+				current_doc.diagram_historys.length);
 	document.getElementById('history_info').textContent = s;
 }
 
