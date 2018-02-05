@@ -7,10 +7,6 @@ let current_doc_id = -1;
 
 let draw = null;
 
-let edit_state = {
-	'element': null,
-};
-
 let mouse_state = {
 	'point': { 'x': 0, 'y': 0, },
 	'is_down': false,
@@ -34,7 +30,7 @@ window.onload = function(e){
 		'stroke-width':		'2',
 	});
 
-	rendering(draw, diagram);
+	rendering(draw, doc);
 	show_history();
 
 	// document.addEventListener('mousemove', callback);
@@ -70,8 +66,9 @@ function show_history()
 	document.getElementById('history_info').textContent = s;
 }
 
-function rendering(draw, diagram)
+function rendering(draw, doc)
 {
+	const diagram = Doc.get_diagram(doc);
 	for(let i = 0; i < diagram.diagram_elements.length; i++){
 		if('lifeline' == diagram.diagram_elements[i].kind){
 			draw_timeline(draw, diagram, diagram.diagram_elements[i]);
@@ -84,8 +81,10 @@ function rendering(draw, diagram)
 	}
 
 	// focusing
-	if(null !== edit_state.element){
-		let rect = Element.get_rect(edit_state.element);
+	const focus = Doc.get_focus(doc);
+	const elements = Focus.get_elements(focus);
+	for(let i = 0; i < elements.length; i++){
+		let rect = Element.get_rect(elements[i]);
 		if(null == rect){
 			alert('internal error');
 		}else{
@@ -116,15 +115,17 @@ function callback_mousedown_drawing(e){
 	let diagram = get_current_diagram();
 	let element = Diagram.get_element_of_touch(diagram, mouse_state.point);
 
-	edit_state.element = element;
+	let focus = Doc.get_focus(get_current_doc());
+	Focus.set_element(focus, element);
 }
 
 function callback_mouseup_drawing(e){
 	mouse_state.is_down = false;
 
-	if(null === edit_state.element){
+	let doc = get_current_doc();
+	if(! Focus.is_focusing(Doc.get_focus(doc))){
 		// is not editing
-		Doc.history_add_cancel(get_current_doc());
+		Doc.history_add_cancel(doc);
 		show_history();
 	}
 	rerendering();
@@ -145,7 +146,8 @@ function callback_mousemove_drawing(e){
 		return;
 	}
 
-	if(null == edit_state.element){
+	let focus = Doc.get_focus(get_current_doc());
+	if(! Focus.is_focusing(focus)){
 		return;
 	}
 
@@ -153,7 +155,10 @@ function callback_mousemove_drawing(e){
 		'x': e.movementX,
 		'y': e.movementY,
 	};
-	move_element(get_current_diagram(), edit_state.element, move);
+	let elements = Focus.get_elements(focus);
+	for(let i = 0; i < elements.length; i++){
+		move_element(get_current_diagram(), elements[i], move);
+	}
 
 	rerendering();
 }
@@ -192,7 +197,7 @@ function callback_clicked_add_lifeline()
 function rerendering()
 {
 	get_draw().clear();
-	rendering(get_draw(), get_current_diagram());
+	rendering(get_draw(), get_current_doc());
 }
 
 function draw_timeline(draw, diagram, timeline)

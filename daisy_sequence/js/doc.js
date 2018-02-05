@@ -138,7 +138,7 @@ function get_default_doc()
 	};
 
 	let focus = {
-		'element': null,
+		'elements': [],
 	};
 
 	let diagram_history = {
@@ -164,6 +164,16 @@ class Doc{
 		}
 
 		return doc.diagram_historys[doc.diagram_history_index].diagram;
+	}
+
+	static get_focus(doc)
+	{
+		if(null === doc){
+			console.error('');
+			return null;
+		}
+
+		return doc.diagram_historys[doc.diagram_history_index].focus;
 	}
 
 	static undo(current_doc)
@@ -237,6 +247,24 @@ class Doc{
 
 		current_doc.diagram_history_index--;
 		current_doc.diagram_historys.length = current_doc.diagram_history_index + 1;
+	}
+};
+
+class Focus{
+	static set_element(focus, element)
+	{
+		focus.elements.length = 0;
+		focus.elements.push(element);
+	}
+
+	static is_focusing(focus)
+	{
+		return (0 !== focus.elements.length);
+	}
+
+	static get_elements(focus)
+	{
+		return focus.elements;
 	}
 };
 
