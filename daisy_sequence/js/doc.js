@@ -44,7 +44,7 @@ function get_default_doc()
 		'id':		2,
 		'y':		70,
 		'start':	{'position_x': 20},		// from found
-		'end':		{'lifeline': 'Object1'},
+		'end':		{'lifeline_id': 0},
 		'end_kind':	'none',
 		'message_kind':	'sync',
 		'text':		'message\nfrom found',
@@ -58,8 +58,8 @@ function get_default_doc()
 		'kind':		'message',
 		'id':		3,
 		'y':		110,
-		'start':	{'lifeline': 'Object1'},
-		'end':		{'lifeline': 'Object2'},
+		'start':	{'lifeline_id': 0},
+		'end':		{'lifeline_id': 1},
 		'end_kind':	'create',			// create lifeline
 		'message_kind':	'async',
 		'text':		'create lifeline',
@@ -68,8 +68,8 @@ function get_default_doc()
 		'kind':		'message',
 		'id':		4,
 		'y':		160,
-		'start':	{'lifeline': 'Object1'},	// lifeline to lifeline
-		'end':		{'lifeline': 'Object2'},
+		'start':	{'lifeline_id': 0},	// lifeline to lifeline
+		'end':		{'lifeline_id': 1},
 		'end_kind':	'none',
 		'message_kind':	'sync',
 		'text':		'lifeline to lifeline',
@@ -83,8 +83,8 @@ function get_default_doc()
 		'kind':		'message',
 		'id':		5,
 		'y':		190,
-		'start':	{'lifeline': 'Object2'},	// turnback to lifeline
-		'end':		{'lifeline': 'Object2'},
+		'start':	{'lifeline_id': 1},	// turnback to lifeline
+		'end':		{'lifeline_id': 1},
 		'end_kind':	'none',
 		'message_kind':	'sync',
 		'text':		'turnback',
@@ -93,8 +93,8 @@ function get_default_doc()
 		'kind':		'message',
 		'id':		6,
 		'y':		220,
-		'start':	{'lifeline': 'Object2'},
-		'end':		{'lifeline': 'Object1'},
+		'start':	{'lifeline_id': 1},
+		'end':		{'lifeline_id': 0},
 		'end_kind':	'none',
 		'message_kind':	'reply',	// reply
 		'text':		'message of reply',
@@ -103,7 +103,7 @@ function get_default_doc()
 		'kind':		'message',
 		'id':		7,
 		'y':		270,
-		'start':	{'lifeline': 'Object1'},
+		'start':	{'lifeline_id': 0},
 		'end':		{'position_x': 280},				// lost
 		'end_kind':	'none',
 		'message_kind':	'sync',
@@ -113,7 +113,7 @@ function get_default_doc()
 		'kind':		'message',
 		'id':		8,
 		'y':		300,
-		'start':	{'lifeline': 'Object1'},
+		'start':	{'lifeline_id': 0},
 		'end':		{'position_x': 280},				// lost
 		'end_kind':	'none',
 		'message_kind':	'async',					// async
@@ -123,8 +123,8 @@ function get_default_doc()
 		'kind':		'message',
 		'id':		9,
 		'y':		350,
-		'start':	{'lifeline': 'Object1'},
-		'end':		{'lifeline': 'Object2'},
+		'start':	{'lifeline_id': 0},
+		'end':		{'lifeline_id': 1},
 		'end_kind':	'stop',						// stop to lifeline
 		'message_kind':	'sync',
 		'text':		'stop to lifeline',
@@ -279,6 +279,31 @@ class Focus{
 };
 
 class Diagram{
+	static create_element(diagram, kind, data)
+	{
+		let element = null;
+		if('lifeline' == kind){
+			element = Diagram.create_lifeline_(data);
+		}else{
+			return null;
+		}
+
+		element.id = Diagram.create_id_(diagram);
+		return element;
+	}
+
+	static get_element_from_id(diagram, id)
+	{
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			const element = diagram.diagram_elements[i];
+			if(id == element.id){
+				return element;
+			}
+		}
+
+		return null;
+	}
+
 	static get_element_of_touch(diagram, point)
 	{
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
@@ -343,24 +368,27 @@ class Diagram{
 
 		return true;
 	}
-};
 
-class Element{
-	static get_rect(element)
+	static create_id_(diagram)
 	{
-		if(! element.hasOwnProperty('work')){
-			return null;
-		}
-		if(! element.work.hasOwnProperty('rect')){
-			return null;
-		}
-
-		return element.work.rect;
+		let id = Diagram.get_max_id_(diagram);
+		return (id + 1);
 	}
-};
 
-class Lifeline{
-	static create(src)
+	static get_max_id_(diagram)
+	{
+		let id = -1;
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			const element = diagram.diagram_elements[i];
+			if(id < element.id){
+				id = element.id;
+			}
+		}
+
+		return id;
+	}
+
+	static create_lifeline_(src)
 	{
 		// default lifeline
 		let lifeline = {
@@ -374,6 +402,20 @@ class Lifeline{
 		lifeline = Object.assign(lifeline, src);
 
 		return lifeline;
+	}
+};
+
+class Element{
+	static get_rect(element)
+	{
+		if(! element.hasOwnProperty('work')){
+			return null;
+		}
+		if(! element.work.hasOwnProperty('rect')){
+			return null;
+		}
+
+		return element.work.rect;
 	}
 };
 

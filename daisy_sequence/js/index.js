@@ -185,7 +185,7 @@ function callback_clicked_add_lifeline()
 		'text': lifeline_name,
 		'x': diagram.width - 150,
 	};
-	let lifeline = Lifeline.create(data);
+	let lifeline = Diagram.create_element(diagram, 'lifeline', data);
 	if(null === lifeline){
 		console.error();
 		return;
@@ -284,9 +284,9 @@ function draw_message(draw, diagram, message)
 	if(message.start.hasOwnProperty('position_x')){
 		position.x = message.start.position_x;
 		is_found = true;
-	}else if(message.start.hasOwnProperty('lifeline')){
-		let lifeline = get_lifeline_from_name(diagram, message.start.lifeline);
-		if(null == lifeline){
+	}else if(message.start.hasOwnProperty('lifeline_id')){
+		let lifeline = Diagram.get_element_from_id(diagram, message.start.lifeline_id);
+		if(null === lifeline || 'lifeline' != lifeline.kind){
 			console.error(message.start);
 			alert('bug');
 			return;
@@ -299,9 +299,9 @@ function draw_message(draw, diagram, message)
 
 	position.y = message.y;
 
-	if(message.end.hasOwnProperty('lifeline')){
-		let lifeline = get_lifeline_from_name(diagram, message.end.lifeline);
-		if(null == lifeline){
+	if(message.end.hasOwnProperty('lifeline_id')){
+		let lifeline = Diagram.get_element_from_id(diagram, message.end.lifeline_id);
+		if(null == lifeline || 'lifeline' != lifeline.kind){
 			console.error(message.end);
 			alert('bug');
 			return;
@@ -321,9 +321,9 @@ function draw_message(draw, diagram, message)
 	message.work.rect.y -= 16;
 	message.work.rect.height = 16;
 
-	if(message.start.hasOwnProperty('lifeline')
-			&& message.end.hasOwnProperty('lifeline')
-			&& message.start.lifeline == message.end.lifeline){
+	if(message.start.hasOwnProperty('lifeline_id')
+			&& message.end.hasOwnProperty('lifeline_id')
+			&& message.start.lifeline_id == message.end.lifeline_id){
 		draw_message_turnback(draw, position);
 	}else{
 		var line = draw.line(
