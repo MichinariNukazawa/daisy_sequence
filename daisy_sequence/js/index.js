@@ -399,15 +399,13 @@ function draw_spec(draw, diagram, message, parent_message_position)
 		if(null != message_of_end){
 			height = message_of_end.y - message.y;
 		}
-	}
-	if(height < 0){
-		console.error(message);
-		console.log(message);
+	}else{
+		console.error();
 		return;
 	}
-	if(0 == height){
-		console.error(message);
-		console.log(message);
+
+	if(height <= 0){
+		console.debug(message);
 		return;
 	}
 
