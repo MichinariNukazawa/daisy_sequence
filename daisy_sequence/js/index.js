@@ -8,8 +8,10 @@ let current_doc_id = -1;
 let draw = null;
 
 let mouse_state = {
+	'mousedown_point': { 'x': 0, 'y': 0, },
 	'point': { 'x': 0, 'y': 0, },
 	'is_down': false,
+	'is_small_move': true,
 };
 
 function get_draw()
@@ -99,17 +101,14 @@ function rendering(draw, doc)
 }
 
 function callback_mousedown_drawing(e){
-	/*
 	let point = {
-		'x': e.clientX,
-		'y': e.clientY,
+		'x': e.offsetX,
+		'y': e.offsetY,
 	};
-	console.log('%d %d', point.x, point.y);
-	*/
+	// console.log('%d %d', point.x, point.y);
 
-	Doc.history_add(get_current_doc());
-	show_history();
-
+	mouse_state.mousedown_point = point;
+	mouse_state.is_small_move = true;
 	mouse_state.is_down = true;
 
 	let diagram = get_current_diagram();
@@ -128,6 +127,7 @@ function callback_mouseup_drawing(e){
 		Doc.history_add_cancel(doc);
 		show_history();
 	}
+
 	rerendering();
 }
 
@@ -137,13 +137,25 @@ function callback_mousemove_drawing(e){
 		'y': e.offsetY,
 	};
 	let s = sprintf('(%3d,%3d) %s', point.x, point.y, (mouse_state.is_down)? 'down':'up' );
-
 	document.getElementById('mouse_position').textContent = s;
 
 	mouse_state.point = point;
 
 	if(! mouse_state.is_down){
 		return;
+	}
+
+	if(mouse_state.is_small_move){
+		const sensitive = 6;
+		if(sensitive > Math.abs(mouse_state.mousedown_point.x - point.x)
+				&& sensitive > Math.abs(mouse_state.mousedown_point.y - point.y)){
+			return;
+		}else{
+			mouse_state.is_small_move = false;
+
+			Doc.history_add(get_current_doc());
+			show_history();
+		}
 	}
 
 	let focus = Doc.get_focus(get_current_doc());
