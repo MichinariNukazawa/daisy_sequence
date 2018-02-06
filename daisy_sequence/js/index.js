@@ -121,13 +121,6 @@ function callback_mousedown_drawing(e){
 function callback_mouseup_drawing(e){
 	mouse_state.is_down = false;
 
-	let doc = get_current_doc();
-	if(! Focus.is_focusing(Doc.get_focus(doc))){
-		// is not editing
-		Doc.history_add_cancel(doc);
-		show_history();
-	}
-
 	rerendering();
 }
 

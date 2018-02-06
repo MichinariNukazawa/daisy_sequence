@@ -215,27 +215,11 @@ class Doc{
 			return;
 		}
 
-		let hist = this.deep_clone_(current_doc.diagram_historys[(current_doc.diagram_history_index)]);
+		let hist = DiagramHistory.deepcopy(
+				current_doc.diagram_historys[(current_doc.diagram_history_index)]);
 		current_doc.diagram_historys[current_doc.diagram_history_index + 1] = hist;
 		current_doc.diagram_history_index++;
 		current_doc.diagram_historys.length = current_doc.diagram_history_index + 1;
-	}
-
-	static deep_clone_(obj)
-	{
-		/*
-		   let r = {};
-		   for(let name in obj){
-		   if(typeof obj[name] === 'object'){
-		   r[name] = this.deep_clone_(obj[name]);
-		   }else{
-		   r[name] = obj[name];
-		   }
-		   }
-		   return r;
-		 */
-
-		return JSON.parse(JSON.stringify(obj))
 	}
 
 	static history_add_cancel(current_doc)
@@ -250,11 +234,37 @@ class Doc{
 	}
 };
 
+class DiagramHistory{
+	static deepcopy(src_history){
+		const diagram = object_deepcopy(src_history.diagram);
+		let focus = {'elements': []};
+
+		for(let i = 0; i < src_history.focus.elements.length; i++){
+			const element = src_history.focus.elements[i];
+			const ix = src_history.diagram.diagram_elements.findIndex(x => x === element);
+			if(ix < 0 || diagram.diagram_elements.length <= ix){
+				console.error(ix);
+			}else{
+				focus.elements.push(diagram.diagram_elements[ix]);
+			}
+		}
+
+		let dst_history = {
+			'diagram': diagram,
+			'focus': focus,
+		};
+
+		return dst_history;
+	}
+}
+
 class Focus{
 	static set_element(focus, element)
 	{
 		focus.elements.length = 0;
-		focus.elements.push(element);
+		if(null !== element){
+			focus.elements.push(element);
+		}
 	}
 
 	static is_focusing(focus)
@@ -508,5 +518,22 @@ function get_message_point_foot(position, offset)
 		point.y -= offset[1];
 	}
 	return point;
+}
+
+function object_deepcopy(obj)
+{
+	/*
+	   let r = {};
+	   for(let name in obj){
+	   if(typeof obj[name] === 'object'){
+	   r[name] = this.deep_clone_(obj[name]);
+	   }else{
+	   r[name] = obj[name];
+	   }
+	   }
+	   return r;
+	 */
+
+	return JSON.parse(JSON.stringify(obj))
 }
 
