@@ -222,16 +222,6 @@ class Doc{
 		current_doc.diagram_historys.length = current_doc.diagram_history_index + 1;
 	}
 
-	static history_add_cancel(current_doc)
-	{
-		if(null === current_doc){
-			console.error();
-			return;
-		}
-
-		current_doc.diagram_history_index--;
-		current_doc.diagram_historys.length = current_doc.diagram_history_index + 1;
-	}
 };
 
 class DiagramHistory{
