@@ -53,8 +53,6 @@ var template = [
 			let current_doc = get_current_doc();
 			if(null !== current_doc){
 				Doc.undo(current_doc);
-				rerendering();
-				show_history();
 			}
 		}
 	},
@@ -65,8 +63,6 @@ var template = [
 			let current_doc = get_current_doc();
 			if(null !== current_doc){
 				Doc.redo(current_doc);
-				rerendering();
-				show_history();
 			}
 		}
 	},

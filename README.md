@@ -65,7 +65,7 @@ DocCollection{
 		Focus get_focus(doc);		//!< in current history
 
 		//! history system
-		void add_event_listener_history_change(doc, function(doc, 'undo'/'redo'));
+		void add_event_listener_history_change(doc, function(doc, 'undo'/'redo'/'add'));
 		void undo(doc);
 		void redo(doc);
 		void add_history(doc);

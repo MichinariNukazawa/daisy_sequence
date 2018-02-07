@@ -189,7 +189,10 @@ class Doc{
 			console.debug("no undo history: %d %d",
 					current_doc.diagram_history_index,
 					current_doc.diagram_historys.length);
+			return;
 		}
+
+		Doc.call_event_listener_history_change_(current_doc, 'undo');
 	}
 
 	static redo(current_doc)
@@ -205,7 +208,10 @@ class Doc{
 			console.debug("no redo history: %d %d",
 					current_doc.diagram_history_index,
 					current_doc.diagram_historys.length);
+			return;
 		}
+
+		Doc.call_event_listener_history_change_(current_doc, 'redo');
 	}
 
 	static history_add(current_doc)
@@ -220,8 +226,44 @@ class Doc{
 		current_doc.diagram_historys[current_doc.diagram_history_index + 1] = hist;
 		current_doc.diagram_history_index++;
 		current_doc.diagram_historys.length = current_doc.diagram_history_index + 1;
+
+		Doc.call_event_listener_history_change_(current_doc, 'add');
 	}
 
+	static add_event_listener_history_change(doc, callback)
+	{
+		if(! doc.hasOwnProperty('work')){
+			doc.work = {};
+		}
+		if(! doc.work.hasOwnProperty('event_listener_history_changes')){
+			doc.work.event_listener_history_changes = [];
+		}
+
+		for(let i = 0; i < doc.work.event_listener_history_changes.length; i++){
+			if(callback == doc.work.event_listener_history_changes[i]){
+				console.error('duplicated callback');
+				return false;
+			}
+		}
+
+		doc.work.event_listener_history_changes.push(callback);
+
+		return true;
+	}
+
+	static call_event_listener_history_change_(doc, event_kind)
+	{
+		if(! doc.hasOwnProperty('work')){
+			return;
+		}
+		if(! doc.work.hasOwnProperty('event_listener_history_changes')){
+			return;
+		}
+
+		for(let i = 0; i < doc.work.event_listener_history_changes.length; i++){
+			doc.work.event_listener_history_changes[i](doc, event_kind);
+		}
+	}
 };
 
 class DiagramHistory{

@@ -32,8 +32,10 @@ window.onload = function(e){
 		'stroke-width':		'2',
 	});
 
+	Doc.add_event_listener_history_change(doc, callback_history_change_doc);
+
 	rendering(draw, doc);
-	show_history();
+	callback_history_change_doc(doc, '-');
 
 	// document.addEventListener('mousemove', callback);
 	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
@@ -57,15 +59,6 @@ function get_current_diagram()
 	}
 
 	return Doc.get_diagram(doc);
-}
-
-function show_history()
-{
-	let current_doc = get_current_doc();
-	let s = sprintf("history: %d/%d",
-				current_doc.diagram_history_index,
-				current_doc.diagram_historys.length - 1);
-	document.getElementById('history_info').textContent = s;
 }
 
 function rendering(draw, doc)
@@ -98,6 +91,17 @@ function rendering(draw, doc)
 	});
 		}
 	}
+}
+
+function callback_history_change_doc(doc, event_kind)
+{
+	let s = sprintf("history: %2d/%2d(%s)",
+				doc.diagram_history_index,
+				doc.diagram_historys.length - 1,
+				event_kind);
+	document.getElementById('history_info').textContent = s;
+
+	rerendering();
 }
 
 function callback_mousedown_drawing(e){
@@ -147,7 +151,6 @@ function callback_mousemove_drawing(e){
 			mouse_state.is_small_move = false;
 
 			Doc.history_add(get_current_doc());
-			show_history();
 		}
 	}
 
