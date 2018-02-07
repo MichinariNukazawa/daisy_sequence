@@ -26,11 +26,6 @@ window.onload = function(e){
 	let diagram = Doc.get_diagram(doc);
 
 	draw = SVG('drawing').size(diagram.width, diagram.height);
-	let rect = draw.rect(diagram.width, diagram.height).attr({
-		'stroke':		'#ddd',
-		'fill-opacity':		'0',
-		'stroke-width':		'2',
-	});
 
 	Doc.add_event_listener_history_change(doc, callback_history_change_doc);
 
@@ -64,6 +59,14 @@ function get_current_diagram()
 function rendering(draw, doc)
 {
 	const diagram = Doc.get_diagram(doc);
+
+	draw.size(diagram.width, diagram.height);
+	let rect = draw.rect(diagram.width, diagram.height).attr({
+		'stroke':		'#ddd',
+		'fill-opacity':		'0',
+		'stroke-width':		'2',
+	});
+
 	for(let i = 0; i < diagram.diagram_elements.length; i++){
 		if('lifeline' == diagram.diagram_elements[i].kind){
 			draw_timeline(draw, diagram, diagram.diagram_elements[i]);
