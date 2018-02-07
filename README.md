@@ -54,7 +54,16 @@ DocCollection{
 		DiagramHistory diagram_historys[]{
 			Diagram diagram;		//!< stateless diagram document structure
 			Focus focus{
-				Element element;
+				Element elements[];
+
+				void clear(focus);
+				void set_element(focus);
+				bool is_focusing(focus);
+
+				bool add_event_listener_focus_change(
+						focus,
+						function(focus, user_data),
+						user_data/* doc */);
 			};
 
 			DiagramHistory DiagramHistory.create_copy();
@@ -65,7 +74,7 @@ DocCollection{
 		Focus get_focus(doc);		//!< in current history
 
 		//! history system
-		void add_event_listener_history_change(doc, function(doc, 'undo'/'redo'/'add'));
+		bool add_event_listener_history_change(doc, function(doc, 'undo'/'redo'/'add'));
 		void undo(doc);
 		void redo(doc);
 		void add_history(doc);

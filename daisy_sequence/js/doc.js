@@ -280,6 +280,10 @@ class DiagramHistory{
 				focus.elements.push(diagram.diagram_elements[ix]);
 			}
 		}
+		if(src_history.focus.hasOwnProperty('work')){
+			//! @notice focus.work is shallow copyed.
+			focus.work = src_history.focus.work;
+		}
 
 		let dst_history = {
 			'diagram': diagram,
@@ -297,6 +301,8 @@ class Focus{
 		if(null !== element){
 			focus.elements.push(element);
 		}
+
+		Focus.call_event_listener_focus_change_(focus);
 	}
 
 	static is_focusing(focus)
@@ -307,6 +313,44 @@ class Focus{
 	static get_elements(focus)
 	{
 		return focus.elements;
+	}
+
+	static add_event_listener_focus_change(focus, callback, user_data)
+	{
+		if(! focus.hasOwnProperty('work')){
+			focus.work = {};
+		}
+		if(! focus.work.hasOwnProperty('event_listener_focus_changes')){
+			focus.work.event_listener_focus_changes = [];
+		}
+
+		for(let i = 0; i < focus.work.event_listener_focus_changes.length; i++){
+			if(callback == focus.work.event_listener_focus_changes[i].callback){
+				console.error('duplicated callback');
+				return false;
+			}
+		}
+
+		let cb = {'callback': callback, 'user_data': user_data};
+		focus.work.event_listener_focus_changes.push(cb);
+
+		return true;
+	}
+
+	static call_event_listener_focus_change_(focus)
+	{
+		if(! focus.hasOwnProperty('work')){
+			return;
+		}
+		if(! focus.work.hasOwnProperty('event_listener_focus_changes')){
+			return;
+		}
+
+		for(let i = 0; i < focus.work.event_listener_focus_changes.length; i++){
+			focus.work.event_listener_focus_changes[i].callback(
+					focus,
+					focus.work.event_listener_focus_changes[i].user_data);
+		}
 	}
 };
 

@@ -28,6 +28,8 @@ window.onload = function(e){
 	draw = SVG('drawing').size(diagram.width, diagram.height);
 
 	Doc.add_event_listener_history_change(doc, callback_history_change_doc);
+	let focus = Doc.get_focus(doc);
+	Focus.add_event_listener_focus_change(focus, callback_focus_change, doc);
 
 	rendering(draw, doc);
 	callback_history_change_doc(doc, '-');
@@ -105,6 +107,13 @@ function callback_history_change_doc(doc, event_kind)
 	document.getElementById('history_info').textContent = s;
 
 	rerendering();
+}
+
+function callback_focus_change(focus, user_data)
+{
+	let doc = user_data;
+
+	console.log("change");
 }
 
 function callback_mousedown_drawing(e){
