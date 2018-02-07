@@ -273,11 +273,22 @@ class DiagramHistory{
 
 		for(let i = 0; i < src_history.focus.elements.length; i++){
 			const element = src_history.focus.elements[i];
-			const ix = src_history.diagram.diagram_elements.findIndex(x => x === element);
-			if(ix < 0 || diagram.diagram_elements.length <= ix){
-				console.error(ix);
+			if('spec' !== element.kind){
+				const ix = src_history.diagram.diagram_elements.findIndex(
+						x => x === element);
+				if(ix < 0 || diagram.diagram_elements.length <= ix){
+					console.error(ix);
+				}else{
+					focus.elements.push(diagram.diagram_elements[ix]);
+				}
 			}else{
-				focus.elements.push(diagram.diagram_elements[ix]);
+				const ix = src_history.diagram.diagram_elements.findIndex(
+						x => x.hasOwnProperty('spec') && x.spec === element);
+				if(ix < 0 || diagram.diagram_elements.length <= ix){
+					console.error(ix);
+				}else{
+					focus.elements.push(diagram.diagram_elements[ix].spec);
+				}
 			}
 		}
 		if(src_history.focus.hasOwnProperty('work')){
