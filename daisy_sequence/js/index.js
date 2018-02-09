@@ -93,7 +93,7 @@ function rendering(draw, doc)
 				'stroke':		'#3af',
 				'fill-opacity':		'0',
 				'stroke-width':		'1.5',
-	});
+			});
 		}
 	}
 }
@@ -101,9 +101,9 @@ function rendering(draw, doc)
 function callback_history_change_doc(doc, event_kind)
 {
 	let s = sprintf("history: %2d/%2d(%s)",
-				doc.diagram_history_index,
-				doc.diagram_historys.length - 1,
-				event_kind);
+			doc.diagram_history_index,
+			doc.diagram_historys.length - 1,
+			event_kind);
 	document.getElementById('history_info').textContent = s;
 
 	rerendering();
@@ -425,12 +425,12 @@ function draw_spec(draw, diagram, message, parent_message_position)
 	}
 
 	let foot_point = get_message_point_foot(parent_message_position, [0,0])
-	let box = {
-		'x':		foot_point.x - 1,
-		'y':		foot_point.y + spec.y_offset,
-		'width':	width,
-		'height':	height,
-	};
+		let box = {
+			'x':		foot_point.x - 1,
+			'y':		foot_point.y + spec.y_offset,
+			'width':	width,
+			'height':	height,
+		};
 	draw.rect(box.width, box.height).move(box.x, box.y).attr(attr);
 
 	if(! spec.hasOwnProperty('work')){
@@ -473,12 +473,12 @@ function draw_array_top(draw, point, offset, is_fill)
 		point.x + offset[0], point.y - offset[1],
 	];
 
-	let polyline = draw.polyline(points).stroke({ width: 3, linecap: 'round', });
-	if(!is_fill){
-		polyline.fill('none').plot();
-	}
+		let polyline = draw.polyline(points).stroke({ width: 3, linecap: 'round', });
+		if(!is_fill){
+			polyline.fill('none').plot();
+		}
 
-	return polyline;
+		return polyline;
 }
 
 function draw_message_stop_icon_of_foot(draw, position)
