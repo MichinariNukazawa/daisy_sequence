@@ -564,7 +564,7 @@ function move_element(current_diagram, element, move)
 	}
 }
 
-function get_message_of_timeline_create(current_diagram, timeline_name)
+function get_message_of_lifeline_create(current_diagram, lifeline_name)
 {
 	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
 		let element = current_diagram.diagram_elements[i];
@@ -574,7 +574,7 @@ function get_message_of_timeline_create(current_diagram, timeline_name)
 		if(! element.end.hasOwnProperty('lifeline')){
 			continue;
 		}
-		if(timeline_name != element.end.lifeline){
+		if(lifeline_name != element.end.lifeline){
 			continue;
 		}
 		if('create' == element.end_kind){
@@ -585,7 +585,7 @@ function get_message_of_timeline_create(current_diagram, timeline_name)
 	return null;
 }
 
-function get_message_of_timeline_end(current_diagram, timeline_name)
+function get_message_of_lifeline_end(current_diagram, lifeline_name)
 {
 	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
 		let element = current_diagram.diagram_elements[i];
@@ -595,7 +595,7 @@ function get_message_of_timeline_end(current_diagram, timeline_name)
 		if(! element.end.hasOwnProperty('lifeline')){
 			continue;
 		}
-		if(timeline_name != element.end.lifeline){
+		if(lifeline_name != element.end.lifeline){
 			continue;
 		}
 		if('stop' == element.end_kind){

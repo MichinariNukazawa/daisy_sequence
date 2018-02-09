@@ -122,7 +122,7 @@ function rendering(draw, doc)
 
 	for(let i = 0; i < diagram.diagram_elements.length; i++){
 		if('lifeline' == diagram.diagram_elements[i].kind){
-			draw_timeline(draw, diagram, diagram.diagram_elements[i]);
+			draw_lifeline(draw, diagram, diagram.diagram_elements[i]);
 		}else if('message' == diagram.diagram_elements[i].kind){
 			draw_message(draw, diagram, diagram.diagram_elements[i]);
 		}else{
@@ -287,16 +287,16 @@ function rerendering()
 	rendering(get_draw(), get_current_doc());
 }
 
-function draw_timeline(draw, diagram, timeline)
+function draw_lifeline(draw, diagram, lifeline)
 {
-	let message_of_create = get_message_of_timeline_create(diagram, timeline.text);
+	let message_of_create = get_message_of_lifeline_create(diagram, lifeline.text);
 	if(null !== message_of_create){
-		timeline.y = message_of_create.y;
+		lifeline.y = message_of_create.y;
 	}
 
 	// 空の名前を表示しようとすると、lifelineの表示が消えて位置計算もおかしくなるので、対処する
-	const show_name = (! /^\s*$/.test(timeline.text))? timeline.text : '-';
-	let text = draw.text(show_name).move(timeline.x, timeline.y).font({
+	const show_name = (! /^\s*$/.test(lifeline.text))? lifeline.text : '-';
+	let text = draw.text(show_name).move(lifeline.x, lifeline.y).font({
 		'fill': '#000' ,
 		'size': '150%'
 	});
@@ -319,13 +319,13 @@ function draw_timeline(draw, diagram, timeline)
 	draw.rect(box.width, box.height).move(box.x, box.y)
 		.attr(attr).radius(radius);
 
-	if(! timeline.hasOwnProperty('work')){
-		timeline.work = {};
+	if(! lifeline.hasOwnProperty('work')){
+		lifeline.work = {};
 	}
-	timeline.work.rect = Object.assign({}, box);
+	lifeline.work.rect = Object.assign({}, box);
 
 	const height_offset = 10;
-	let message_of_end = get_message_of_timeline_end(diagram, timeline.text);
+	let message_of_end = get_message_of_lifeline_end(diagram, lifeline.text);
 
 	let line_point = {
 		// 'x': box.x + (box.width / 2),
@@ -479,7 +479,7 @@ function draw_spec(draw, diagram, message, parent_message_position)
 	if(spec.end.hasOwnProperty('height')){
 		height = spec.end.height;
 	}else if(spec.end.hasOwnProperty('reply')){
-		let message_of_end = get_message_of_timeline_end(diagram, message.end.lifeline);
+		let message_of_end = get_message_of_lifeline_end(diagram, message.end.lifeline);
 		if(null != message_of_end){
 			height = message_of_end.y - message.y;
 		}
