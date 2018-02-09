@@ -21,3 +21,7 @@ html, body{
 	pointer-events: none;	/* click event */
 }
 
+.box-container{
+	display: flex;
+}
+

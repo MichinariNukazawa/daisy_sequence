@@ -40,6 +40,57 @@ window.onload = function(e){
 	document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
 
 	document.getElementById('add-lifeline').addEventListener('click', callback_clicked_add_lifeline, false);
+
+	let editor__lifeline_name = document.getElementById('editor__lifeline-name');
+	add_event_listener_first_input_with_history(editor__lifeline_name, callback_input_with_history_text);
+
+	//! snatching Ctrl+z(Undo) textarea
+	document.onkeydown = function(e) {
+		if (e.ctrlKey && e.key === 'z') {
+			e.preventDefault();
+
+			let current_doc = get_current_doc();
+			if(null !== current_doc){
+				Doc.undo(current_doc);
+			}
+		}
+	}
+
+}
+
+let is_focusin_first = false;
+function add_event_listener_first_input_with_history(textarea_element, callback)
+{
+	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
+	textarea_element.addEventListener('input', function(e){
+		if(is_focusin_first){
+			let focus = Doc.get_focus(get_current_doc());
+			if(! Focus.is_focusing(focus)){
+				return;
+			}
+
+			let elements = Focus.get_elements(focus);
+			if(1 !== elements.length){
+				return;
+			}
+			Doc.history_add(get_current_doc());
+
+			is_focusin_first = false;
+		}
+
+		callback();
+	}, false);
+}
+
+
+function callback_input_with_history_text()
+{
+	let s = document.getElementById('editor__lifeline-name').value;
+	let focus = Doc.get_focus(get_current_doc());
+	let elements = Focus.get_elements(focus);
+	elements[0].text = s;
+
+	rerendering();
 }
 
 function get_current_doc()
@@ -106,12 +157,28 @@ function callback_history_change_doc(doc, event_kind)
 			event_kind);
 	document.getElementById('history_info').textContent = s;
 
+	callback_focus_change(Doc.get_focus(doc), doc)
+
 	rerendering();
 }
 
 function callback_focus_change(focus, user_data)
 {
-	let doc = user_data;
+	let lifeline_name_elem = document.getElementById('editor__lifeline-name');
+
+	const doc = user_data;
+	const focus_elements = Focus.get_elements(focus);
+	if(1 != focus_elements.length){
+		lifeline_name_elem.disabled = true;
+		return;
+	}
+	if(! focus_elements[0].hasOwnProperty('text')){
+		lifeline_name_elem.disabled = true;
+		return;
+	}
+
+	lifeline_name_elem.value = focus_elements[0].text;
+	lifeline_name_elem.disabled = false;
 
 	console.log("change");
 }
@@ -227,7 +294,9 @@ function draw_timeline(draw, diagram, timeline)
 		timeline.y = message_of_create.y;
 	}
 
-	let text = draw.text(timeline.text).move(timeline.x, timeline.y).font({
+	// 空の名前を表示しようとすると、lifelineの表示が消えて位置計算もおかしくなるので、対処する
+	const show_name = (! /^\s*$/.test(timeline.text))? timeline.text : '-';
+	let text = draw.text(show_name).move(timeline.x, timeline.y).font({
 		'fill': '#000' ,
 		'size': '150%'
 	});
