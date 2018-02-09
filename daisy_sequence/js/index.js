@@ -402,8 +402,8 @@ function draw_message(draw, diagram, message)
 		message.work = {};
 	}
 	message.work.rect = Object.assign({}, position);
-	message.work.rect.y -= 16;
-	message.work.rect.height = 16;
+	message.work.rect.y -= 8;
+	message.work.rect.height = 24;
 
 	if(message.start.hasOwnProperty('lifeline_id')
 			&& message.end.hasOwnProperty('lifeline_id')
