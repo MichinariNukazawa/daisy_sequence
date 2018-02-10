@@ -341,7 +341,7 @@ function draw_lifeline(draw, diagram, lifeline)
 	lifeline.work.rect = Object.assign({}, box);
 
 	const height_offset = 10;
-	let message_of_end = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.text);
+	let stop_message = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.id, 'stop');
 
 	let line_point = {
 		// 'x': box.x + (box.width / 2),
@@ -349,10 +349,10 @@ function draw_lifeline(draw, diagram, lifeline)
 		'y': box.y + (box.height),
 	};
 	let y_end;
-	if(null == message_of_end){
+	if(null === stop_message){
 		y_end = diagram.height - height_offset;
 	}else{
-		y_end = message_of_end.y;
+		y_end = stop_message.y;
 	}
 	var line = draw.line(
 			line_point.x,
