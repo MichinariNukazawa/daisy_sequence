@@ -54,11 +54,16 @@ DocCollection{
 		DiagramHistory diagram_historys[]{
 			Diagram diagram;		//!< stateless diagram document structure
 			Focus focus{
+				FocusState focus_state{
+					//! focusing (one) side. ex.message cap''(none)/'start'/'end'
+					side,
+				};
 				Element elements[];
 
 				void clear(focus);
 				void set_element(focus);
 				bool is_focusing(focus);
+				FocusState get_focus_state(focus);
 
 				bool add_event_listener_focus_change(
 						focus,

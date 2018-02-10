@@ -104,7 +104,7 @@ function get_default_doc()
 		'id':		7,
 		'y':		270,
 		'start':	{'lifeline_id': 0},
-		'end':		{'position_x': 280},				// lost
+		'end':		{'position_x': 420},				// lost
 		'end_kind':	'none',
 		'message_kind':	'sync',
 		'text':		'message to lost',
@@ -114,7 +114,7 @@ function get_default_doc()
 		'id':		8,
 		'y':		300,
 		'start':	{'lifeline_id': 0},
-		'end':		{'position_x': 280},				// lost
+		'end':		{'position_x': 420},				// lost
 		'end_kind':	'none',
 		'message_kind':	'async',					// async
 		'text':		'message async to lost',
@@ -138,6 +138,9 @@ function get_default_doc()
 	};
 
 	let focus = {
+		'focus_state':{
+			'side': '',
+		},
 		'elements': [],
 	};
 
@@ -268,9 +271,16 @@ class Doc{
 
 class DiagramHistory{
 	static deepcopy(src_history){
+		// ** copy diagram document tree
 		const diagram = object_deepcopy(src_history.diagram);
-		let focus = {'elements': []};
 
+		// ** copy focus
+		//! @notice focus.* is direct copy excluded focus.elements because this is reference
+		let focus = {};
+		focus.work = src_history.focus.work;
+		focus.focus_state = object_deepcopy(src_history.focus.focus_state);
+
+		focus.elements = [];
 		for(let i = 0; i < src_history.focus.elements.length; i++){
 			const element = src_history.focus.elements[i];
 			if('spec' !== element.kind){
@@ -290,10 +300,6 @@ class DiagramHistory{
 					focus.elements.push(diagram.diagram_elements[ix].spec);
 				}
 			}
-		}
-		if(src_history.focus.hasOwnProperty('work')){
-			//! @notice focus.work is shallow copyed.
-			focus.work = src_history.focus.work;
 		}
 
 		let dst_history = {
@@ -316,6 +322,10 @@ class Focus{
 		Focus.call_event_listener_focus_change_(focus);
 	}
 
+	static set_side(focus, side){
+		focus.focus_state.side = side;
+	}
+
 	static is_focusing(focus)
 	{
 		return (0 !== focus.elements.length);
@@ -324,6 +334,11 @@ class Focus{
 	static get_elements(focus)
 	{
 		return focus.elements;
+	}
+
+	static get_focus_state(focus)
+	{
+		return focus.focus_state;
 	}
 
 	static add_event_listener_focus_change(focus, callback, user_data)
@@ -454,6 +469,21 @@ class Diagram{
 		return null;
 	}
 
+	static get_x_axis_touch_lifeline(diagram, point_x, sensitive_x)
+	{
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			const element = diagram.diagram_elements[i];
+			if('lifeline' !== element.kind){
+				continue;
+			}
+			if(sensitive_x > Math.abs(element.x - point_x)){
+				return element;
+			}
+		}
+
+		return null;
+	}
+
 	static add_element(diagram, element)
 	{
 		diagram.diagram_elements.push(element);
@@ -530,9 +560,102 @@ class Element{
 
 		return element.work.rect;
 	}
+
+	static get_lr_side_of_touch(element, point)
+	{
+		let rect = Element.get_rect(element);
+		if(null === rect){
+			return '';
+		}
+
+		rect = Rect.abs(rect);
+		const offset = [4, 4];
+		{
+			let side_rect = Object.assign({}, rect);
+			side_rect.width = 32;
+			side_rect = Rect.expand(side_rect, offset);
+			if(Rect.is_touch(side_rect, point, [0, 0])){
+				return 'left';
+			}
+		}
+		{
+			let side_rect = Object.assign({}, rect);
+			side_rect.x = side_rect.x + side_rect.width - 32;
+			side_rect.width = 32;
+			side_rect = Rect.expand(side_rect, offset);
+			if(Rect.is_touch(side_rect, point, [0, 0])){
+				return 'right';
+			}
+		}
+
+		return '';
+	}
 };
 
 class Message{
+	/*! @return is_edited */
+	static change_side_from_point(message, diagram, message_side, point)
+	{
+		// console.log(message_side);
+
+		if('start' === message_side){
+			message.start.position_x = point.x;
+
+			const lifeline = Diagram.get_x_axis_touch_lifeline(diagram, point.x, 32);
+			if(null === lifeline){
+				message.start.lifeline_id = -1;
+			}else{
+				message.start.lifeline_id = lifeline.id;
+			}
+
+			return true;
+		}else if('end' === message_side){
+			message.end.position_x = point.x;
+
+			const lifeline = Diagram.get_x_axis_touch_lifeline(diagram, point.x, 32);
+			if(null === lifeline){
+				message.end.lifeline_id = -1;
+			}else{
+				message.end.lifeline_id = lifeline.id;
+			}
+
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	static get_message_side_from_element_side(element, side)
+	{
+		if('message' !== element.kind){
+			console.error(element);
+			return '';
+		}
+
+		const rect = Element.get_rect(element);
+		if(null === rect){
+			return '';
+		}
+
+		if('left' === side){
+			side = 'start';
+		}else if('right' === side){
+			side = 'end';
+		}else{
+			return '';
+		}
+
+		if(0 > rect.width){
+			if('start' === side){
+				return 'end'
+			}else{
+				return 'start'
+			}
+		}
+
+		return side;
+	}
+
 	static get_start_side_point(position, offset)
 	{
 		let point;
@@ -541,7 +664,7 @@ class Message{
 			point.x += offset[0];
 			point.y += offset[1];
 		}else{
-			point = {'x': position.x + position.width, 'y': position.y + position.height};
+			point = {'x': position.x, 'y': position.y};
 			point.x -= offset[0];
 			point.y -= offset[1];
 		}
@@ -579,11 +702,11 @@ class Rect{
 	{
 		let rect = Object.assign({}, src_rect);
 		if(rect.width < 0){
-			rect.x = src_rect.x - src_rect.width;
+			rect.x = src_rect.x + src_rect.width;
 			rect.width = src_rect.width * -1;
 		}
 		if(rect.height < 0){
-			rect.y = src_rect.y - src_rect.height;
+			rect.y = src_rect.y + src_rect.height;
 			rect.height = src_rect.height * -1;
 		}
 
