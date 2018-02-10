@@ -433,13 +433,13 @@ function draw_message(draw, diagram, message)
 
 		if(is_found){
 			const size = 16;
-			const point_head = get_message_point_head(position, [(size/2), 0]);
+			const point_head = Message.get_start_side_point(position, [(size/2), 0]);
 			draw.circle(size).move(point_head.x - (size/2), point_head.y - (size/2));
 		}
 		if(is_lost){
 			const size = 16;
-			const point_foot = get_message_point_foot(position, [(size/2), 0]);
-			draw.circle(size).move(point_foot.x - (size/2), point_foot.y - (size/2))
+			const point_end = Message.get_end_side_point(position, [(size/2), 0]);
+			draw.circle(size).move(point_end.x - (size/2), point_end.y - (size/2))
 				//.fill('none').stroke('#00f');
 				.fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 		}
@@ -494,10 +494,10 @@ function draw_spec(draw, diagram, message, parent_message_position)
 		return;
 	}
 
-	let foot_point = get_message_point_foot(parent_message_position, [0,0])
+	let end_point = Message.get_end_side_point(parent_message_position, [0,0])
 		let box = {
-			'x':		foot_point.x - 1,
-			'y':		foot_point.y + spec.y_offset,
+			'x':		end_point.x - 1,
+			'y':		end_point.y + spec.y_offset,
 			'width':	width,
 			'height':	height,
 		};
@@ -554,15 +554,15 @@ function draw_array_top(draw, point, offset, is_fill)
 function draw_message_stop_icon_of_foot(draw, position)
 {
 	const size = 16;
-	const point_foot = get_message_point_foot(position, [0, 0]);
+	const point_end = Message.get_end_side_point(position, [0, 0]);
 	let l0 = [
-		point_foot.x - (size/2), point_foot.y - (size/2),
-		point_foot.x + (size/2), point_foot.y + (size/2),
+		point_end.x - (size/2), point_end.y - (size/2),
+		point_end.x + (size/2), point_end.y + (size/2),
 	];
 	draw.line(l0).fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 	let l1 = [
-		point_foot.x + (size/2), point_foot.y - (size/2),
-		point_foot.x - (size/2), point_foot.y + (size/2),
+		point_end.x + (size/2), point_end.y - (size/2),
+		point_end.x - (size/2), point_end.y + (size/2),
 	];
 	draw.line(l1).fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 }

@@ -527,6 +527,37 @@ class Element{
 	}
 };
 
+class Message{
+	static get_start_side_point(position, offset)
+	{
+		let point;
+		if(0 < position.width){
+			point = {'x': position.x, 'y': position.y};
+			point.x += offset[0];
+			point.y += offset[1];
+		}else{
+			point = {'x': position.x + position.width, 'y': position.y + position.height};
+			point.x -= offset[0];
+			point.y -= offset[1];
+		}
+
+		return point;
+	}
+
+	static get_end_side_point(position, offset)
+	{
+		let point = {'x': position.x + position.width, 'y': position.y + position.height};
+		if(0 < position.width){
+			point.x += offset[0];
+			point.y += offset[1];
+		}else{
+			point.x -= offset[0];
+			point.y -= offset[1];
+		}
+		return point;
+	}
+};
+
 class Rect{
 	static expand(src_rect, offset)
 	{
@@ -585,49 +616,6 @@ function move_element(current_diagram, element, move)
 			element.end.height += move.y;
 		}
 	}
-}
-
-function get_lifeline_from_name(current_diagram, lifeline)
-{
-	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
-		if('lifeline' == current_diagram.diagram_elements[i].kind){
-			if(lifeline == current_diagram.diagram_elements[i].text){
-				return current_diagram.diagram_elements[i];
-			}
-		}
-	}
-
-	alert('bug');
-	return null;
-}
-
-function get_message_point_head(position, offset)
-{
-	let point;
-	if(0 < position.width){
-		point = {'x': position.x, 'y': position.y};
-		point.x += offset[0];
-		point.y += offset[1];
-	}else{
-		point = {'x': position.x + position.width, 'y': position.y + position.height};
-		point.x -= offset[0];
-		point.y -= offset[1];
-	}
-
-	return point;
-}
-
-function get_message_point_foot(position, offset)
-{
-	let point = {'x': position.x + position.width, 'y': position.y + position.height};
-	if(0 < position.width){
-		point.x += offset[0];
-		point.y += offset[1];
-	}else{
-		point.x -= offset[0];
-		point.y -= offset[1];
-	}
-	return point;
 }
 
 function object_deepcopy(obj)
