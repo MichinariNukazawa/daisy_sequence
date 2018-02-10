@@ -456,6 +456,27 @@ class Diagram{
 		return true;
 	}
 
+	static get_end_side_message_from_lifeline_id(diagram, lifeline_id, end_kind)
+	{
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			const element = diagram.diagram_elements[i];
+			if('message' != element.kind){
+				continue;
+			}
+			if(! element.end.hasOwnProperty('lifeline_id')){
+				continue;
+			}
+			if(lifeline_id != element.end.lifeline_id){
+				continue;
+			}
+			if(end_kind == element.end_kind){
+				return element;
+			}
+		}
+
+		return null;
+	}
+
 	static create_id_(diagram)
 	{
 		let id = Diagram.get_max_id_(diagram);
@@ -562,48 +583,6 @@ function move_element(current_diagram, element, move)
 			element.end.height += move.y;
 		}
 	}
-}
-
-function get_message_of_lifeline_create(current_diagram, lifeline_name)
-{
-	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
-		let element = current_diagram.diagram_elements[i];
-		if('message' != element.kind){
-			continue;
-		}
-		if(! element.end.hasOwnProperty('lifeline')){
-			continue;
-		}
-		if(lifeline_name != element.end.lifeline){
-			continue;
-		}
-		if('create' == element.end_kind){
-			return element;
-		}
-	}
-
-	return null;
-}
-
-function get_message_of_lifeline_end(current_diagram, lifeline_name)
-{
-	for(let i = 0; i < current_diagram.diagram_elements.length; i++){
-		let element = current_diagram.diagram_elements[i];
-		if('message' != element.kind){
-			continue;
-		}
-		if(! element.end.hasOwnProperty('lifeline')){
-			continue;
-		}
-		if(lifeline_name != element.end.lifeline){
-			continue;
-		}
-		if('stop' == element.end_kind){
-			return element;
-		}
-	}
-
-	return null;
 }
 
 function get_lifeline_from_name(current_diagram, lifeline)

@@ -289,7 +289,7 @@ function rerendering()
 
 function draw_lifeline(draw, diagram, lifeline)
 {
-	let message_of_create = get_message_of_lifeline_create(diagram, lifeline.text);
+	let message_of_create = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.id, 'create');
 	if(null !== message_of_create){
 		lifeline.y = message_of_create.y;
 	}
@@ -325,7 +325,7 @@ function draw_lifeline(draw, diagram, lifeline)
 	lifeline.work.rect = Object.assign({}, box);
 
 	const height_offset = 10;
-	let message_of_end = get_message_of_lifeline_end(diagram, lifeline.text);
+	let message_of_end = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.text);
 
 	let line_point = {
 		// 'x': box.x + (box.width / 2),
@@ -479,7 +479,8 @@ function draw_spec(draw, diagram, message, parent_message_position)
 	if(spec.end.hasOwnProperty('height')){
 		height = spec.end.height;
 	}else if(spec.end.hasOwnProperty('reply')){
-		let message_of_end = get_message_of_lifeline_end(diagram, message.end.lifeline);
+		let message_of_end = Diagram.get_end_side_message_from_lifeline_id(
+				diagram, message.end.lifeline_id, 'stop');
 		if(null != message_of_end){
 			height = message_of_end.y - message.y;
 		}
