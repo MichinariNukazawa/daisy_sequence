@@ -303,7 +303,7 @@ class DiagramHistory{
 
 		return dst_history;
 	}
-}
+};
 
 class Focus{
 	static set_element(focus, element)
