@@ -139,7 +139,7 @@ function rendering(draw, doc)
 		if(null == rect){
 			alert('internal error');
 		}else{
-			rect = rect_expand(rect, [3,3]);
+			rect = Rect.expand(rect, [3,3]);
 			let rect_ = draw.rect(rect.width, rect.height).move(rect.x, rect.y).attr({
 				'stroke':		'#3af',
 				'fill-opacity':		'0',

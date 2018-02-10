@@ -427,7 +427,7 @@ class Diagram{
 			offset = [16, 16];
 		}
 
-		if(rect_is_touch(collision_rect, point, offset)){
+		if(Rect.is_touch(collision_rect, point, offset)){
 			return true;
 		}
 
@@ -527,49 +527,51 @@ class Element{
 	}
 };
 
+class Rect{
+	static expand(src_rect, offset)
+	{
+		let rect = Object.assign({}, src_rect);
+		rect.x -= offset[0];
+		rect.y -= offset[1];
+		rect.width += (offset[0] * 2);
+		rect.height += (offset[1] * 2);
+
+		return rect;
+	}
+
+	static abs(src_rect)
+	{
+		let rect = Object.assign({}, src_rect);
+		if(rect.width < 0){
+			rect.x = src_rect.x - src_rect.width;
+			rect.width = src_rect.width * -1;
+		}
+		if(rect.height < 0){
+			rect.y = src_rect.y - src_rect.height;
+			rect.height = src_rect.height * -1;
+		}
+
+		return rect;
+	}
+
+	static is_touch(rect, point, offset)
+	{
+		let collision_rect = Object.assign({}, rect);
+		collision_rect = Rect.abs(collision_rect);
+		collision_rect = Rect.expand(collision_rect, offset);
+
+		if(collision_rect.x < point.x
+				&& point.x < (collision_rect.x + collision_rect.width)
+				&& collision_rect.y < point.y
+				&& point.y < (collision_rect.y + collision_rect.height)){
+			return true;
+		}
+
+		return false;
+	}
+};
+
 /**** ############### ****/
-
-function rect_expand(src_rect, offset)
-{
-	let rect = Object.assign({}, src_rect);
-	rect.x -= offset[0];
-	rect.y -= offset[1];
-	rect.width += (offset[0] * 2);
-	rect.height += (offset[1] * 2);
-
-	return rect;
-}
-
-function rect_abs(src_rect)
-{
-	let rect = Object.assign({}, src_rect);
-	if(rect.width < 0){
-		rect.x = src_rect.x - src_rect.width;
-		rect.width = src_rect.width * -1;
-	}
-	if(rect.height < 0){
-		rect.y = src_rect.y - src_rect.height;
-		rect.height = src_rect.height * -1;
-	}
-
-	return rect;
-}
-
-function rect_is_touch(rect, point, offset)
-{
-	let collision_rect = Object.assign({}, rect);
-	collision_rect = rect_abs(collision_rect);
-	collision_rect = rect_expand(collision_rect, offset);
-
-	if(collision_rect.x < point.x
-			&& point.x < (collision_rect.x + collision_rect.width)
-			&& collision_rect.y < point.y
-			&& point.y < (collision_rect.y + collision_rect.height)){
-		return true;
-	}
-
-	return false;
-}
 
 function move_element(current_diagram, element, move)
 {
