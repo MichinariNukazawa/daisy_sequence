@@ -399,14 +399,19 @@ class Diagram{
 			if(Diagram.is_touch_element_by_work_rect_(element, point)){
 				return element;
 			}
+		}
 
-			if('message' == element.kind){
-				if(! element.hasOwnProperty('spec')){
-					continue;
-				}
-				if(Diagram.is_touch_element_by_work_rect_(element.spec, point)){
-					return element.spec;
-				}
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			const element = diagram.diagram_elements[i];
+
+			if('message' !== element.kind){
+				continue;
+			}
+			if(! element.hasOwnProperty('spec')){
+				continue;
+			}
+			if(Diagram.is_touch_element_by_work_rect_(element.spec, point)){
+				return element.spec;
 			}
 		}
 
