@@ -124,7 +124,7 @@ function rendering(draw, doc)
 		if('lifeline' == diagram.diagram_elements[i].kind){
 			draw_lifeline(draw, diagram, diagram.diagram_elements[i]);
 		}else if('message' == diagram.diagram_elements[i].kind){
-			draw_message(draw, diagram, diagram.diagram_elements[i]);
+			draw_message(draw, diagram, diagram.diagram_elements[i], null);
 		}else{
 			console.error("%d %d", i, diagram.diagram_elements[i].kind);
 			alert('internal error');
@@ -370,10 +370,17 @@ function draw_lifeline(draw, diagram, lifeline)
 
 }
 
-function draw_message(draw, diagram, message)
+function draw_message(draw, diagram, message, parent_message)
 {
 	let is_found = false;
 	let is_lost = false;
+
+	if('reply' === message.message_kind){
+		message.start = object_deepcopy(parent_message.end);
+		message.end = object_deepcopy(parent_message.start);
+		delete message.start.position_x;
+		delete message.end.position_x;
+	}
 
 	var position = {
 		'x': 0,
@@ -381,7 +388,11 @@ function draw_message(draw, diagram, message)
 		'width': 0,
 		'height': 0,
 	};
+
+	let is_touch_start_side_lifeline = false;
 	if(message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id){
+		is_touch_start_side_lifeline = true;
+
 		let lifeline = Diagram.get_element_from_id(diagram, message.start.lifeline_id);
 		if(null === lifeline || 'lifeline' != lifeline.kind){
 			console.error(message.start);
@@ -399,7 +410,10 @@ function draw_message(draw, diagram, message)
 
 	position.y = message.y;
 
+	let is_touch_end_side_lifeline = false;
 	if(message.end.hasOwnProperty('lifeline_id') && 0 <= message.end.lifeline_id){
+		is_touch_end_side_lifeline = true;
+
 		let lifeline = Diagram.get_element_from_id(diagram, message.end.lifeline_id);
 		if(null == lifeline || 'lifeline' != lifeline.kind){
 			console.error(message.end);
@@ -472,8 +486,16 @@ function draw_message(draw, diagram, message)
 	text_point.y += text_offset;
 	let text = draw.text(message.text).move(text_point.x, text_point.y);
 
-	if(message.hasOwnProperty('spec') && null !== message.spec){
-		draw_spec(draw, diagram, message, position);
+	if(is_touch_end_side_lifeline){
+		if(message.hasOwnProperty('spec') && null !== message.spec){
+			draw_spec(draw, diagram, message, position);
+		}
+	}
+
+	if(is_touch_end_side_lifeline && is_touch_start_side_lifeline){
+		if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
+			draw_message(draw, diagram, message.reply_message, message);
+		}
 	}
 }
 
@@ -494,7 +516,9 @@ function draw_spec(draw, diagram, message, parent_message_position)
 
 	const width = 5;
 	let height = 0;
-	if(spec.end.hasOwnProperty('height')){
+	if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
+		height = message.reply_message.y - message.y;
+	}else if(spec.end.hasOwnProperty('height')){
 		height = spec.end.height;
 	}else if(spec.end.hasOwnProperty('reply')){
 		let message_of_end = Diagram.get_end_side_message_from_lifeline_id(

@@ -78,6 +78,14 @@ function get_default_doc()
 			'y_offset': 0,
 			'end':{'reply': null},
 		},
+		'reply_message':	{
+			'kind':		'message',
+			'id':		6,
+			'y':		220,
+			'message_kind':	'reply',	// reply
+			'end_kind':	'none',
+			'text':		'message of reply',
+		},
 	},
 	{
 		'kind':		'message',
@@ -88,16 +96,6 @@ function get_default_doc()
 		'end_kind':	'none',
 		'message_kind':	'sync',
 		'text':		'turnback',
-	},
-	{
-		'kind':		'message',
-		'id':		6,
-		'y':		220,
-		'start':	{'lifeline_id': 1},
-		'end':		{'lifeline_id': 0},
-		'end_kind':	'none',
-		'message_kind':	'reply',	// reply
-		'text':		'message of reply',
 	},
 	{
 		'kind':		'message',
@@ -282,23 +280,13 @@ class DiagramHistory{
 
 		focus.elements = [];
 		for(let i = 0; i < src_history.focus.elements.length; i++){
-			const element = src_history.focus.elements[i];
-			if('spec' !== element.kind){
-				const ix = src_history.diagram.diagram_elements.findIndex(
-						x => x === element);
-				if(ix < 0 || diagram.diagram_elements.length <= ix){
-					console.error(ix);
-				}else{
-					focus.elements.push(diagram.diagram_elements[ix]);
-				}
+			const src_element = src_history.focus.elements[i];
+
+			const element = Diagram.get_element_from_id(diagram, src_element.id);
+			if(null === element){
+				console.error(src_element);
 			}else{
-				const ix = src_history.diagram.diagram_elements.findIndex(
-						x => x.hasOwnProperty('spec') && x.spec === element);
-				if(ix < 0 || diagram.diagram_elements.length <= ix){
-					console.error(ix);
-				}else{
-					focus.elements.push(diagram.diagram_elements[ix].spec);
-				}
+				focus.elements.push(element);
 			}
 		}
 
@@ -398,8 +386,26 @@ class Diagram{
 	{
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
 			const element = diagram.diagram_elements[i];
-			if(id == element.id){
+			if(id === element.id){
 				return element;
+			}
+		}
+
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			const element = diagram.diagram_elements[i];
+
+			if('message' !== element.kind){
+				continue;
+			}
+			if(element.hasOwnProperty('spec')){
+				if(id === element.spec.id){
+					return element.spec;
+				}
+			}
+			if(element.hasOwnProperty('reply_message')){
+				if(id === element.reply_message.id){
+					return element.reply_message;
+				}
 			}
 		}
 
@@ -422,11 +428,15 @@ class Diagram{
 			if('message' !== element.kind){
 				continue;
 			}
-			if(! element.hasOwnProperty('spec')){
-				continue;
+			if(element.hasOwnProperty('spec')){
+				if(Diagram.is_touch_element_by_work_rect_(element.spec, point)){
+					return element.spec;
+				}
 			}
-			if(Diagram.is_touch_element_by_work_rect_(element.spec, point)){
-				return element.spec;
+			if(element.hasOwnProperty('reply_message')){
+				if(Diagram.is_touch_element_by_work_rect_(element.reply_message, point)){
+					return element.reply_message;
+				}
 			}
 		}
 
