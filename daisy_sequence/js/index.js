@@ -515,34 +515,19 @@ function draw_spec(draw, diagram, message, parent_message_position)
 	};
 
 	const width = 5;
-	let height = 0;
+	let height = spec.height;
 	if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
 		height = message.reply_message.y - message.y;
-	}else if(spec.end.hasOwnProperty('height')){
-		height = spec.end.height;
-	}else if(spec.end.hasOwnProperty('reply')){
-		let message_of_end = Diagram.get_end_side_message_from_lifeline_id(
-				diagram, message.end.lifeline_id, 'stop');
-		if(null != message_of_end){
-			height = message_of_end.y - message.y;
-		}
-	}else{
-		console.error();
-		return;
 	}
 
-	if(height <= 0){
-		console.debug(message);
-		return;
-	}
-
-	let end_point = Message.get_end_side_point(parent_message_position, [0,0])
-		let box = {
-			'x':		end_point.x - 1,
-			'y':		end_point.y + spec.y_offset,
-			'width':	width,
-			'height':	height,
-		};
+	let end_point = Message.get_end_side_point(parent_message_position, [0,0]);
+	let box = {
+		'x':		end_point.x - 1,
+		'y':		end_point.y + spec.y_offset,
+		'width':	width,
+		'height':	height,
+	};
+	box = Rect.abs(box);
 	draw.rect(box.width, box.height).move(box.x, box.y).attr(attr);
 
 	if(! spec.hasOwnProperty('work')){

@@ -49,9 +49,10 @@ function get_default_doc()
 		'message_kind':	'sync',
 		'text':		'message\nfrom found',
 		'spec':		{
-			'kind': 'spec',
-			'y_offset': 0,
-			'end':{'height': 300},
+			'kind':		'spec',
+			'id':		10,
+			'y_offset':	0,
+			'height':	300,
 		},
 	},
 	{
@@ -74,9 +75,10 @@ function get_default_doc()
 		'message_kind':	'sync',
 		'text':		'lifeline to lifeline',
 		'spec':		{
-			'kind': 'spec',
-			'y_offset': 0,
-			'end':{'reply': null},
+			'kind':		'spec',
+			'id':		11,
+			'y_offset':	0,
+			'height':	20,
 		},
 		'reply_message':	{
 			'kind':		'message',
