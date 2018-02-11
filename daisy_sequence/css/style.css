@@ -31,3 +31,7 @@ html, body{
 	border-radius: 2px;
 }
 
+#edit-control input{
+	width: 80px;
+}
+

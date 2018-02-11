@@ -41,6 +41,11 @@ window.onload = function(e){
 
 	document.getElementById('add-lifeline').addEventListener('click', callback_clicked_add_lifeline, false);
 
+	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
+	add_event_listener_first_input_with_history(edit_control__axis_x, callback_input_with_history_axis_x);
+	let edit_control__axis_y = document.getElementById('edit-control__axis-y');
+	add_event_listener_first_input_with_history(edit_control__axis_y, callback_input_with_history_axis_y);
+
 	let editor__lifeline_name = document.getElementById('editor__lifeline-name');
 	add_event_listener_first_input_with_history(editor__lifeline_name, callback_input_with_history_text);
 
@@ -82,9 +87,40 @@ function add_event_listener_first_input_with_history(textarea_element, callback)
 		}
 
 		callback();
+
+		rerendering();
 	}, false);
 }
 
+function callback_input_with_history_axis_x()
+{
+	let element = get_current_single_focus_element();
+	if(null === element){
+		return;
+	}
+
+	let v = document.getElementById('edit-control__axis-x').value;
+	if(element.hasOwnProperty('x') && /[1-9][0-9]*/.test(v)){
+		element.x = parseInt(v, 10);
+	}
+
+	console.log("X %s", v);
+}
+
+function callback_input_with_history_axis_y()
+{
+	let element = get_current_single_focus_element();
+	if(null === element){
+		return;
+	}
+
+	let v = document.getElementById('edit-control__axis-y').value;
+	if(element.hasOwnProperty('y') && /[1-9][0-9]*/.test(v)){
+		element.y = parseInt(v, 10);
+	}
+
+	console.log("Y %s", v);
+}
 
 function callback_input_with_history_text()
 {
@@ -95,8 +131,6 @@ function callback_input_with_history_text()
 
 	let s = document.getElementById('editor__lifeline-name').value;
 	element.text = s;
-
-	rerendering();
 }
 
 function get_current_doc()
@@ -184,6 +218,8 @@ function callback_focus_change(focus, user_data)
 	let lifeline_name_elem = document.getElementById('editor__lifeline-name');
 	let message_spec_elem = document.getElementById('editor__message-spec');
 	let message_reply_elem = document.getElementById('editor__message-reply');
+	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
+	let edit_control__axis_y = document.getElementById('edit-control__axis-y');
 
 	// const doc = user_data;
 	const focus_element = get_current_single_focus_element();
@@ -191,10 +227,14 @@ function callback_focus_change(focus, user_data)
 		lifeline_name_elem.disabled = true;
 		message_spec_elem.disabled = true;
 		message_reply_elem.disabled = true;
+		edit_control__axis_x.disabled = true;
+		edit_control__axis_y.disabled = true;
 	}else{
 		lifeline_name_elem.disabled = false;
 		message_spec_elem.disabled = false;
 		message_reply_elem.disabled = false;
+		edit_control__axis_x.disabled = false;
+		edit_control__axis_y.disabled = false;
 	}
 
 	if(null !== focus_element && focus_element.hasOwnProperty('text')){
@@ -212,6 +252,17 @@ function callback_focus_change(focus, user_data)
 	}else{
 		message_spec_elem.disabled = true;
 		message_reply_elem.disabled = true;
+	}
+
+	if(null !== focus_element && focus_element.hasOwnProperty('x')){
+		edit_control__axis_x.value = focus_element.x;
+	}else{
+		edit_control__axis_x.disabled = true;
+	}
+	if(null !== focus_element && focus_element.hasOwnProperty('y')){
+		edit_control__axis_y.value = focus_element.y;
+	}else{
+		edit_control__axis_y.disabled = true;
 	}
 }
 
@@ -244,6 +295,8 @@ function callback_mousedown_drawing(e){
 
 function callback_mouseup_drawing(e){
 	mouse_state.is_down = false;
+
+	callback_focus_change();
 
 	rerendering();
 }
