@@ -157,7 +157,7 @@ function callback_history_change_doc(doc, event_kind)
 			event_kind);
 	document.getElementById('history_info').textContent = s;
 
-	callback_focus_change(Doc.get_focus(doc), doc)
+	callback_focus_change(Doc.get_focus(doc), doc);
 
 	rerendering();
 }
