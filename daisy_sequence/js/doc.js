@@ -752,9 +752,7 @@ function move_element(current_diagram, element, move)
 	}else if('message' == element.kind){
 		element.y += move.y;
 	}else if('spec' == element.kind){
-		if(element.hasOwnProperty('end') && element.end.hasOwnProperty('height')){
-			element.end.height += move.y;
-		}
+		element.height += move.y;
 	}
 }
 
