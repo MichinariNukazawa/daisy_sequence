@@ -374,8 +374,12 @@ class Diagram{
 	static create_element(diagram, kind, data)
 	{
 		let element = null;
-		if('lifeline' == kind){
+		if('lifeline' === kind){
 			element = Diagram.create_lifeline_(data);
+		}else if('spec' === kind){
+			element = Diagram.create_spec_(data);
+		}else if('reply_message' === kind){
+			element = Diagram.create_reply_message_(data);
 		}else{
 			return null;
 		}
@@ -538,6 +542,20 @@ class Diagram{
 			if(id < element.id){
 				id = element.id;
 			}
+
+			if('message' !== element.kind){
+				continue;
+			}
+			if(element.hasOwnProperty('spec') && null !== element.spec){
+				if(id < element.spec.id){
+					id = element.spec.id;
+				}
+			}
+			if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
+				if(id < element.reply_message.id){
+					id = element.reply_message.id;
+				}
+			}
 		}
 
 		return id;
@@ -548,7 +566,7 @@ class Diagram{
 		// default lifeline
 		let lifeline = {
 			'kind': 'lifeline',
-			'id': 0,
+			'id': -1,
 			'x': 100,
 			'y': 30,
 			'text': 'Lifeline -'
@@ -557,6 +575,36 @@ class Diagram{
 		lifeline = Object.assign(lifeline, src);
 
 		return lifeline;
+	}
+
+	static create_reply_message_(src)
+	{
+		let reply_message = {
+			'kind':		'message',
+			'id':		-1,
+			'y':		220,
+			'message_kind':	'reply',	// reply
+			'end_kind':	'none',
+			'text':		'message of reply',
+		};
+
+		reply_message = Object.assign(reply_message, src);
+
+		return reply_message;
+	}
+
+	static create_spec_(src)
+	{
+		let spec = {
+			'kind':		'spec',
+			'id':		-1,
+			'y_offset': 0,
+			'height': 20,
+		};
+
+		spec = Object.assign(spec, src);
+
+		return spec;
 	}
 };
 
@@ -605,6 +653,7 @@ class Element{
 };
 
 class Message{
+
 	/*! @return is_edited */
 	static change_side_from_point(message, diagram, message_side, point)
 	{

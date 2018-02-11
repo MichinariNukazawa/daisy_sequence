@@ -44,6 +44,9 @@ window.onload = function(e){
 	let editor__lifeline_name = document.getElementById('editor__lifeline-name');
 	add_event_listener_first_input_with_history(editor__lifeline_name, callback_input_with_history_text);
 
+	document.getElementById('editor__message-spec').addEventListener('change', callback_change_message_spec, false);
+	document.getElementById('editor__message-reply').addEventListener('change', callback_change_message_reply, false);
+
 	//! snatching Ctrl+z(Undo) textarea
 	document.onkeydown = function(e) {
 		if (e.ctrlKey && e.key === 'z') {
@@ -85,10 +88,13 @@ function add_event_listener_first_input_with_history(textarea_element, callback)
 
 function callback_input_with_history_text()
 {
+	let element = get_current_single_focus_element();
+	if(null === element){
+		return;
+	}
+
 	let s = document.getElementById('editor__lifeline-name').value;
-	let focus = Doc.get_focus(get_current_doc());
-	let elements = Focus.get_elements(focus);
-	elements[0].text = s;
+	element.text = s;
 
 	rerendering();
 }
@@ -107,6 +113,17 @@ function get_current_diagram()
 	}
 
 	return Doc.get_diagram(doc);
+}
+
+function get_current_single_focus_element()
+{
+	const focus = Doc.get_focus(get_current_doc());
+	const elements = Focus.get_elements(focus);
+	if(1 !== elements.length){
+		return null;
+	}else{
+		return elements[0];
+	}
 }
 
 function rendering(draw, doc)
@@ -159,28 +176,43 @@ function callback_history_change_doc(doc, event_kind)
 
 	callback_focus_change(Doc.get_focus(doc), doc);
 
-	rerendering();
+		rerendering();
 }
 
 function callback_focus_change(focus, user_data)
 {
 	let lifeline_name_elem = document.getElementById('editor__lifeline-name');
+	let message_spec_elem = document.getElementById('editor__message-spec');
+	let message_reply_elem = document.getElementById('editor__message-reply');
 
-	const doc = user_data;
-	const focus_elements = Focus.get_elements(focus);
-	if(1 != focus_elements.length){
+	// const doc = user_data;
+	const focus_element = get_current_single_focus_element();
+	if(null === focus_element){
 		lifeline_name_elem.disabled = true;
-		return;
+		message_spec_elem.disabled = true;
+		message_reply_elem.disabled = true;
+	}else{
+		lifeline_name_elem.disabled = false;
+		message_spec_elem.disabled = false;
+		message_reply_elem.disabled = false;
 	}
-	if(! focus_elements[0].hasOwnProperty('text')){
+
+	if(null !== focus_element && focus_element.hasOwnProperty('text')){
+		lifeline_name_elem.value = focus_element.text;
+	}else{
 		lifeline_name_elem.disabled = true;
-		return;
 	}
 
-	lifeline_name_elem.value = focus_elements[0].text;
-	lifeline_name_elem.disabled = false;
-
-	// console.log("change");
+	if(null !== focus_element && 'message' === focus_element.kind && 'reply' !== focus_element.message_kind){
+		let r;
+		r = (focus_element.hasOwnProperty('spec') && null !== focus_element.spec);
+		message_spec_elem.checked = r;
+		r = (focus_element.hasOwnProperty('reply_message') && null !== focus_element.reply_message);
+		message_reply_elem.checked = r;
+	}else{
+		message_spec_elem.disabled = true;
+		message_reply_elem.disabled = true;
+	}
 }
 
 function callback_mousedown_drawing(e){
@@ -292,6 +324,74 @@ function callback_clicked_add_lifeline()
 	if(! Diagram.add_element(diagram, lifeline)){
 		console.error();
 		return;
+	}
+
+	rerendering();
+}
+
+function callback_change_message_spec()
+{
+	{
+		let element = get_current_single_focus_element();
+		if(null === element){
+			return;
+		}
+		if('message' !== element.kind){
+			return;
+		}
+	}
+
+	let message_spec_elem = document.getElementById('editor__message-spec');
+	const checked = message_spec_elem.checked;
+
+	Doc.history_add(get_current_doc());
+	let element = get_current_single_focus_element();
+
+	//if(! message_spec_elem.checked){
+	message_spec_elem.checked = checked;
+	if(! checked){
+		element.spec = null;
+	}else{
+		let diagram = get_current_diagram();
+		let spec = Diagram.create_element(diagram, 'spec', {});
+		element.spec = spec;
+	}
+
+	rerendering();
+}
+
+function callback_change_message_reply()
+{
+	{
+		let element = get_current_single_focus_element();
+		if(null === element){
+			return;
+		}
+		if('message' !== element.kind){
+			return;
+		}
+	}
+
+	let message_reply_elem = document.getElementById('editor__message-reply');
+	const checked = message_reply_elem.checked;
+
+	Doc.history_add(get_current_doc());
+	let element = get_current_single_focus_element();
+
+	message_reply_elem.checked = checked;
+	if(! checked){
+		element.reply_message = null;
+	}else{
+		let diagram = get_current_diagram();
+		if(element.hasOwnProperty('spec') && null !== element.spec){
+			// NOP
+		}else{
+			let spec = Diagram.create_element(diagram, 'spec', {});
+			element.spec = spec;
+		}
+		let reply_message = Diagram.create_element(diagram, 'reply_message', {});
+		reply_message.y = element.y + element.spec.height;
+		element.reply_message = reply_message;
 	}
 
 	rerendering();
@@ -489,12 +589,12 @@ function draw_message(draw, diagram, message, parent_message)
 	if(is_touch_end_side_lifeline){
 		if(message.hasOwnProperty('spec') && null !== message.spec){
 			draw_spec(draw, diagram, message, position);
-		}
-	}
 
-	if(is_touch_end_side_lifeline && is_touch_start_side_lifeline){
-		if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
-			draw_message(draw, diagram, message.reply_message, message);
+			if(is_touch_end_side_lifeline && is_touch_start_side_lifeline){
+				if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
+					draw_message(draw, diagram, message.reply_message, message);
+				}
+			}
 		}
 	}
 }
