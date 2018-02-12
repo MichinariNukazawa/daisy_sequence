@@ -4,6 +4,7 @@ var SVG = require('svg.js');
 const sprintf = require('sprintf-js').sprintf;
 let doc_collection = new DocCollection();
 let current_doc_id = -1;
+let tool = null;
 
 let draw = null;
 
@@ -18,6 +19,84 @@ function get_draw()
 {
 	return draw;
 }
+
+class Tool{
+	constructor(){
+		this.tool_kind = 'allow';
+
+		this.tools = [];
+		this.tools.push({
+			'kind':		'allow',
+			'element':	document.getElementById('tool__allow'),
+		});
+		this.tools.push({
+			'kind':		'lifeline',
+			'element':	document.getElementById('tool__lifeline'),
+		});
+		this.tools.push({
+			'kind':		'message',
+			'element':	document.getElementById('tool__message'),
+		});
+
+		this.callback_tool_changes = [];
+
+		this.init_();
+
+		this.rendering_();
+	}
+
+	init_()
+	{
+		for(let i = 0; i < this.tools.length; i++){
+			this.tools[i].element.addEventListener('click', this.callback_clicked_tool_.bind(this), false);
+		}
+	}
+
+	rendering_()
+	{
+		for(let i = 0; i < this.tools.length; i++){
+			if(this.tools[i].kind === this.get_tool_kind()){
+				this.tools[i].element.classList.add('tool-selected');
+			}else{
+				this.tools[i].element.classList.remove('tool-selected');
+			}
+		}
+	}
+
+	callback_clicked_tool_(e)
+	{
+		// console.log(e.target);
+
+		let next_tool_kind = '';
+		for(let i = 0; i < this.tools.length; i++){
+			if(e.target == this.tools[i].element){
+				next_tool_kind = this.tools[i].kind;
+				break;
+			}
+		}
+		if('' === next_tool_kind){
+			console.error(e.target);
+			alert('internal error');
+			return;
+		}
+		this.tool_kind = next_tool_kind;
+
+		for(let i = 0; i < this.callback_tool_changes.length; i++){
+			this.callback_tool_changes[i](this.tool_kind);
+		}
+
+		this.rendering_();
+	}
+
+	add_callback_tool_change(callback){
+		this.callback_tool_changes.push(callback);
+	}
+
+	get_tool_kind()
+	{
+		return this.tool_kind;
+	}
+};
 
 
 window.onload = function(e){
@@ -39,8 +118,6 @@ window.onload = function(e){
 	document.getElementById('drawing').addEventListener('mousedown', callback_mousedown_drawing);
 	document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
 
-	document.getElementById('add-lifeline').addEventListener('click', callback_clicked_add_lifeline, false);
-
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
 	add_event_listener_first_input_with_history(edit_control__axis_x, callback_input_with_history_axis_x);
 	let edit_control__axis_y = document.getElementById('edit-control__axis-y');
@@ -51,6 +128,9 @@ window.onload = function(e){
 
 	document.getElementById('editor__message-spec').addEventListener('change', callback_change_message_spec, false);
 	document.getElementById('editor__message-reply').addEventListener('change', callback_change_message_reply, false);
+
+	tool = new Tool();
+	tool.add_callback_tool_change(callback_tool_change);
 
 	//! snatching Ctrl+z(Undo) textarea
 	document.onkeydown = function(e) {
@@ -64,6 +144,11 @@ window.onload = function(e){
 		}
 	}
 
+}
+
+function callback_tool_change(tool_kind)
+{
+	console.log(tool_kind);
 }
 
 let is_focusin_first = false;
@@ -266,7 +351,8 @@ function callback_focus_change(focus, user_data)
 	}
 }
 
-function callback_mousedown_drawing(e){
+function callback_mousedown_drawing(e)
+{
 	let point = {
 		'x': e.offsetX,
 		'y': e.offsetY,
@@ -277,6 +363,22 @@ function callback_mousedown_drawing(e){
 	mouse_state.is_small_move = true;
 	mouse_state.is_down = true;
 
+
+	const tool_kind = tool.get_tool_kind();
+
+	if('allow' === tool_kind){
+		callback_mousedown_drawing_allow();
+	}else if('lifeline' === tool_kind){
+		callback_mousedown_drawing_lifeline(point);
+	}else{
+		console.error(tool_kind);
+	}
+
+	rerendering();
+}
+
+function callback_mousedown_drawing_allow()
+{
 	let diagram = get_current_diagram();
 	let focus = Doc.get_focus(get_current_doc());
 
@@ -293,7 +395,40 @@ function callback_mousedown_drawing(e){
 	}
 }
 
-function callback_mouseup_drawing(e){
+function callback_mousedown_drawing_lifeline(point)
+{
+	let diagram = get_current_diagram();
+
+	let i = 0;
+	let lifeline_name;
+	let exist_lifeline;
+	do{
+		lifeline_name = 'New Lifeline' + i;
+		exist_lifeline = Diagram.get_lifeline_from_name(diagram, lifeline_name);
+		i++;
+	}while(null !== exist_lifeline);
+
+	let data = {
+		'text': lifeline_name,
+		'x': point.x,
+	};
+	let lifeline = Diagram.create_element(diagram, 'lifeline', data);
+	if(null === lifeline){
+		console.error();
+		return;
+	}
+
+	if(! Diagram.add_element(diagram, lifeline)){
+		console.error();
+		return;
+	}
+
+	let focus = Doc.get_focus(get_current_doc());
+	Focus.set_element(focus, lifeline);
+}
+
+function callback_mouseup_drawing(e)
+{
 	mouse_state.is_down = false;
 
 	callback_focus_change();
@@ -301,7 +436,8 @@ function callback_mouseup_drawing(e){
 	rerendering();
 }
 
-function callback_mousemove_drawing(e){
+function callback_mousemove_drawing(e)
+{
 	let point = {
 		'x': e.offsetX,
 		'y': e.offsetY,
@@ -346,37 +482,6 @@ function callback_mousemove_drawing(e){
 
 	for(let i = 0; i < elements.length; i++){
 		move_element(diagram, elements[i], move);
-	}
-
-	rerendering();
-}
-
-function callback_clicked_add_lifeline()
-{
-	let diagram = get_current_diagram();
-
-	let i = 0;
-	let lifeline_name;
-	let exist_lifeline;
-	do{
-		lifeline_name = 'New Lifeline' + i;
-		exist_lifeline = Diagram.get_lifeline_from_name(diagram, lifeline_name);
-		i++;
-	}while(null !== exist_lifeline);
-
-	let data = {
-		'text': lifeline_name,
-		'x': diagram.width - 150,
-	};
-	let lifeline = Diagram.create_element(diagram, 'lifeline', data);
-	if(null === lifeline){
-		console.error();
-		return;
-	}
-
-	if(! Diagram.add_element(diagram, lifeline)){
-		console.error();
-		return;
 	}
 
 	rerendering();
