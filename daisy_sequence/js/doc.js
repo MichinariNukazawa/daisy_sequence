@@ -220,7 +220,7 @@ class Doc{
 	static history_add(current_doc)
 	{
 		if(null === current_doc){
-			console.error();
+			console.error('');
 			return;
 		}
 

@@ -414,12 +414,12 @@ function callback_mousedown_drawing_lifeline(point)
 	};
 	let lifeline = Diagram.create_element(diagram, 'lifeline', data);
 	if(null === lifeline){
-		console.error();
+		console.error('');
 		return;
 	}
 
 	if(! Diagram.add_element(diagram, lifeline)){
-		console.error();
+		console.error('');
 		return;
 	}
 
