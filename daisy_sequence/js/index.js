@@ -169,6 +169,33 @@ window.onload = function(e){
 
 }
 
+function get_current_doc()
+{
+	return doc_collection.get_doc_from_id(current_doc_id);
+}
+
+function get_current_diagram()
+{
+	let doc = get_current_doc();
+	if(null === doc){
+		console.error('');
+		return null;
+	}
+
+	return Doc.get_diagram(doc);
+}
+
+function get_current_single_focus_element()
+{
+	const focus = Doc.get_focus(get_current_doc());
+	const elements = Focus.get_elements(focus);
+	if(1 !== elements.length){
+		return null;
+	}else{
+		return elements[0];
+	}
+}
+
 function delete_current_focus_elements()
 {
 	{
@@ -198,7 +225,7 @@ function delete_current_focus_elements()
 
 function callback_tool_change(tool_kind)
 {
-	console.log(tool_kind);
+	// console.log(tool_kind);
 }
 
 let is_focusin_first = false;
@@ -266,83 +293,6 @@ function callback_input_with_history_text()
 
 	let s = document.getElementById('editor__lifeline-name').value;
 	element.text = s;
-}
-
-function get_current_doc()
-{
-	return doc_collection.get_doc_from_id(current_doc_id);
-}
-
-function get_current_diagram()
-{
-	let doc = get_current_doc();
-	if(null === doc){
-		console.error('');
-		return null;
-	}
-
-	return Doc.get_diagram(doc);
-}
-
-function get_current_single_focus_element()
-{
-	const focus = Doc.get_focus(get_current_doc());
-	const elements = Focus.get_elements(focus);
-	if(1 !== elements.length){
-		return null;
-	}else{
-		return elements[0];
-	}
-}
-
-function rendering(draw, doc)
-{
-	const diagram = Doc.get_diagram(doc);
-
-	draw.size(diagram.width, diagram.height);
-
-	for(let i = 0; i < diagram.diagram_elements.length; i++){
-		if('lifeline' == diagram.diagram_elements[i].kind){
-			draw_lifeline(draw, diagram, diagram.diagram_elements[i]);
-		}else if('message' == diagram.diagram_elements[i].kind){
-			draw_message(draw, diagram, diagram.diagram_elements[i], null);
-		}else if('flugment' == diagram.diagram_elements[i].kind){
-			draw_flugment(draw, diagram.diagram_elements[i]);
-		}else{
-			console.error("%d %d", i, diagram.diagram_elements[i].kind);
-			alert('internal error');
-		}
-	}
-
-	// focusing
-	const focus = Doc.get_focus(doc);
-	const elements = Focus.get_elements(focus);
-	for(let i = 0; i < elements.length; i++){
-		let rect = Rect.abs(Element.get_rect(elements[i]));
-		if(null == rect){
-			alert('internal error');
-		}else{
-			rect = Rect.expand(rect, [3,3]);
-			let rect_ = draw.rect(rect.width, rect.height).move(rect.x, rect.y).attr({
-				'stroke':		'#3af',
-				'fill-opacity':		'0',
-				'stroke-width':		'1.5',
-			});
-		}
-	}
-
-	// ** frame resize icon
-	let group_edge_icon = draw.group().addClass('edge_icon')
-	group_edge_icon.svg(edge_icon_svg).move(diagram.width - 32, diagram.height - 32).attr({
-		'opacity':	0.3,
-	});
-
-	// ** frame
-	let rect = draw.rect(diagram.width, diagram.height).attr({
-		'stroke':		'#ddd',
-		'fill-opacity':		'0',
-		'stroke-width':		'2',
-	});
 }
 
 function callback_history_change_doc(doc, event_kind)
@@ -413,7 +363,7 @@ function callback_focus_change(focus, user_data)
 
 function callback_mousedown_drawing(e)
 {
-	console.log('mousedown');
+	// console.log('mousedown');
 
 	let point = {
 		'x': e.offsetX,
@@ -550,7 +500,7 @@ function callback_mousedown_drawing_flugment(point)
 
 function callback_mouseup_drawing(e)
 {
-	console.log('mouseup');
+	// console.log('mouseup');
 
 	mouse_state.is_down = false;
 
@@ -680,6 +630,56 @@ function callback_change_message_reply()
 	}
 
 	rerendering();
+}
+
+function rendering(draw, doc)
+{
+	const diagram = Doc.get_diagram(doc);
+
+	draw.size(diagram.width, diagram.height);
+
+	for(let i = 0; i < diagram.diagram_elements.length; i++){
+		if('lifeline' == diagram.diagram_elements[i].kind){
+			draw_lifeline(draw, diagram, diagram.diagram_elements[i]);
+		}else if('message' == diagram.diagram_elements[i].kind){
+			draw_message(draw, diagram, diagram.diagram_elements[i], null);
+		}else if('flugment' == diagram.diagram_elements[i].kind){
+			draw_flugment(draw, diagram.diagram_elements[i]);
+		}else{
+			console.error("%d %d", i, diagram.diagram_elements[i].kind);
+			alert('internal error');
+		}
+	}
+
+	// focusing
+	const focus = Doc.get_focus(doc);
+	const elements = Focus.get_elements(focus);
+	for(let i = 0; i < elements.length; i++){
+		let rect = Rect.abs(Element.get_rect(elements[i]));
+		if(null == rect){
+			alert('internal error');
+		}else{
+			rect = Rect.expand(rect, [3,3]);
+			let rect_ = draw.rect(rect.width, rect.height).move(rect.x, rect.y).attr({
+				'stroke':		'#3af',
+				'fill-opacity':		'0',
+				'stroke-width':		'1.5',
+			});
+		}
+	}
+
+	// ** frame resize icon
+	let group_edge_icon = draw.group().addClass('edge_icon')
+	group_edge_icon.svg(edge_icon_svg).move(diagram.width - 32, diagram.height - 32).attr({
+		'opacity':	0.3,
+	});
+
+	// ** frame
+	let rect = draw.rect(diagram.width, diagram.height).attr({
+		'stroke':		'#ddd',
+		'fill-opacity':		'0',
+		'stroke-width':		'2',
+	});
 }
 
 function rerendering()
