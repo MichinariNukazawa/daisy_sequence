@@ -129,6 +129,14 @@ function get_default_doc()
 		'message_kind':	'sync',
 		'text':		'stop to lifeline',
 	},
+	{
+		'kind':		'flugment',
+		'id':		12,
+		'x':		350,
+		'y':		350,
+		'title':	'',
+		'text':		'text\nmemo flugment',
+	},
 	];
 
 	let diagram = {
@@ -402,6 +410,8 @@ class Diagram{
 			element = Diagram.create_spec_(data);
 		}else if('reply_message' === kind){
 			element = Diagram.create_reply_message_(data);
+		}else if('flugment' === kind){
+			element = Diagram.create_flugment_(data);
 		}else{
 			return null;
 		}
@@ -695,6 +705,22 @@ class Diagram{
 
 		return spec;
 	}
+
+	static create_flugment_(src)
+	{
+		let spec = {
+			'kind':		'flugment',
+			'id':		-1,
+			'x':		350,
+			'y':		350,
+			'title':	'',
+			'text':		'',
+		};
+
+		spec = Object.assign(spec, src);
+
+		return spec;
+	}
 };
 
 class Element{
@@ -891,6 +917,9 @@ function move_element(current_diagram, element, move)
 		element.y += move.y;
 	}else if('spec' == element.kind){
 		element.height += move.y;
+	}else if('flugment' == element.kind){
+		element.x += move.x;
+		element.y += move.y;
 	}
 }
 

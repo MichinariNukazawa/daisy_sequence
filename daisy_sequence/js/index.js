@@ -42,6 +42,10 @@ class Tool{
 			'kind':		'message',
 			'element':	document.getElementById('tool__message'),
 		});
+		this.tools.push({
+			'kind':		'flugment',
+			'element':	document.getElementById('tool__flugment'),
+		});
 
 		this.callback_tool_changes = [];
 
@@ -302,6 +306,8 @@ function rendering(draw, doc)
 			draw_lifeline(draw, diagram, diagram.diagram_elements[i]);
 		}else if('message' == diagram.diagram_elements[i].kind){
 			draw_message(draw, diagram, diagram.diagram_elements[i], null);
+		}else if('flugment' == diagram.diagram_elements[i].kind){
+			draw_flugment(draw, diagram.diagram_elements[i]);
 		}else{
 			console.error("%d %d", i, diagram.diagram_elements[i].kind);
 			alert('internal error');
@@ -428,6 +434,8 @@ function callback_mousedown_drawing(e)
 		callback_mousedown_drawing_lifeline(point);
 	}else if('message' === tool_kind){
 		callback_mousedown_drawing_message(point);
+	}else if('flugment' === tool_kind){
+		callback_mousedown_drawing_flugment(point);
 	}else{
 		console.error(tool_kind);
 	}
@@ -463,6 +471,10 @@ function callback_mousedown_drawing_allow(point)
 
 function callback_mousedown_drawing_lifeline(point)
 {
+	{
+		Doc.history_add(get_current_doc());
+	}
+
 	let diagram = get_current_diagram();
 
 	let i = 0;
@@ -495,6 +507,10 @@ function callback_mousedown_drawing_lifeline(point)
 
 function callback_mousedown_drawing_message(point)
 {
+	{
+		Doc.history_add(get_current_doc());
+	}
+
 	let diagram = get_current_diagram();
 
 	let data = {
@@ -518,6 +534,33 @@ function callback_mousedown_drawing_message(point)
 	let focus = Doc.get_focus(get_current_doc());
 	Focus.set_element(focus, message);
 	focus.focus_state.message_side = 'end';
+}
+
+function callback_mousedown_drawing_flugment(point)
+{
+	{
+		Doc.history_add(get_current_doc());
+	}
+
+	let diagram = get_current_diagram();
+
+	let data = {
+		'y': point.y,
+		'x': point.x,
+	};
+	let flugment = Diagram.create_element(diagram, 'flugment', data);
+	if(null === flugment){
+		console.error('');
+		return;
+	}
+
+	if(! Diagram.add_element(diagram, flugment)){
+		console.error('');
+		return;
+	}
+
+	let focus = Doc.get_focus(get_current_doc());
+	Focus.set_element(focus, flugment);
 }
 
 function callback_mouseup_drawing(e)
@@ -891,6 +934,38 @@ function draw_spec(draw, diagram, message, parent_message_position)
 		spec.work = {};
 	}
 	spec.work.rect = Object.assign({}, box);
+}
+
+function draw_flugment(draw, flugment)
+{
+	// ** contents
+	const show_text = (! /^\s*$/.test(flugment.text))? flugment.text : '-';
+	let text = draw.text(show_text).move(flugment.x, flugment.y);
+
+	// ** frame
+	const padding = 5;
+	const radius = 1;
+	const b = text.bbox();
+	const box = {
+		'x': (b.x - padding),
+		'y': b.y,
+		'width': b.width + (padding * 2),
+		'height': b.height,
+	};
+	const attr = {
+		'stroke':		'#000',
+		'stroke-width':		'1',
+		'fill-opacity':		'0.1',
+		'fill': '#1080FF',
+	};
+	draw.rect(box.width, box.height).move(box.x, box.y)
+		.radius(radius).attr(attr);
+
+	// ** work.rect
+	if(! flugment.hasOwnProperty('work')){
+		flugment.work = {};
+	}
+	flugment.work.rect = Object.assign({}, box);
 }
 
 function draw_message_turnback(draw, position)
