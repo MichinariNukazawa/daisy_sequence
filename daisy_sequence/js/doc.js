@@ -140,6 +140,7 @@ function get_default_doc()
 	let focus = {
 		'focus_state':{
 			'side': '',
+			'is_diagram_resize': false,
 		},
 		'elements': [],
 	};
@@ -315,6 +316,20 @@ class Focus{
 	static clear(focus)
 	{
 		focus.elements.length = 0;
+		focus.focus_state.is_diagram_resize = false;
+	}
+
+	static set_diagram_resize(focus, flag)
+	{
+		if(flag){
+			Focus.clear(focus);
+		}
+		focus.focus_state.is_diagram_resize = flag;
+	}
+
+	static get_diagram_resize(focus)
+	{
+		return focus.focus_state.is_diagram_resize;
 	}
 
 	static set_side(focus, side){
@@ -429,6 +444,19 @@ class Diagram{
 		}
 
 		return false;
+	}
+
+	static resize_from_diff(diagram, diff)
+	{
+		diagram.width += diff.x;
+		diagram.height += diff.y;
+
+		if(128 > diagram.width){
+			diagram.width = 128;
+		}
+		if(128 > diagram.height){
+			diagram.height = 128;
+		}
 	}
 
 	static get_element_from_id(diagram, id)

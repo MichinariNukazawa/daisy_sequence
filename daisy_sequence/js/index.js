@@ -2,11 +2,16 @@
 
 var SVG = require('svg.js');
 const sprintf = require('sprintf-js').sprintf;
+const fs = require("fs");
+const path = require('path');
+
 let doc_collection = new DocCollection();
+
 let current_doc_id = -1;
 let tool = null;
 
 let draw = null;
+let edge_icon_svg;
 
 let mouse_state = {
 	'mousedown_point': { 'x': 0, 'y': 0, },
@@ -104,6 +109,13 @@ window.onload = function(e){
 	let doc = doc_collection.get_doc_from_id(current_doc_id);
 	let diagram = Doc.get_diagram(doc);
 
+	try{
+		const filepath = path.join(__dirname, 'image/edge.svg');
+		edge_icon_svg = fs.readFileSync(filepath, 'utf8');
+	}catch(err){
+		console.error(err);
+	}
+
 	draw = SVG('drawing').size(diagram.width, diagram.height);
 
 	Doc.add_event_listener_history_change(doc, callback_history_change_doc);
@@ -116,7 +128,9 @@ window.onload = function(e){
 	// document.addEventListener('mousemove', callback);
 	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
 	document.getElementById('drawing').addEventListener('mousedown', callback_mousedown_drawing);
-	document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
+	// fix mousedown -> mouseup can not pair mouseup call when drawing area out of range.
+	document.addEventListener('mouseup', callback_mouseup_drawing);
+	// document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
 
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
 	add_event_listener_first_input_with_history(edit_control__axis_x, callback_input_with_history_axis_x);
@@ -282,11 +296,6 @@ function rendering(draw, doc)
 	const diagram = Doc.get_diagram(doc);
 
 	draw.size(diagram.width, diagram.height);
-	let rect = draw.rect(diagram.width, diagram.height).attr({
-		'stroke':		'#ddd',
-		'fill-opacity':		'0',
-		'stroke-width':		'2',
-	});
 
 	for(let i = 0; i < diagram.diagram_elements.length; i++){
 		if('lifeline' == diagram.diagram_elements[i].kind){
@@ -315,6 +324,19 @@ function rendering(draw, doc)
 			});
 		}
 	}
+
+	// ** frame resize icon
+	let group_edge_icon = draw.group().addClass('edge_icon')
+	group_edge_icon.svg(edge_icon_svg).move(diagram.width - 32, diagram.height - 32).attr({
+		'opacity':	0.3,
+	});
+
+	// ** frame
+	let rect = draw.rect(diagram.width, diagram.height).attr({
+		'stroke':		'#ddd',
+		'fill-opacity':		'0',
+		'stroke-width':		'2',
+	});
 }
 
 function callback_history_change_doc(doc, event_kind)
@@ -385,6 +407,8 @@ function callback_focus_change(focus, user_data)
 
 function callback_mousedown_drawing(e)
 {
+	console.log('mousedown');
+
 	let point = {
 		'x': e.offsetX,
 		'y': e.offsetY,
@@ -399,7 +423,7 @@ function callback_mousedown_drawing(e)
 	const tool_kind = tool.get_tool_kind();
 
 	if('allow' === tool_kind){
-		callback_mousedown_drawing_allow();
+		callback_mousedown_drawing_allow(point);
 	}else if('lifeline' === tool_kind){
 		callback_mousedown_drawing_lifeline(point);
 	}else if('message' === tool_kind){
@@ -411,7 +435,7 @@ function callback_mousedown_drawing(e)
 	rerendering();
 }
 
-function callback_mousedown_drawing_allow()
+function callback_mousedown_drawing_allow(point)
 {
 	let diagram = get_current_diagram();
 	let focus = Doc.get_focus(get_current_doc());
@@ -426,6 +450,14 @@ function callback_mousedown_drawing_allow()
 		focus.focus_state.side = side;
 		const message_side = Message.get_message_side_from_element_side(element, side);
 		focus.focus_state.message_side = message_side;
+
+		return;
+	}
+
+	// ** focus diagram area size
+	if(32 > Math.abs(diagram.width - point.x) && 32 > Math.abs(diagram.height - point.y)){
+		console.log('resize');
+		Focus.set_diagram_resize(focus, true);
 	}
 }
 
@@ -490,7 +522,12 @@ function callback_mousedown_drawing_message(point)
 
 function callback_mouseup_drawing(e)
 {
+	console.log('mouseup');
+
 	mouse_state.is_down = false;
+
+	let focus = Doc.get_focus(get_current_doc());
+	Focus.set_diagram_resize(focus, false);
 
 	callback_focus_change();
 
@@ -525,9 +562,6 @@ function callback_mousemove_drawing(e)
 	}
 
 	let focus = Doc.get_focus(get_current_doc());
-	if(! Focus.is_focusing(focus)){
-		return;
-	}
 
 	const move = {
 		'x': e.movementX,
@@ -543,6 +577,10 @@ function callback_mousemove_drawing(e)
 
 	for(let i = 0; i < elements.length; i++){
 		move_element(diagram, elements[i], move);
+	}
+
+	if(true === Focus.get_diagram_resize(focus)){
+		Diagram.resize_from_diff(diagram, move);
 	}
 
 	rerendering();
