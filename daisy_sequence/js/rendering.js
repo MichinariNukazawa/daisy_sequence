@@ -194,7 +194,9 @@ class Renderer{
 				&& message.end.hasOwnProperty('lifeline_id')
 				&& message.start.lifeline_id == message.end.lifeline_id
 				&& 0 <= message.start.lifeline_id){
-			Renderer.draw_message_turnback(draw, position);
+			let svg_elem = Renderer.draw_message_turnback(draw, position);
+			let b = svg_elem.bbox();
+			message.work.rect = Object.assign({}, b);
 		}else{
 			var line = draw.line(
 					position.x,
@@ -335,6 +337,8 @@ class Renderer{
 
 		const point = {'x': position.x, 'y': position.y + height};
 		let array_polyline = Renderer.draw_array_top(draw, point, [6, 6], true);
+
+		return polyline;
 	}
 
 	static draw_message_array_of_foot(draw, position, message_kind)
