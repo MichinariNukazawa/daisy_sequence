@@ -420,6 +420,16 @@ class Diagram{
 		return element;
 	}
 
+	static create_append_element(diagram, kind, data)
+	{
+		let element = Diagram.create_element(diagram, kind, data);
+		if(! Diagram.append_element_(diagram, element)){
+			return null;
+		}else{
+			return element;
+		}
+	}
+
 	static delete_elements(diagram, elements)
 	{
 		for(let i = 0; i < elements.length; i++){
@@ -581,7 +591,7 @@ class Diagram{
 		return null;
 	}
 
-	static add_element(diagram, element)
+	static append_element_(diagram, element)
 	{
 		diagram.diagram_elements.push(element);
 

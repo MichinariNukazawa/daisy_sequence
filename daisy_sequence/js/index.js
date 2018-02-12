@@ -490,13 +490,8 @@ function callback_mousedown_drawing_lifeline(point)
 		'text': lifeline_name,
 		'x': point.x,
 	};
-	let lifeline = Diagram.create_element(diagram, 'lifeline', data);
+	let lifeline = Diagram.create_append_element(diagram, 'lifeline', data);
 	if(null === lifeline){
-		console.error('');
-		return;
-	}
-
-	if(! Diagram.add_element(diagram, lifeline)){
 		console.error('');
 		return;
 	}
@@ -518,13 +513,8 @@ function callback_mousedown_drawing_message(point)
 		'start': {'position_x': point.x},
 		'end': {'position_x': point.x + 10},
 	};
-	let message = Diagram.create_element(diagram, 'message', data);
+	let message = Diagram.create_append_element(diagram, 'message', data);
 	if(null === message){
-		console.error('');
-		return;
-	}
-
-	if(! Diagram.add_element(diagram, message)){
 		console.error('');
 		return;
 	}
@@ -548,13 +538,8 @@ function callback_mousedown_drawing_flugment(point)
 		'y': point.y,
 		'x': point.x,
 	};
-	let flugment = Diagram.create_element(diagram, 'flugment', data);
+	let flugment = Diagram.create_append_element(diagram, 'flugment', data);
 	if(null === flugment){
-		console.error('');
-		return;
-	}
-
-	if(! Diagram.add_element(diagram, flugment)){
 		console.error('');
 		return;
 	}
