@@ -370,6 +370,8 @@ function callback_mousedown_drawing(e)
 		callback_mousedown_drawing_allow();
 	}else if('lifeline' === tool_kind){
 		callback_mousedown_drawing_lifeline(point);
+	}else if('message' === tool_kind){
+		callback_mousedown_drawing_message(point);
 	}else{
 		console.error(tool_kind);
 	}
@@ -425,6 +427,33 @@ function callback_mousedown_drawing_lifeline(point)
 
 	let focus = Doc.get_focus(get_current_doc());
 	Focus.set_element(focus, lifeline);
+}
+
+function callback_mousedown_drawing_message(point)
+{
+	let diagram = get_current_diagram();
+
+	let data = {
+		'y': point.y,
+		'start': {'position_x': point.x},
+		'end': {'position_x': point.x + 10},
+	};
+	let message = Diagram.create_element(diagram, 'message', data);
+	if(null === message){
+		console.error('');
+		return;
+	}
+
+	if(! Diagram.add_element(diagram, message)){
+		console.error('');
+		return;
+	}
+
+	Message.change_side_from_point(message, diagram, 'start', point);
+
+	let focus = Doc.get_focus(get_current_doc());
+	Focus.set_element(focus, message);
+	focus.focus_state.message_side = 'end';
 }
 
 function callback_mouseup_drawing(e)

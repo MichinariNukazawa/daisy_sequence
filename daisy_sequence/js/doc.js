@@ -376,6 +376,8 @@ class Diagram{
 		let element = null;
 		if('lifeline' === kind){
 			element = Diagram.create_lifeline_(data);
+		}else if('message' === kind){
+			element = Diagram.create_message_(data);
 		}else if('spec' === kind){
 			element = Diagram.create_spec_(data);
 		}else if('reply_message' === kind){
@@ -575,6 +577,24 @@ class Diagram{
 		lifeline = Object.assign(lifeline, src);
 
 		return lifeline;
+	}
+
+	static create_message_(src)
+	{
+		let message = {
+			'kind':		'message',
+			'id':		-1,
+			'y':		10,
+			'start':	{'position_x': 0},
+			'end':		{'position_x': 10},
+			'end_kind':	'none',
+			'message_kind':	'sync',
+			'text':		'message',
+		};
+
+		message = Object.assign(message, src);
+
+		return message;
 	}
 
 	static create_reply_message_(src)
