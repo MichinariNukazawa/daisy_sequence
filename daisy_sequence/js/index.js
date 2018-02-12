@@ -132,9 +132,10 @@ window.onload = function(e){
 	tool = new Tool();
 	tool.add_callback_tool_change(callback_tool_change);
 
-	//! snatching Ctrl+z(Undo) textarea
+	//! snatching keys html input/textarea elements
 	document.onkeydown = function(e) {
 		if (e.ctrlKey && e.key === 'z') {
+			// Ctrl+z(Undo) textarea
 			e.preventDefault();
 
 			let current_doc = get_current_doc();
@@ -142,8 +143,39 @@ window.onload = function(e){
 				Doc.undo(current_doc);
 			}
 		}
+		if(e.keyCode == 46){
+			// Delete key
+			delete_current_focus_elements();
+		}
 	}
 
+}
+
+function delete_current_focus_elements()
+{
+	{
+		let doc = get_current_doc();
+		if(null === doc){
+			return;
+		}
+
+		let focus_elements = Focus.get_elements(Doc.get_focus(doc));
+		if(0 === focus_elements.length){
+			return;
+		}
+
+		Doc.history_add(get_current_doc());
+	}
+
+	let doc = get_current_doc();
+	let diagram = Doc.get_diagram(doc);
+	let focus = Doc.get_focus(doc);
+	let focus_elements = Focus.get_elements(focus);
+
+	Diagram.delete_elements(diagram, focus_elements);
+	Focus.clear(focus);
+
+	rerendering();
 }
 
 function callback_tool_change(tool_kind)

@@ -66,6 +66,13 @@ var template = [
 			}
 		}
 	},
+	{
+		label: 'Delete Element(s)',
+		accelerator: 'Delete',
+		click: function () {
+			delete_current_focus_elements();
+		}
+	},
 	]
 },
 {

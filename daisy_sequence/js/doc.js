@@ -312,6 +312,11 @@ class Focus{
 		Focus.call_event_listener_focus_change_(focus);
 	}
 
+	static clear(focus)
+	{
+		focus.elements.length = 0;
+	}
+
 	static set_side(focus, side){
 		focus.focus_state.side = side;
 	}
@@ -390,6 +395,42 @@ class Diagram{
 		return element;
 	}
 
+	static delete_elements(diagram, elements)
+	{
+		for(let i = 0; i < elements.length; i++){
+			Diagram.delete_element_from_id_(diagram, elements[i].id);
+		}
+	}
+
+	static delete_element_from_id_(diagram, id)
+	{
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			let element = diagram.diagram_elements[i];
+			if(id === element.id){
+				diagram.diagram_elements.splice(i, 1);
+				return true;
+			}
+
+			if('message' !== element.kind){
+				continue;
+			}
+			if(element.hasOwnProperty('spec') && null !== element.spec){
+				if(id === element.spec.id){
+					element.spec = null;
+					return true;
+				}
+			}
+			if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
+				if(id === element.reply_message.id){
+					element.reply_message = null;
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	static get_element_from_id(diagram, id)
 	{
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
@@ -405,12 +446,12 @@ class Diagram{
 			if('message' !== element.kind){
 				continue;
 			}
-			if(element.hasOwnProperty('spec')){
+			if(element.hasOwnProperty('spec') && null !== element.spec){
 				if(id === element.spec.id){
 					return element.spec;
 				}
 			}
-			if(element.hasOwnProperty('reply_message')){
+			if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
 				if(id === element.reply_message.id){
 					return element.reply_message;
 				}
@@ -436,12 +477,12 @@ class Diagram{
 			if('message' !== element.kind){
 				continue;
 			}
-			if(element.hasOwnProperty('spec')){
+			if(element.hasOwnProperty('spec') && null !== element.spec){
 				if(Diagram.is_touch_element_by_work_rect_(element.spec, point)){
 					return element.spec;
 				}
 			}
-			if(element.hasOwnProperty('reply_message')){
+			if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
 				if(Diagram.is_touch_element_by_work_rect_(element.reply_message, point)){
 					return element.reply_message;
 				}
