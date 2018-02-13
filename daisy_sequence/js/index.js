@@ -7,8 +7,8 @@ const path = require('path');
 
 let doc_collection = new DocCollection();
 
-let current_doc_id = -1;
 let tool = null;
+let daisy = null;
 
 let draw = null;
 let edge_icon_svg;
@@ -107,10 +107,43 @@ class Tool{
 	}
 };
 
+class Daisy{
+	constructor()
+	{
+		this.current_doc_id = -1;
+	}
+
+	set_current_doc_id(doc_id)
+	{
+		this.current_doc_id = doc_id;
+	}
+
+	get_current_doc_id()
+	{
+		return this.current_doc_id;
+	}
+
+	get_current_doc()
+	{
+		return doc_collection.get_doc_from_id(this.get_current_doc_id());
+	}
+
+	get_current_diagram()
+	{
+		const doc = daisy.get_current_doc();
+		if(null === doc){
+			return null;
+		}
+	
+		return Doc.get_diagram(doc);
+	}
+};
+
 
 window.onload = function(e){
-	current_doc_id = doc_collection.create_doc();
-	let doc = doc_collection.get_doc_from_id(current_doc_id);
+	daisy = new Daisy();
+	daisy.set_current_doc_id(doc_collection.create_doc());
+	let doc = doc_collection.get_doc_from_id(daisy.get_current_doc_id());
 	let diagram = Doc.get_diagram(doc);
 
 	try{
@@ -126,7 +159,7 @@ window.onload = function(e){
 	let focus = Doc.get_focus(doc);
 	Focus.add_event_listener_focus_change(focus, callback_focus_change, doc);
 
-	Renderer.rerendering(get_draw(), get_current_doc());
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 	callback_history_change_doc(doc, '-');
 
 	// document.addEventListener('mousemove', callback);
@@ -156,7 +189,7 @@ window.onload = function(e){
 			// Ctrl+z(Undo) textarea
 			e.preventDefault();
 
-			let current_doc = get_current_doc();
+			let current_doc = daisy.get_current_doc();
 			if(null !== current_doc){
 				Doc.undo(current_doc);
 			}
@@ -169,25 +202,9 @@ window.onload = function(e){
 
 }
 
-function get_current_doc()
-{
-	return doc_collection.get_doc_from_id(current_doc_id);
-}
-
-function get_current_diagram()
-{
-	let doc = get_current_doc();
-	if(null === doc){
-		console.error('');
-		return null;
-	}
-
-	return Doc.get_diagram(doc);
-}
-
 function get_current_single_focus_element()
 {
-	const focus = Doc.get_focus(get_current_doc());
+	const focus = Doc.get_focus(daisy.get_current_doc());
 	const elements = Focus.get_elements(focus);
 	if(1 !== elements.length){
 		return null;
@@ -199,7 +216,7 @@ function get_current_single_focus_element()
 function delete_current_focus_elements()
 {
 	{
-		let doc = get_current_doc();
+		let doc = daisy.get_current_doc();
 		if(null === doc){
 			return;
 		}
@@ -209,10 +226,10 @@ function delete_current_focus_elements()
 			return;
 		}
 
-		Doc.history_add(get_current_doc());
+		Doc.history_add(daisy.get_current_doc());
 	}
 
-	let doc = get_current_doc();
+	let doc = daisy.get_current_doc();
 	let diagram = Doc.get_diagram(doc);
 	let focus = Doc.get_focus(doc);
 	let focus_elements = Focus.get_elements(focus);
@@ -220,7 +237,7 @@ function delete_current_focus_elements()
 	Diagram.delete_elements(diagram, focus_elements);
 	Focus.clear(focus);
 
-	Renderer.rerendering(get_draw(), get_current_doc());
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 
 function callback_tool_change(tool_kind)
@@ -234,7 +251,7 @@ function add_event_listener_first_input_with_history(textarea_element, callback)
 	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
 	textarea_element.addEventListener('input', function(e){
 		if(is_focusin_first){
-			let focus = Doc.get_focus(get_current_doc());
+			let focus = Doc.get_focus(daisy.get_current_doc());
 			if(! Focus.is_focusing(focus)){
 				return;
 			}
@@ -243,14 +260,14 @@ function add_event_listener_first_input_with_history(textarea_element, callback)
 			if(1 !== elements.length){
 				return;
 			}
-			Doc.history_add(get_current_doc());
+			Doc.history_add(daisy.get_current_doc());
 
 			is_focusin_first = false;
 		}
 
 		callback();
 
-		Renderer.rerendering(get_draw(), get_current_doc());
+		Renderer.rerendering(get_draw(), daisy.get_current_doc());
 	}, false);
 }
 
@@ -305,7 +322,7 @@ function callback_history_change_doc(doc, event_kind)
 
 	callback_focus_change(Doc.get_focus(doc), doc);
 
-		Renderer.rerendering(get_draw(), get_current_doc());
+		Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 
 function callback_focus_change(focus, user_data)
@@ -390,13 +407,13 @@ function callback_mousedown_drawing(e)
 		console.error(tool_kind);
 	}
 
-	Renderer.rerendering(get_draw(), get_current_doc());
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 
 function callback_mousedown_drawing_allow(point)
 {
-	let diagram = get_current_diagram();
-	let focus = Doc.get_focus(get_current_doc());
+	let diagram = daisy.get_current_diagram();
+	let focus = Doc.get_focus(daisy.get_current_doc());
 
 	// ** focus element
 	let element = Diagram.get_element_of_touch(diagram, mouse_state.point);
@@ -422,10 +439,10 @@ function callback_mousedown_drawing_allow(point)
 function callback_mousedown_drawing_lifeline(point)
 {
 	{
-		Doc.history_add(get_current_doc());
+		Doc.history_add(daisy.get_current_doc());
 	}
 
-	let diagram = get_current_diagram();
+	let diagram = daisy.get_current_diagram();
 
 	let i = 0;
 	let lifeline_name;
@@ -446,17 +463,17 @@ function callback_mousedown_drawing_lifeline(point)
 		return;
 	}
 
-	let focus = Doc.get_focus(get_current_doc());
+	let focus = Doc.get_focus(daisy.get_current_doc());
 	Focus.set_element(focus, lifeline);
 }
 
 function callback_mousedown_drawing_message(point)
 {
 	{
-		Doc.history_add(get_current_doc());
+		Doc.history_add(daisy.get_current_doc());
 	}
 
-	let diagram = get_current_diagram();
+	let diagram = daisy.get_current_diagram();
 
 	let data = {
 		'y': point.y,
@@ -471,7 +488,7 @@ function callback_mousedown_drawing_message(point)
 
 	Message.change_side_from_point(message, diagram, 'start', point);
 
-	let focus = Doc.get_focus(get_current_doc());
+	let focus = Doc.get_focus(daisy.get_current_doc());
 	Focus.set_element(focus, message);
 	focus.focus_state.message_side = 'end';
 }
@@ -479,10 +496,10 @@ function callback_mousedown_drawing_message(point)
 function callback_mousedown_drawing_flugment(point)
 {
 	{
-		Doc.history_add(get_current_doc());
+		Doc.history_add(daisy.get_current_doc());
 	}
 
-	let diagram = get_current_diagram();
+	let diagram = daisy.get_current_diagram();
 
 	let data = {
 		'y': point.y,
@@ -494,7 +511,7 @@ function callback_mousedown_drawing_flugment(point)
 		return;
 	}
 
-	let focus = Doc.get_focus(get_current_doc());
+	let focus = Doc.get_focus(daisy.get_current_doc());
 	Focus.set_element(focus, flugment);
 }
 
@@ -504,12 +521,12 @@ function callback_mouseup_drawing(e)
 
 	mouse_state.is_down = false;
 
-	let focus = Doc.get_focus(get_current_doc());
+	let focus = Doc.get_focus(daisy.get_current_doc());
 	Focus.set_diagram_resize(focus, false);
 
 	callback_focus_change();
 
-	Renderer.rerendering(get_draw(), get_current_doc());
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 
 function callback_mousemove_drawing(e)
@@ -535,18 +552,18 @@ function callback_mousemove_drawing(e)
 		}else{
 			mouse_state.is_small_move = false;
 
-			Doc.history_add(get_current_doc());
+			Doc.history_add(daisy.get_current_doc());
 		}
 	}
 
-	let focus = Doc.get_focus(get_current_doc());
+	let focus = Doc.get_focus(daisy.get_current_doc());
 
 	const move = {
 		'x': e.movementX,
 		'y': e.movementY,
 	};
 	let elements = Focus.get_elements(focus);
-	let diagram = get_current_diagram();
+	let diagram = daisy.get_current_diagram();
 
 	if(1 === elements.length && 'message' === elements[0].kind){
 		const message_side = focus.focus_state.message_side;
@@ -561,7 +578,7 @@ function callback_mousemove_drawing(e)
 		Diagram.resize_from_diff(diagram, move);
 	}
 
-	Renderer.rerendering(get_draw(), get_current_doc());
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 
 function callback_change_message_spec()
@@ -579,7 +596,7 @@ function callback_change_message_spec()
 	let message_spec_elem = document.getElementById('editor__message-spec');
 	const checked = message_spec_elem.checked;
 
-	Doc.history_add(get_current_doc());
+	Doc.history_add(daisy.get_current_doc());
 	let element = get_current_single_focus_element();
 
 	//if(! message_spec_elem.checked){
@@ -587,12 +604,12 @@ function callback_change_message_spec()
 	if(! checked){
 		element.spec = null;
 	}else{
-		let diagram = get_current_diagram();
+		let diagram = daisy.get_current_diagram();
 		let spec = Diagram.create_element(diagram, 'spec', {});
 		element.spec = spec;
 	}
 
-	Renderer.rerendering(get_draw(), get_current_doc());
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 
 function callback_change_message_reply()
@@ -610,14 +627,14 @@ function callback_change_message_reply()
 	let message_reply_elem = document.getElementById('editor__message-reply');
 	const checked = message_reply_elem.checked;
 
-	Doc.history_add(get_current_doc());
+	Doc.history_add(daisy.get_current_doc());
 	let element = get_current_single_focus_element();
 
 	message_reply_elem.checked = checked;
 	if(! checked){
 		element.reply_message = null;
 	}else{
-		let diagram = get_current_diagram();
+		let diagram = daisy.get_current_diagram();
 		if(element.hasOwnProperty('spec') && null !== element.spec){
 			// NOP
 		}else{
@@ -629,6 +646,6 @@ function callback_change_message_reply()
 		element.reply_message = reply_message;
 	}
 
-	Renderer.rerendering(get_draw(), get_current_doc());
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 

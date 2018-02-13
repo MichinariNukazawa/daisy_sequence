@@ -50,9 +50,9 @@ var template = [
 		label: 'Undo',
 		accelerator: 'CmdOrCtrl+Z',
 		click: function () {
-			let current_doc = get_current_doc();
-			if(null !== current_doc){
-				Doc.undo(current_doc);
+			let doc = daisy.get_current_doc();
+			if(null !== doc){
+				Doc.undo(doc);
 			}
 		}
 	},
@@ -60,9 +60,9 @@ var template = [
 		label: 'Redo',
 		accelerator: 'CmdOrCtrl+Shift+Z',
 		click: function () {
-			let current_doc = get_current_doc();
-			if(null !== current_doc){
-				Doc.redo(current_doc);
+			let doc = daisy.get_current_doc();
+			if(null !== doc){
+				Doc.redo(doc);
 			}
 		}
 	},

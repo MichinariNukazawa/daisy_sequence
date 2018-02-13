@@ -9,6 +9,11 @@ class Renderer{
 
 	static rendering(draw, doc)
 	{
+		if(null === doc){
+			console.debug('Rendering:doc is null');
+			return;
+		}
+
 		const diagram = Doc.get_diagram(doc);
 
 		draw.size(diagram.width, diagram.height);
