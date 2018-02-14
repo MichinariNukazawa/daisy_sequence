@@ -64,7 +64,10 @@ function save_dialog(default_filepath)
 	const {app} = require('electron').remote;
 	const {dialog} = require('electron').remote;
 
-	default_filepath = ('' == default_filepath)? app.getPath('home'):default_filepath;
+	if('' == default_filepath){
+		// 拡張子のみのファイルパスを作っておくとdialogが勝手にoverwrite確認をしてくれる
+		default_filepath = path.join(app.getPath('home'), '.' + 'daisydiagram');
+	}
 	let filepath = dialog.showSaveDialog(
 			remote.getCurrentWindow(),
 			{
@@ -75,8 +78,10 @@ function save_dialog(default_filepath)
 				{name: 'All', extensions: ['*']},
 				],
 			});
+	if(typeof filepath === "undefined"){
+		return '';
+	}
 
-	filepath = (typeof filepath === "undefined")? '':filepath;
 	return filepath;
 }
 
@@ -98,8 +103,10 @@ function export_dialog(default_filepath, format_name)
 				{name: 'All', extensions: ['*']},
 				],
 			});
+	if(typeof filepath === "undefined"){
+		return '';
+	}
 
-	filepath = (typeof filepath === "undefined")? '':filepath;
 	return filepath;
 }
 
