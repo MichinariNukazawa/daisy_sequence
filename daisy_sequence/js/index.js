@@ -157,6 +157,20 @@ class Daisy{
 	
 		return Doc.get_diagram(doc);
 	}
+
+	get_current_doc_svg_format_string()
+	{
+		if(-1 === this.current_doc_id){
+			return null;
+		}
+
+		let draw = get_draw();
+		if(null === draw){
+			return null;
+		}
+
+		return draw.svg();
+	}
 };
 
 

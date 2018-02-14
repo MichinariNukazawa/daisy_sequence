@@ -79,6 +79,29 @@ function save_dialog(default_filepath)
 	return filepath;
 }
 
+function export_dialog(default_filepath, format_name)
+{
+	const {app} = require('electron').remote;
+	const {dialog} = require('electron').remote;
+
+	if('' == default_filepath){
+		default_filepath = path.join(app.getPath('home'), '.' + format_name);
+	}
+	let filepath = dialog.showSaveDialog(
+			remote.getCurrentWindow(),
+			{
+				title: 'Export',
+				defaultPath: default_filepath,
+				filters: [
+				{name: format_name, extensions: [format_name]},
+				{name: 'All', extensions: ['*']},
+				],
+			});
+
+	filepath = (typeof filepath === "undefined")? '':filepath;
+	return filepath;
+}
+
 var template = [
 {
 	label: 'File',
@@ -194,6 +217,43 @@ var template = [
 			Doc.on_save(doc);
 
 			console.log("Save:`%s`", filepath);
+		}
+	},
+	{
+		label: 'Export',
+		accelerator: 'CmdOrCtrl+Shift+E',
+		click: function () {
+			const doc = daisy.get_current_doc();
+			if(null === doc){
+				message_dialog(
+						'info', "Export",
+						"nothing opened document.");
+				return;
+			}
+
+			const strdata = daisy.get_current_doc_svg_format_string();
+			if(null === strdata){
+				message_dialog(
+						'warning', "Export",
+						"internal error. (converter)");
+			}
+
+			let filepath = Doc.get_filepath(doc);
+			filepath = export_dialog(filepath, 'svg');
+			if('' == filepath){
+				return;
+			}
+
+			try{
+				fs.writeFileSync(filepath, strdata);
+			}catch(err){
+				message_dialog(
+						'warning', "Export",
+						"internal error. (writeFile):\n`" + filepath + "`");
+				return;
+			}
+
+			console.log("Export");
 		}
 	},
 	{
