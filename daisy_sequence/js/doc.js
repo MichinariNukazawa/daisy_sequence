@@ -188,58 +188,58 @@ class Doc{
 		return doc.diagram_historys[doc.diagram_history_index].focus;
 	}
 
-	static undo(current_doc)
+	static undo(doc)
 	{
-		if(null === current_doc){
+		if(null === doc){
 			console.error("undo error");
 			return;
 		}
 
-		if(0 < current_doc.diagram_history_index){
-			current_doc.diagram_history_index--;
+		if(0 < doc.diagram_history_index){
+			doc.diagram_history_index--;
 		}else{
 			console.debug("no undo history: %d %d",
-					current_doc.diagram_history_index,
-					current_doc.diagram_historys.length);
+					doc.diagram_history_index,
+					doc.diagram_historys.length);
 			return;
 		}
 
-		Doc.call_event_listener_history_change_(current_doc, 'undo');
+		Doc.call_event_listener_history_change_(doc, 'undo');
 	}
 
-	static redo(current_doc)
+	static redo(doc)
 	{
-		if(null === current_doc){
+		if(null === doc){
 			console.error('redo error');
 			return;
 		}
 
-		if((current_doc.diagram_history_index + 1) < current_doc.diagram_historys.length){
-			current_doc.diagram_history_index++;
+		if((doc.diagram_history_index + 1) < doc.diagram_historys.length){
+			doc.diagram_history_index++;
 		}else{
 			console.debug("no redo history: %d %d",
-					current_doc.diagram_history_index,
-					current_doc.diagram_historys.length);
+					doc.diagram_history_index,
+					doc.diagram_historys.length);
 			return;
 		}
 
-		Doc.call_event_listener_history_change_(current_doc, 'redo');
+		Doc.call_event_listener_history_change_(doc, 'redo');
 	}
 
-	static history_add(current_doc)
+	static history_add(doc)
 	{
-		if(null === current_doc){
+		if(null === doc){
 			console.error('');
 			return;
 		}
 
 		let hist = DiagramHistory.deepcopy(
-				current_doc.diagram_historys[(current_doc.diagram_history_index)]);
-		current_doc.diagram_historys[current_doc.diagram_history_index + 1] = hist;
-		current_doc.diagram_history_index++;
-		current_doc.diagram_historys.length = current_doc.diagram_history_index + 1;
+				doc.diagram_historys[(doc.diagram_history_index)]);
+		doc.diagram_historys[doc.diagram_history_index + 1] = hist;
+		doc.diagram_history_index++;
+		doc.diagram_historys.length = doc.diagram_history_index + 1;
 
-		Doc.call_event_listener_history_change_(current_doc, 'add');
+		Doc.call_event_listener_history_change_(doc, 'add');
 	}
 
 	static add_event_listener_history_change(doc, callback)
