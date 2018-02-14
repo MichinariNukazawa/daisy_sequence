@@ -113,9 +113,29 @@ class Daisy{
 		this.current_doc_id = -1;
 	}
 
-	set_current_doc_id(doc_id)
+	append_doc_id(doc_id)
 	{
 		this.current_doc_id = doc_id;
+
+		if(-1 !== doc_id){
+			let doc = doc_collection.get_doc_from_id(doc_id);
+			let diagram = Doc.get_diagram(doc);
+
+			Doc.add_event_listener_history_change(doc, callback_history_change_doc);
+			let focus = Doc.get_focus(doc);
+			Focus.add_event_listener_focus_change(focus, callback_focus_change, doc);
+
+			Renderer.rerendering(get_draw(), daisy.get_current_doc());
+			callback_history_change_doc(doc, '-');
+		}
+
+		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	}
+
+	remove_doc_id(doc_id)
+	{
+		this.current_doc_id = doc_id;
+		Renderer.rerendering(get_draw(), daisy.get_current_doc());
 	}
 
 	get_current_doc_id()
@@ -141,26 +161,16 @@ class Daisy{
 
 
 window.onload = function(e){
-	daisy = new Daisy();
-	daisy.set_current_doc_id(doc_collection.create_doc());
-	let doc = doc_collection.get_doc_from_id(daisy.get_current_doc_id());
-	let diagram = Doc.get_diagram(doc);
-
 	try{
 		const filepath = path.join(__dirname, 'image/edge.svg');
 		edge_icon_svg = fs.readFileSync(filepath, 'utf8');
 	}catch(err){
 		console.error(err);
 	}
+	draw = SVG('drawing').size(0, 0);
 
-	draw = SVG('drawing').size(diagram.width, diagram.height);
-
-	Doc.add_event_listener_history_change(doc, callback_history_change_doc);
-	let focus = Doc.get_focus(doc);
-	Focus.add_event_listener_focus_change(focus, callback_focus_change, doc);
-
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
-	callback_history_change_doc(doc, '-');
+	daisy = new Daisy();
+	daisy.append_doc_id(doc_collection.create_doc());
 
 	// document.addEventListener('mousemove', callback);
 	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
@@ -381,6 +391,9 @@ function callback_focus_change(focus, user_data)
 function callback_mousedown_drawing(e)
 {
 	// console.log('mousedown');
+	if(null === daisy.get_current_doc()){
+		return;
+	}
 
 	let point = {
 		'x': e.offsetX,
@@ -518,6 +531,9 @@ function callback_mousedown_drawing_flugment(point)
 function callback_mouseup_drawing(e)
 {
 	// console.log('mouseup');
+	if(null === daisy.get_current_doc()){
+		return;
+	}
 
 	mouse_state.is_down = false;
 
@@ -531,6 +547,10 @@ function callback_mouseup_drawing(e)
 
 function callback_mousemove_drawing(e)
 {
+	if(null === daisy.get_current_doc()){
+		return;
+	}
+
 	let point = {
 		'x': e.offsetX,
 		'y': e.offsetY,

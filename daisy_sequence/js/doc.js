@@ -4,12 +4,25 @@ class DocCollection{
 	constructor()
 	{
 		this.docs = [];
-		this.docs[0] = get_default_doc();
 	}
 
 	create_doc()
 	{
+		this.docs[0] = get_default_doc();
 		return 0; // doc_id
+	}
+
+	create_doc_from_native_format_string(strdata, err)
+	{
+		const doc = Doc.create_from_native_format_string(strdata, err);
+		if(null === doc){
+			return -1;
+		}
+
+		const doc_id = this.assign_doc_id_();
+		this.docs[doc_id] = doc;
+
+		return doc_id;
 	}
 
 	get_doc_from_id(doc_id)
@@ -19,6 +32,13 @@ class DocCollection{
 		}else{
 			return this.docs[doc_id];
 		}
+	}
+
+	assign_doc_id_()
+	{
+		let i = 0;
+		while(null !== this.get_doc_from_id(i)){i++;}
+		return i;
 	}
 };
 
@@ -145,29 +165,59 @@ function get_default_doc()
 		'diagram_elements': diagram_elements,
 	};
 
-	let focus = {
-		'focus_state':{
-			'side': '',
-			'is_diagram_resize': false,
-		},
-		'elements': [],
-	};
-
-	let diagram_history = {
-		'diagram': diagram,
-		'focus': focus,
-	};
-
-	let doc = {
-		'diagram_history_index': 0,
-		'diagram_historys': [diagram_history],
-	};
+	const doc = Doc.create_from_diagram_(diagram);
 
 	return doc;
 }
 
 /** doc を操作するstatic methodの集合 */
 class Doc{
+	static create_from_native_format_string(strdata, err_)
+	{
+		let src_diagram = {};
+		try{
+			src_diagram = JSON.parse(strdata);
+		}catch(err){
+			console.debug(err.message);
+			err_.message = err.message;
+			return null;
+		}
+
+		const sanitized_diagram = Diagram.sanitize(src_diagram, err_);
+		if(null === sanitized_diagram){
+			return null;
+		}
+
+		const doc = Doc.create_from_diagram_(sanitized_diagram);
+
+		return doc;
+	}
+
+	static create_from_diagram_(diagram)
+	{
+		let focus = {
+			'focus_state':{
+				'side': '',
+				'is_diagram_resize': false,
+			},
+			'elements': [],
+		};
+
+		let diagram_history = {
+			'diagram': diagram,
+			'focus': focus,
+		};
+
+		let doc = {
+			'diagram_history_index': 0,
+			'diagram_historys': [diagram_history],
+			'filepath': '',
+			'on_save_diagram_history_index': -1,
+		};
+
+		return doc;
+	}
+
 	static get_diagram(doc)
 	{
 		if(null === doc){
@@ -202,6 +252,10 @@ class Doc{
 					doc.diagram_history_index,
 					doc.diagram_historys.length);
 			return;
+		}
+
+		if(doc.diagram_history_index < doc.on_save_diagram_history_index){
+			doc.on_save_diagram_history_index = -1;
 		}
 
 		Doc.call_event_listener_history_change_(doc, 'undo');
@@ -275,6 +329,43 @@ class Doc{
 		for(let i = 0; i < doc.work.event_listener_history_changes.length; i++){
 			doc.work.event_listener_history_changes[i](doc, event_kind);
 		}
+	}
+
+	static get_filepath(doc)
+	{
+		return doc.filepath;
+	}
+
+	static set_filepath(doc, filepath)
+	{
+		doc.filepath = filepath;
+	}
+
+	static get_native_format_string(doc)
+	{
+		if(null === doc){
+			return null;
+		}
+
+		const src_diagram = Doc.get_diagram(doc);
+		let diagram = object_deepcopy(src_diagram);
+		object_remove_key(diagram, 'work');
+		const strdata = JSON.stringify(diagram, null, '\t');
+		return strdata;
+	}
+
+	static on_save(doc)
+	{
+		doc.on_save_diagram_history_index = doc.diagram_history_index;
+	}
+
+	static is_on_save(doc)
+	{
+		if(-1 === doc.on_save_diagram_history_index){
+			return false;
+		}
+
+		return (doc.on_save_diagram_history_index === doc.diagram_history_index);
 	}
 };
 
@@ -464,6 +555,12 @@ class Diagram{
 		}
 
 		return false;
+	}
+
+	static sanitize(src_diagram, err_)
+	{
+		//! @todo not implement
+		return object_deepcopy(src_diagram);
 	}
 
 	static resize_from_diff(diagram, diff)
@@ -948,5 +1045,20 @@ function object_deepcopy(obj)
 	 */
 
 	return JSON.parse(JSON.stringify(obj))
+}
+
+function object_remove_key(obj, keys)
+{
+	if(obj instanceof Array){
+		obj.forEach(function(item){
+			object_remove_key(item,keys)
+		});
+	}
+	else if(typeof obj === 'object'){
+		Object.getOwnPropertyNames(obj).forEach(function(key){
+			if(keys.indexOf(key) !== -1)delete obj[key];
+			else object_remove_key(obj[key],keys);
+		});
+	}
 }
 
