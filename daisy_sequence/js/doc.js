@@ -1,5 +1,17 @@
 'use strict';
 
+class Version{
+	static get_name()
+	{
+		return 'daisy diagram';
+	}
+
+	static get_version()
+	{
+		return '201802.0.0-devel';
+	}
+}
+
 class DocCollection{
 	constructor()
 	{
@@ -174,16 +186,21 @@ function get_default_doc()
 class Doc{
 	static create_from_native_format_string(strdata, err_)
 	{
-		let src_diagram = {};
+		let native_doc = {};
 		try{
-			src_diagram = JSON.parse(strdata);
+			native_doc = JSON.parse(strdata);
 		}catch(err){
 			console.debug(err.message);
 			err_.message = err.message;
 			return null;
 		}
 
-		const sanitized_diagram = Diagram.sanitize(src_diagram, err_);
+		if(! native_doc.hasOwnProperty('diagram')){
+			err_.message = 'nothing property "diagram"';
+			return null;
+		}
+
+		const sanitized_diagram = Diagram.sanitize(native_doc.diagram, err_);
 		if(null === sanitized_diagram){
 			return null;
 		}
@@ -350,7 +367,14 @@ class Doc{
 		const src_diagram = Doc.get_diagram(doc);
 		let diagram = object_deepcopy(src_diagram);
 		object_remove_key(diagram, 'work');
-		const strdata = JSON.stringify(diagram, null, '\t');
+		let native_doc = {
+			'diagram': diagram,
+			'editor_info': {
+				'application_name':	Version.get_name(),
+				'version':		Version.get_version(),
+			},
+		};
+		const strdata = JSON.stringify(native_doc, null, '\t');
 		return strdata;
 	}
 
