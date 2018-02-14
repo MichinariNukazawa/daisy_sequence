@@ -25,6 +25,7 @@ function confirm_dialog(strtitle, strmessage) {
 			{
 				type: 'question',
 				buttons: ['Yes', 'No'],
+				defaultId: 1,
 				title: strtitle,
 				message: strmessage,
 			});
