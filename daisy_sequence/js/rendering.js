@@ -83,13 +83,14 @@ class Renderer{
 		};
 		const padding = 5;
 		const radius = 3;
+		const offset = [0, 1];
 
 		let b = text.bbox();
 		let box = {
 			'x': (b.x - padding),
 			'y': b.y,
-			'width': b.width + (padding * 2),
-			'height': b.height,
+			'width': b.width + (padding * 2) + offset[0],
+			'height': b.height + offset[1],
 		};
 		draw.rect(box.width, box.height).move(box.x, box.y)
 			.attr(attr).radius(radius);
@@ -242,9 +243,9 @@ class Renderer{
 		if(position.width < 0){
 			text_point.x += position.width;
 		}
-		const text_offset = 8;
-		text_point.x += text_offset;
-		text_point.y += text_offset;
+		const text_offset = [18, 2];
+		text_point.x += text_offset[0];
+		text_point.y += text_offset[1];
 		let text = draw.text(message.text).move(text_point.x, text_point.y);
 
 		if(is_touch_end_side_lifeline){
@@ -306,12 +307,13 @@ class Renderer{
 		// ** frame
 		const padding = 5;
 		const radius = 1;
+		const offset = [8, 2];
 		const b = text.bbox();
 		const box = {
 			'x': (b.x - padding),
 			'y': b.y,
-			'width': b.width + (padding * 2),
-			'height': b.height,
+			'width': b.width + (padding * 2) + offset[0],
+			'height': b.height + offset[1],
 		};
 		const attr = {
 			'stroke':		'#000',
