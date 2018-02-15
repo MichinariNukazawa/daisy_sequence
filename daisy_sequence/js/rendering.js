@@ -305,16 +305,20 @@ class Renderer{
 		let text = draw.text(show_text).move(flugment.x, flugment.y);
 
 		// ** frame
-		const padding = 5;
 		const radius = 1;
-		const offset = [8, 2];
 		const b = text.bbox();
-		const box = {
-			'x': (b.x - padding),
-			'y': b.y,
-			'width': b.width + (padding * 2) + offset[0],
-			'height': b.height + offset[1],
+		if(flugment.is_auto_size){
+			flugment.width = b.width;
+			flugment.height = b.height;
+		}
+		let box = {
+			'x':		b.x,
+			'y':		b.y,
+			'width':	flugment.width,
+			'height':	flugment.height,
 		};
+		box = Rect.expand(box, [5, 0]);
+		box = Rect.add_size(box, [8, 2]);
 		const attr = {
 			'stroke':		'#000',
 			'stroke-width':		'1',
@@ -323,6 +327,15 @@ class Renderer{
 		};
 		draw.rect(box.width, box.height).move(box.x, box.y)
 			.radius(radius).attr(attr);
+
+		// ** frame resize icon
+		if(! flugment.is_auto_size){
+			let group_edge_icon = draw.group().addClass('flugment__edge-icon');
+			group_edge_icon.svg(edge_icon_svg)
+				.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8).scale(0.5, 0.5).attr({
+				'opacity':	0.3,
+			});
+		}
 
 		// ** work.rect
 		if(! flugment.hasOwnProperty('work')){

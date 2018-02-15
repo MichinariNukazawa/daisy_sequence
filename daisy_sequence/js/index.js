@@ -197,6 +197,12 @@ window.onload = function(e){
 	add_event_listener_first_input_with_history(edit_control__axis_x, callback_input_with_history_axis_x);
 	let edit_control__axis_y = document.getElementById('edit-control__axis-y');
 	add_event_listener_first_input_with_history(edit_control__axis_y, callback_input_with_history_axis_y);
+	let edit_control__axis_width = document.getElementById('edit-control__axis-width');
+	add_event_listener_first_input_with_history(edit_control__axis_width, callback_input_with_history_axis_width);
+	let edit_control__axis_height = document.getElementById('edit-control__axis-height');
+	add_event_listener_first_input_with_history(edit_control__axis_height, callback_input_with_history_axis_height);
+
+	document.getElementById('editor__flugment-is_auto_size').addEventListener('change', callback_change_flugment_is_auto_size, false);
 
 	let editor__lifeline_name = document.getElementById('editor__lifeline-name');
 	add_event_listener_first_input_with_history(editor__lifeline_name, callback_input_with_history_text);
@@ -295,34 +301,39 @@ function add_event_listener_first_input_with_history(textarea_element, callback)
 	}, false);
 }
 
-function callback_input_with_history_axis_x()
+function callback_input_with_history_axis_value(value_name)
 {
 	let element = get_current_single_focus_element();
 	if(null === element){
 		return;
 	}
 
-	let v = document.getElementById('edit-control__axis-x').value;
-	if(element.hasOwnProperty('x') && /[1-9][0-9]*/.test(v)){
-		element.x = parseInt(v, 10);
+	let v = document.getElementById('edit-control__axis-' + value_name).value;
+	if(element.hasOwnProperty(value_name) && /[1-9][0-9]*/.test(v)){
+		element[value_name] = parseInt(v, 10);
 	}
 
-	console.log("X %s", v);
+	console.log("%s %s", value_name, v);
+}
+
+function callback_input_with_history_axis_x()
+{
+	callback_input_with_history_axis_value('x')
 }
 
 function callback_input_with_history_axis_y()
 {
-	let element = get_current_single_focus_element();
-	if(null === element){
-		return;
-	}
+	callback_input_with_history_axis_value('y')
+}
 
-	let v = document.getElementById('edit-control__axis-y').value;
-	if(element.hasOwnProperty('y') && /[1-9][0-9]*/.test(v)){
-		element.y = parseInt(v, 10);
-	}
+function callback_input_with_history_axis_width()
+{
+	callback_input_with_history_axis_value('width')
+}
 
-	console.log("Y %s", v);
+function callback_input_with_history_axis_height()
+{
+	callback_input_with_history_axis_value('height')
 }
 
 function callback_input_with_history_text()
@@ -356,6 +367,8 @@ function callback_focus_change(focus, user_data)
 	let message_reply_elem = document.getElementById('editor__message-reply');
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
 	let edit_control__axis_y = document.getElementById('edit-control__axis-y');
+	let edit_control__axis_width = document.getElementById('edit-control__axis-width');
+	let edit_control__axis_height = document.getElementById('edit-control__axis-height');
 
 	// const doc = user_data;
 	const focus_element = get_current_single_focus_element();
@@ -365,12 +378,16 @@ function callback_focus_change(focus, user_data)
 		message_reply_elem.disabled = true;
 		edit_control__axis_x.disabled = true;
 		edit_control__axis_y.disabled = true;
+		edit_control__axis_width.disabled = true;
+		edit_control__axis_height.disabled = true;
 	}else{
 		lifeline_name_elem.disabled = false;
 		message_spec_elem.disabled = false;
 		message_reply_elem.disabled = false;
 		edit_control__axis_x.disabled = false;
 		edit_control__axis_y.disabled = false;
+		edit_control__axis_width.disabled = false;
+		edit_control__axis_height.disabled = false;
 	}
 
 	if(null !== focus_element && focus_element.hasOwnProperty('text')){
@@ -400,6 +417,29 @@ function callback_focus_change(focus, user_data)
 	}else{
 		edit_control__axis_y.disabled = true;
 	}
+	if(null !== focus_element && focus_element.hasOwnProperty('width')){
+		edit_control__axis_width.value = focus_element.width;
+	}else{
+		edit_control__axis_width.disabled = true;
+	}
+	if(null !== focus_element && focus_element.hasOwnProperty('height')){
+		edit_control__axis_height.value = focus_element.height;
+	}else{
+		edit_control__axis_height.disabled = true;
+	}
+
+	let flugment_is_auto_size_elem = document.getElementById('editor__flugment-is_auto_size');
+	if(null !== focus_element && 'flugment' === focus_element.kind){
+		flugment_is_auto_size_elem.disabled = false;
+		flugment_is_auto_size_elem.checked = focus_element.is_auto_size;
+		if(focus_element.is_auto_size){
+			edit_control__axis_width.disabled = true;
+			edit_control__axis_height.disabled = true;
+		}
+	}else{
+		flugment_is_auto_size_elem.disabled = true;
+	}
+
 }
 
 function callback_mousedown_drawing(e)
@@ -452,6 +492,14 @@ function callback_mousedown_drawing_allow(point)
 		focus.focus_state.side = side;
 		const message_side = Message.get_message_side_from_element_side(element, side);
 		focus.focus_state.message_side = message_side;
+
+		return;
+	}
+
+	// ** focus flugment size
+	if(null !== element && 'flugment' === element.kind){
+		const edge = Element.get_edge_of_touch(element, mouse_state.point);
+		focus.focus_state.edge = edge;
 
 		return;
 	}
@@ -604,14 +652,49 @@ function callback_mousemove_drawing(e)
 		Message.change_side_from_point(elements[0], diagram, message_side, point);
 	}
 
-	for(let i = 0; i < elements.length; i++){
-		move_element(diagram, elements[i], move);
+	let is_move = true;
+	if(1 === elements.length && 'flugment' === elements[0].kind){
+		if('right-bottom' === focus.focus_state.edge){
+			elements[0].width += move.x;
+			elements[0].height += move.y;
+			is_move = false;
+		}
+	}
+
+	if(is_move){
+		for(let i = 0; i < elements.length; i++){
+			move_element(diagram, elements[i], move);
+		}
 	}
 
 	if(true === Focus.get_diagram_resize(focus)){
 		Diagram.resize_from_diff(diagram, move);
 	}
 
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+}
+function callback_change_flugment_is_auto_size()
+{
+	{
+		let element = get_current_single_focus_element();
+		if(null === element){
+			return;
+		}
+		if('flugment' !== element.kind){
+			return;
+		}
+	}
+
+	let flugment_is_auto_size_elem = document.getElementById('editor__flugment-is_auto_size');
+	const checked = flugment_is_auto_size_elem.checked;
+
+	Doc.history_add(daisy.get_current_doc());
+	let element = get_current_single_focus_element();
+
+	flugment_is_auto_size_elem.checked = checked;
+	element.is_auto_size = checked;
+
+	callback_focus_change(Doc.get_focus(daisy.get_current_doc()), null);
 	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 

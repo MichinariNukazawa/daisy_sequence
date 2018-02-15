@@ -165,7 +165,21 @@ function get_default_doc()
 		'kind':		'flugment',
 		'id':		12,
 		'x':		350,
+		'y':		250,
+		'width':	120,
+		'height':	40,
+		'is_auto_size':	true,
+		'title':	'',
+		'text':		'text\nmemo flugment',
+	},
+	{
+		'kind':		'flugment',
+		'id':		13,
+		'x':		350,
 		'y':		350,
+		'width':	120,
+		'height':	40,
+		'is_auto_size':	false,
 		'title':	'',
 		'text':		'text\nmemo flugment',
 	},
@@ -215,6 +229,7 @@ class Doc{
 		let focus = {
 			'focus_state':{
 				'side': '',
+				'edge': '',
 				'is_diagram_resize': false,
 			},
 			'elements': [],
@@ -896,6 +911,29 @@ class Element{
 
 		return '';
 	}
+
+	static get_edge_of_touch(element, point)
+	{
+		let rect = Element.get_rect(element);
+		if(null === rect){
+			return '';
+		}
+
+		rect = Rect.abs(rect);
+		{
+			let edge_rect = {
+				'x':		rect.x + rect.width - 32,
+				'y':		rect.y + rect.height - 32,
+				'width':	32,
+				'height':	32,
+			}
+			if(Rect.is_touch(edge_rect, point, [0, 0])){
+				return 'right-bottom';
+			}
+		}
+
+		return '';
+	}
 };
 
 class Message{
@@ -1016,6 +1054,26 @@ class Rect{
 			rect.y = src_rect.y + src_rect.height;
 			rect.height = src_rect.height * -1;
 		}
+
+		return rect;
+	}
+
+	static expand(src_rect, padding)
+	{
+		let rect = Object.assign({}, src_rect);
+		rect.x		-= padding[0];
+		rect.y		-= padding[1];
+		rect.width	+= (padding[0] * 2);
+		rect.height	+= (padding[1] * 2);
+
+		return rect;
+	}
+
+	static add_size(src_rect, offset)
+	{
+		let rect = Object.assign({}, src_rect);
+		rect.width	+= offset[0];
+		rect.height	+= offset[1];
 
 		return rect;
 	}
