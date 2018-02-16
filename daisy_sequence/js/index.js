@@ -154,7 +154,7 @@ class Daisy{
 		if(null === doc){
 			return null;
 		}
-	
+
 		return Doc.get_diagram(doc);
 	}
 
@@ -201,6 +201,9 @@ window.onload = function(e){
 	add_event_listener_first_input_with_history(edit_control__axis_width, callback_input_with_history_axis_width);
 	let edit_control__axis_height = document.getElementById('edit-control__axis-height');
 	add_event_listener_first_input_with_history(edit_control__axis_height, callback_input_with_history_axis_height);
+
+	let editor__flugment_kind = document.getElementById('editor__flugment-kind');
+	add_event_listener_first_input_with_history(editor__flugment_kind, callback_input_flugment_kind_with_history);
 
 	document.getElementById('editor__flugment-is_auto_size').addEventListener('change', callback_change_flugment_is_auto_size, false);
 
@@ -348,6 +351,17 @@ function callback_input_with_history_text()
 	element.text = s;
 }
 
+function callback_input_flugment_kind_with_history()
+{
+	let element = get_current_single_focus_element();
+	if(null === element){
+		return;
+	}
+
+	let s = document.getElementById('editor__flugment-kind').value;
+	element.flugment_kind = s;
+}
+
 function callback_history_change_doc(doc, event_kind)
 {
 	let s = sprintf("history: %2d/%2d(%s)",
@@ -358,12 +372,13 @@ function callback_history_change_doc(doc, event_kind)
 
 	callback_focus_change(Doc.get_focus(doc), doc);
 
-		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
 
 function callback_focus_change(focus, user_data)
 {
 	let element_text_elem = document.getElementById('editor__element-text');
+	let flugment_kind_elem = document.getElementById('editor__flugment-kind');
 	let message_spec_elem = document.getElementById('editor__message-spec');
 	let message_reply_elem = document.getElementById('editor__message-reply');
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
@@ -375,6 +390,7 @@ function callback_focus_change(focus, user_data)
 	const focus_element = get_current_single_focus_element();
 	if(null === focus_element){
 		element_text_elem.disabled = true;
+		flugment_kind_elem.disabled = true;
 		message_spec_elem.disabled = true;
 		message_reply_elem.disabled = true;
 		edit_control__axis_x.disabled = true;
@@ -383,6 +399,7 @@ function callback_focus_change(focus, user_data)
 		edit_control__axis_height.disabled = true;
 	}else{
 		element_text_elem.disabled = false;
+		flugment_kind_elem.disabled = false;
 		message_spec_elem.disabled = false;
 		message_reply_elem.disabled = false;
 		edit_control__axis_x.disabled = false;
@@ -431,6 +448,9 @@ function callback_focus_change(focus, user_data)
 
 	let flugment_is_auto_size_elem = document.getElementById('editor__flugment-is_auto_size');
 	if(null !== focus_element && 'flugment' === focus_element.kind){
+		flugment_kind_elem.disabled = false;
+		flugment_kind_elem.value = focus_element.flugment_kind;
+
 		flugment_is_auto_size_elem.disabled = false;
 		flugment_is_auto_size_elem.checked = focus_element.is_auto_size;
 		if(focus_element.is_auto_size){
@@ -438,6 +458,7 @@ function callback_focus_change(focus, user_data)
 			edit_control__axis_height.disabled = true;
 		}
 	}else{
+		flugment_kind_elem.disabled = true;
 		flugment_is_auto_size_elem.disabled = true;
 	}
 

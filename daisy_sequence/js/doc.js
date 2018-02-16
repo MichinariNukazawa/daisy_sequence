@@ -162,26 +162,26 @@ function get_default_doc()
 		'text':		'stop to lifeline',
 	},
 	{
-		'kind':		'flugment',
-		'id':		12,
-		'x':		350,
-		'y':		250,
-		'width':	120,
-		'height':	40,
-		'is_auto_size':	true,
-		'title':	'',
-		'text':		'text\nmemo flugment',
+		'kind':			'flugment',
+		'id':			12,
+		'x':			350,
+		'y':			250,
+		'width':		120,
+		'height':		40,
+		'is_auto_size':		true,
+		'flugment_kind':	'alt',
+		'text':			'text\nmemo flugment',
 	},
 	{
-		'kind':		'flugment',
-		'id':		13,
-		'x':		350,
-		'y':		350,
-		'width':	120,
-		'height':	40,
-		'is_auto_size':	false,
-		'title':	'',
-		'text':		'text\nmemo flugment',
+		'kind':			'flugment',
+		'id':			13,
+		'x':			350,
+		'y':			350,
+		'width':		120,
+		'height':		40,
+		'is_auto_size':		false,
+		'flugment_kind':	'',
+		'text':			'text\nmemo flugment',
 	},
 	];
 
@@ -1028,6 +1028,20 @@ class Message{
 			point.y -= offset[1];
 		}
 		return point;
+	}
+};
+
+class Flugment{
+	static get_infos()
+	{
+		const infos = [
+		{id: 0, name:'(comment)'},
+		// {id: 1, name:'alt'},
+		{id: 2, name:'loop'},
+		{id: 3, name:'break'},
+		];
+	
+		return infos;
 	}
 };
 

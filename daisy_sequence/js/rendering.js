@@ -300,9 +300,36 @@ class Renderer{
 
 	static draw_flugment(draw, flugment)
 	{
+		const padding = [5, 0];
+		// ** flugment_kind
+		let flugment_kind_size;
+		{
+			if('' == flugment.flugment_kind || '(comment)' == flugment.flugment_kind){
+				flugment_kind_size = [0, 0];
+			}else{
+				let flugment_kind_text = draw.text(flugment.flugment_kind).move(flugment.x, flugment.y);
+				const b = flugment_kind_text.bbox();
+				flugment_kind_size = [
+					b.width,
+					b.height,
+				];
+
+				// *** flugment_kind frame
+				let points = [
+					b.x - padding[0], b.y + b.height,
+					b.x + b.width, b.y + b.height,
+					b.x + b.width + 5 , b.y + b.height - 5,
+					b.x + b.width + 5 , b.y,
+				];
+				let flugment_kind_polyline = draw.polyline(points)
+					.stroke({ width: 1, linecap: 'round', }).fill('none');
+			}
+		}
+
 		// ** contents
 		const show_text = (! /^\s*$/.test(flugment.text))? flugment.text : '-';
-		let text = draw.text(show_text).move(flugment.x, flugment.y);
+		let text = draw.text(show_text)
+			.move(flugment.x, flugment_kind_size[1] + flugment.y);
 
 		// ** frame
 		const radius = 1;
@@ -313,11 +340,11 @@ class Renderer{
 		}
 		let box = {
 			'x':		b.x,
-			'y':		b.y,
-			'width':	flugment.width,
-			'height':	flugment.height,
+			'y':		b.y - flugment_kind_size[1],
+			'width':	Math.max(flugment.width, flugment_kind_size[0]),
+			'height':	flugment.height + flugment_kind_size[1],
 		};
-		box = Rect.expand(box, [5, 0]);
+		box = Rect.expand(box, padding);
 		box = Rect.add_size(box, [8, 2]);
 		const attr = {
 			'stroke':		'#000',
@@ -333,8 +360,8 @@ class Renderer{
 			let group_edge_icon = draw.group().addClass('flugment__edge-icon');
 			group_edge_icon.svg(edge_icon_svg)
 				.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8).scale(0.5, 0.5).attr({
-				'opacity':	0.3,
-			});
+					'opacity':	0.3,
+				});
 		}
 
 		// ** work.rect
