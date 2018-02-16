@@ -204,8 +204,8 @@ window.onload = function(e){
 
 	document.getElementById('editor__flugment-is_auto_size').addEventListener('change', callback_change_flugment_is_auto_size, false);
 
-	let editor__lifeline_name = document.getElementById('editor__lifeline-name');
-	add_event_listener_first_input_with_history(editor__lifeline_name, callback_input_with_history_text);
+	let editor__element_text = document.getElementById('editor__element-text');
+	add_event_listener_first_input_with_history(editor__element_text, callback_input_with_history_text);
 
 	document.getElementById('editor__message-spec').addEventListener('change', callback_change_message_spec, false);
 	document.getElementById('editor__message-reply').addEventListener('change', callback_change_message_reply, false);
@@ -343,7 +343,7 @@ function callback_input_with_history_text()
 		return;
 	}
 
-	let s = document.getElementById('editor__lifeline-name').value;
+	let s = document.getElementById('editor__element-text').value;
 	element.text = s;
 }
 
@@ -362,7 +362,7 @@ function callback_history_change_doc(doc, event_kind)
 
 function callback_focus_change(focus, user_data)
 {
-	let lifeline_name_elem = document.getElementById('editor__lifeline-name');
+	let element_text_elem = document.getElementById('editor__element-text');
 	let message_spec_elem = document.getElementById('editor__message-spec');
 	let message_reply_elem = document.getElementById('editor__message-reply');
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
@@ -373,7 +373,7 @@ function callback_focus_change(focus, user_data)
 	// const doc = user_data;
 	const focus_element = get_current_single_focus_element();
 	if(null === focus_element){
-		lifeline_name_elem.disabled = true;
+		element_text_elem.disabled = true;
 		message_spec_elem.disabled = true;
 		message_reply_elem.disabled = true;
 		edit_control__axis_x.disabled = true;
@@ -381,7 +381,7 @@ function callback_focus_change(focus, user_data)
 		edit_control__axis_width.disabled = true;
 		edit_control__axis_height.disabled = true;
 	}else{
-		lifeline_name_elem.disabled = false;
+		element_text_elem.disabled = false;
 		message_spec_elem.disabled = false;
 		message_reply_elem.disabled = false;
 		edit_control__axis_x.disabled = false;
@@ -391,9 +391,9 @@ function callback_focus_change(focus, user_data)
 	}
 
 	if(null !== focus_element && focus_element.hasOwnProperty('text')){
-		lifeline_name_elem.value = focus_element.text;
+		element_text_elem.value = focus_element.text;
 	}else{
-		lifeline_name_elem.disabled = true;
+		element_text_elem.disabled = true;
 	}
 
 	if(null !== focus_element && 'message' === focus_element.kind && 'reply' !== focus_element.message_kind){
