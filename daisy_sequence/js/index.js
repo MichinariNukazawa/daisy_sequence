@@ -278,8 +278,7 @@ function callback_tool_change(tool_kind)
 let is_focusin_first = false;
 function add_event_listener_first_input_with_history(textarea_element, callback)
 {
-	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
-	textarea_element.addEventListener('input', function(e){
+	let cb = function(e){
 		if(is_focusin_first){
 			let focus = Doc.get_focus(daisy.get_current_doc());
 			if(! Focus.is_focusing(focus)){
@@ -298,7 +297,9 @@ function add_event_listener_first_input_with_history(textarea_element, callback)
 		callback();
 
 		Renderer.rerendering(get_draw(), daisy.get_current_doc());
-	}, false);
+	};
+	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
+	textarea_element.addEventListener('input', cb, false);
 }
 
 function callback_input_with_history_axis_value(value_name)
