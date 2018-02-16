@@ -162,26 +162,26 @@ function get_default_doc()
 		'text':		'stop to lifeline',
 	},
 	{
-		'kind':			'flugment',
+		'kind':			'fragment',
 		'id':			12,
 		'x':			350,
 		'y':			250,
 		'width':		120,
 		'height':		40,
 		'is_auto_size':		true,
-		'flugment_kind':	'alt',
-		'text':			'text\nmemo flugment',
+		'fragment_kind':	'alt',
+		'text':			'text\nmemo fragment',
 	},
 	{
-		'kind':			'flugment',
+		'kind':			'fragment',
 		'id':			13,
 		'x':			350,
 		'y':			350,
 		'width':		120,
 		'height':		40,
 		'is_auto_size':		false,
-		'flugment_kind':	'',
-		'text':			'text\nmemo flugment',
+		'fragment_kind':	'',
+		'text':			'text\nmemo fragment',
 	},
 	];
 
@@ -540,8 +540,8 @@ class Diagram{
 			element = Diagram.create_spec_(data);
 		}else if('reply_message' === kind){
 			element = Diagram.create_reply_message_(data);
-		}else if('flugment' === kind){
-			element = Diagram.create_flugment_(data);
+		}else if('fragment' === kind){
+			element = Diagram.create_fragment_(data);
 		}else{
 			return null;
 		}
@@ -852,10 +852,10 @@ class Diagram{
 		return spec;
 	}
 
-	static create_flugment_(src)
+	static create_fragment_(src)
 	{
 		let spec = {
-			'kind':		'flugment',
+			'kind':		'fragment',
 			'id':		-1,
 			'x':		350,
 			'y':		350,
@@ -1031,7 +1031,7 @@ class Message{
 	}
 };
 
-class Flugment{
+class Fragment{
 	static get_infos()
 	{
 		const infos = [
@@ -1120,7 +1120,7 @@ function move_element(current_diagram, element, move)
 		element.y += move.y;
 	}else if('spec' == element.kind){
 		element.height += move.y;
-	}else if('flugment' == element.kind){
+	}else if('fragment' == element.kind){
 		element.x += move.x;
 		element.y += move.y;
 	}

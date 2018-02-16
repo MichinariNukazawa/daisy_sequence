@@ -43,8 +43,8 @@ class Tool{
 			'element':	document.getElementById('tool__message'),
 		});
 		this.tools.push({
-			'kind':		'flugment',
-			'element':	document.getElementById('tool__flugment'),
+			'kind':		'fragment',
+			'element':	document.getElementById('tool__fragment'),
 		});
 
 		this.callback_tool_changes = [];
@@ -202,10 +202,10 @@ window.onload = function(e){
 	let edit_control__axis_height = document.getElementById('edit-control__axis-height');
 	add_event_listener_first_input_with_history(edit_control__axis_height, callback_input_with_history_axis_height);
 
-	let editor__flugment_kind = document.getElementById('editor__flugment-kind');
-	add_event_listener_first_input_with_history(editor__flugment_kind, callback_input_flugment_kind_with_history);
+	let editor__fragment_kind = document.getElementById('editor__fragment-kind');
+	add_event_listener_first_input_with_history(editor__fragment_kind, callback_input_fragment_kind_with_history);
 
-	document.getElementById('editor__flugment-is_auto_size').addEventListener('change', callback_change_flugment_is_auto_size, false);
+	document.getElementById('editor__fragment-is_auto_size').addEventListener('change', callback_change_fragment_is_auto_size, false);
 
 	let editor__element_text = document.getElementById('editor__element-text');
 	add_event_listener_first_input_with_history(editor__element_text, callback_input_with_history_text);
@@ -351,15 +351,15 @@ function callback_input_with_history_text()
 	element.text = s;
 }
 
-function callback_input_flugment_kind_with_history()
+function callback_input_fragment_kind_with_history()
 {
 	let element = get_current_single_focus_element();
 	if(null === element){
 		return;
 	}
 
-	let s = document.getElementById('editor__flugment-kind').value;
-	element.flugment_kind = s;
+	let s = document.getElementById('editor__fragment-kind').value;
+	element.fragment_kind = s;
 }
 
 function callback_history_change_doc(doc, event_kind)
@@ -378,7 +378,7 @@ function callback_history_change_doc(doc, event_kind)
 function callback_focus_change(focus, user_data)
 {
 	let element_text_elem = document.getElementById('editor__element-text');
-	let flugment_kind_elem = document.getElementById('editor__flugment-kind');
+	let fragment_kind_elem = document.getElementById('editor__fragment-kind');
 	let message_spec_elem = document.getElementById('editor__message-spec');
 	let message_reply_elem = document.getElementById('editor__message-reply');
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
@@ -390,7 +390,7 @@ function callback_focus_change(focus, user_data)
 	const focus_element = get_current_single_focus_element();
 	if(null === focus_element){
 		element_text_elem.disabled = true;
-		flugment_kind_elem.disabled = true;
+		fragment_kind_elem.disabled = true;
 		message_spec_elem.disabled = true;
 		message_reply_elem.disabled = true;
 		edit_control__axis_x.disabled = true;
@@ -399,7 +399,7 @@ function callback_focus_change(focus, user_data)
 		edit_control__axis_height.disabled = true;
 	}else{
 		element_text_elem.disabled = false;
-		flugment_kind_elem.disabled = false;
+		fragment_kind_elem.disabled = false;
 		message_spec_elem.disabled = false;
 		message_reply_elem.disabled = false;
 		edit_control__axis_x.disabled = false;
@@ -446,20 +446,20 @@ function callback_focus_change(focus, user_data)
 		edit_control__axis_height.disabled = true;
 	}
 
-	let flugment_is_auto_size_elem = document.getElementById('editor__flugment-is_auto_size');
-	if(null !== focus_element && 'flugment' === focus_element.kind){
-		flugment_kind_elem.disabled = false;
-		flugment_kind_elem.value = focus_element.flugment_kind;
+	let fragment_is_auto_size_elem = document.getElementById('editor__fragment-is_auto_size');
+	if(null !== focus_element && 'fragment' === focus_element.kind){
+		fragment_kind_elem.disabled = false;
+		fragment_kind_elem.value = focus_element.fragment_kind;
 
-		flugment_is_auto_size_elem.disabled = false;
-		flugment_is_auto_size_elem.checked = focus_element.is_auto_size;
+		fragment_is_auto_size_elem.disabled = false;
+		fragment_is_auto_size_elem.checked = focus_element.is_auto_size;
 		if(focus_element.is_auto_size){
 			edit_control__axis_width.disabled = true;
 			edit_control__axis_height.disabled = true;
 		}
 	}else{
-		flugment_kind_elem.disabled = true;
-		flugment_is_auto_size_elem.disabled = true;
+		fragment_kind_elem.disabled = true;
+		fragment_is_auto_size_elem.disabled = true;
 	}
 
 }
@@ -490,8 +490,8 @@ function callback_mousedown_drawing(e)
 		callback_mousedown_drawing_lifeline(point);
 	}else if('message' === tool_kind){
 		callback_mousedown_drawing_message(point);
-	}else if('flugment' === tool_kind){
-		callback_mousedown_drawing_flugment(point);
+	}else if('fragment' === tool_kind){
+		callback_mousedown_drawing_fragment(point);
 	}else{
 		console.error(tool_kind);
 	}
@@ -518,8 +518,8 @@ function callback_mousedown_drawing_allow(point)
 		return;
 	}
 
-	// ** focus flugment size
-	if(null !== element && 'flugment' === element.kind){
+	// ** focus fragment size
+	if(null !== element && 'fragment' === element.kind){
 		const edge = Element.get_edge_of_touch(element, mouse_state.point);
 		focus.focus_state.edge = edge;
 
@@ -590,7 +590,7 @@ function callback_mousedown_drawing_message(point)
 	focus.focus_state.message_side = 'end';
 }
 
-function callback_mousedown_drawing_flugment(point)
+function callback_mousedown_drawing_fragment(point)
 {
 	{
 		Doc.history_add(daisy.get_current_doc());
@@ -602,14 +602,14 @@ function callback_mousedown_drawing_flugment(point)
 		'y': point.y,
 		'x': point.x,
 	};
-	let flugment = Diagram.create_append_element(diagram, 'flugment', data);
-	if(null === flugment){
+	let fragment = Diagram.create_append_element(diagram, 'fragment', data);
+	if(null === fragment){
 		console.error('');
 		return;
 	}
 
 	let focus = Doc.get_focus(daisy.get_current_doc());
-	Focus.set_element(focus, flugment);
+	Focus.set_element(focus, fragment);
 }
 
 function callback_mouseup_drawing(e)
@@ -675,7 +675,7 @@ function callback_mousemove_drawing(e)
 	}
 
 	let is_move = true;
-	if(1 === elements.length && 'flugment' === elements[0].kind){
+	if(1 === elements.length && 'fragment' === elements[0].kind){
 		if('right-bottom' === focus.focus_state.edge){
 			elements[0].width += move.x;
 			elements[0].height += move.y;
@@ -695,25 +695,25 @@ function callback_mousemove_drawing(e)
 
 	Renderer.rerendering(get_draw(), daisy.get_current_doc());
 }
-function callback_change_flugment_is_auto_size()
+function callback_change_fragment_is_auto_size()
 {
 	{
 		let element = get_current_single_focus_element();
 		if(null === element){
 			return;
 		}
-		if('flugment' !== element.kind){
+		if('fragment' !== element.kind){
 			return;
 		}
 	}
 
-	let flugment_is_auto_size_elem = document.getElementById('editor__flugment-is_auto_size');
-	const checked = flugment_is_auto_size_elem.checked;
+	let fragment_is_auto_size_elem = document.getElementById('editor__fragment-is_auto_size');
+	const checked = fragment_is_auto_size_elem.checked;
 
 	Doc.history_add(daisy.get_current_doc());
 	let element = get_current_single_focus_element();
 
-	flugment_is_auto_size_elem.checked = checked;
+	fragment_is_auto_size_elem.checked = checked;
 	element.is_auto_size = checked;
 
 	callback_focus_change(Doc.get_focus(daisy.get_current_doc()), null);

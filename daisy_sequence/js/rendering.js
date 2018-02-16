@@ -23,8 +23,8 @@ class Renderer{
 				Renderer.draw_lifeline(draw, diagram, diagram.diagram_elements[i]);
 			}else if('message' == diagram.diagram_elements[i].kind){
 				Renderer.draw_message(draw, diagram, diagram.diagram_elements[i], null);
-			}else if('flugment' == diagram.diagram_elements[i].kind){
-				Renderer.draw_flugment(draw, diagram.diagram_elements[i]);
+			}else if('fragment' == diagram.diagram_elements[i].kind){
+				Renderer.draw_fragment(draw, diagram.diagram_elements[i]);
 			}else{
 				console.error("%d %d", i, diagram.diagram_elements[i].kind);
 				alert('internal error');
@@ -298,51 +298,51 @@ class Renderer{
 		spec.work.rect = Object.assign({}, box);
 	}
 
-	static draw_flugment(draw, flugment)
+	static draw_fragment(draw, fragment)
 	{
 		const padding = [5, 0];
-		// ** flugment_kind
-		let flugment_kind_size;
+		// ** fragment_kind
+		let fragment_kind_size;
 		{
-			if('' == flugment.flugment_kind || '(comment)' == flugment.flugment_kind){
-				flugment_kind_size = [0, 0];
+			if('' == fragment.fragment_kind || '(comment)' == fragment.fragment_kind){
+				fragment_kind_size = [0, 0];
 			}else{
-				let flugment_kind_text = draw.text(flugment.flugment_kind).move(flugment.x, flugment.y);
-				const b = flugment_kind_text.bbox();
-				flugment_kind_size = [
+				let fragment_kind_text = draw.text(fragment.fragment_kind).move(fragment.x, fragment.y);
+				const b = fragment_kind_text.bbox();
+				fragment_kind_size = [
 					b.width,
 					b.height,
 				];
 
-				// *** flugment_kind frame
+				// *** fragment_kind frame
 				let points = [
 					b.x - padding[0], b.y + b.height,
 					b.x + b.width, b.y + b.height,
 					b.x + b.width + 5 , b.y + b.height - 5,
 					b.x + b.width + 5 , b.y,
 				];
-				let flugment_kind_polyline = draw.polyline(points)
+				let fragment_kind_polyline = draw.polyline(points)
 					.stroke({ width: 1, linecap: 'round', }).fill('none');
 			}
 		}
 
 		// ** contents
-		const show_text = (! /^\s*$/.test(flugment.text))? flugment.text : '-';
+		const show_text = (! /^\s*$/.test(fragment.text))? fragment.text : '-';
 		let text = draw.text(show_text)
-			.move(flugment.x, flugment_kind_size[1] + flugment.y);
+			.move(fragment.x, fragment_kind_size[1] + fragment.y);
 
 		// ** frame
 		const radius = 1;
 		const b = text.bbox();
-		if(flugment.is_auto_size){
-			flugment.width = b.width;
-			flugment.height = b.height;
+		if(fragment.is_auto_size){
+			fragment.width = b.width;
+			fragment.height = b.height;
 		}
 		let box = {
 			'x':		b.x,
-			'y':		b.y - flugment_kind_size[1],
-			'width':	Math.max(flugment.width, flugment_kind_size[0]),
-			'height':	flugment.height + flugment_kind_size[1],
+			'y':		b.y - fragment_kind_size[1],
+			'width':	Math.max(fragment.width, fragment_kind_size[0]),
+			'height':	fragment.height + fragment_kind_size[1],
 		};
 		box = Rect.expand(box, padding);
 		box = Rect.add_size(box, [8, 2]);
@@ -356,8 +356,8 @@ class Renderer{
 			.radius(radius).attr(attr);
 
 		// ** frame resize icon
-		if(! flugment.is_auto_size){
-			let group_edge_icon = draw.group().addClass('flugment__edge-icon');
+		if(! fragment.is_auto_size){
+			let group_edge_icon = draw.group().addClass('fragment__edge-icon');
 			group_edge_icon.svg(edge_icon_svg)
 				.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8).scale(0.5, 0.5).attr({
 					'opacity':	0.3,
@@ -365,10 +365,10 @@ class Renderer{
 		}
 
 		// ** work.rect
-		if(! flugment.hasOwnProperty('work')){
-			flugment.work = {};
+		if(! fragment.hasOwnProperty('work')){
+			fragment.work = {};
 		}
-		flugment.work.rect = Object.assign({}, box);
+		fragment.work.rect = Object.assign({}, box);
 	}
 
 	static draw_message_turnback(draw, position)
