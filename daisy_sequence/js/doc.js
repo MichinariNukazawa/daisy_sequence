@@ -825,12 +825,12 @@ class Diagram{
 	static create_reply_message_(src)
 	{
 		let reply_message = {
-			'kind':		'message',
-			'id':		-1,
-			'y':		220,
-			'message_kind':	'reply',	// reply
-			'end_kind':	'none',
-			'text':		'message of reply',
+			'kind':			'message',
+			'id':			-1,
+			'y':			220,
+			'message_kind':		'reply',	// reply
+			'end_kind':		'none',
+			'text':			'message of reply',
 		};
 
 		reply_message = Object.assign(reply_message, src);
@@ -841,10 +841,10 @@ class Diagram{
 	static create_spec_(src)
 	{
 		let spec = {
-			'kind':		'spec',
-			'id':		-1,
-			'y_offset': 0,
-			'height': 20,
+			'kind':			'spec',
+			'id':			-1,
+			'y_offset':		0,
+			'height':		20,
 		};
 
 		spec = Object.assign(spec, src);
@@ -855,12 +855,15 @@ class Diagram{
 	static create_fragment_(src)
 	{
 		let spec = {
-			'kind':		'fragment',
-			'id':		-1,
-			'x':		350,
-			'y':		350,
-			'title':	'',
-			'text':		'',
+			'kind':			'fragment',
+			'id':			-1,
+			'x':			350,
+			'y':			350,
+			'width':		60,
+			'height':		40,
+			'is_auto_size':		true,
+			'fragment_kind':	'',
+			'text':			'',
 		};
 
 		spec = Object.assign(spec, src);
