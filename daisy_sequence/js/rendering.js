@@ -195,11 +195,13 @@ class Renderer{
 		message.work.rect.y -= 8;
 		message.work.rect.height = 24;
 
+		let is_turnback = false;
 		if(message.start.hasOwnProperty('lifeline_id')
 				&& message.end.hasOwnProperty('lifeline_id')
 				&& message.start.lifeline_id == message.end.lifeline_id
 				&& 0 <= message.start.lifeline_id){
 			let svg_elem = Renderer.draw_message_turnback(draw, position);
+			is_turnback = true;
 			let b = svg_elem.bbox();
 			message.work.rect = Object.assign({}, b);
 		}else{
@@ -241,6 +243,9 @@ class Renderer{
 		let text_point = {'x': position.x, 'y': position.y};
 		if(position.width < 0){
 			text_point.x += position.width;
+		}
+		if(is_turnback){
+			text_point.y += 10;
 		}
 		const text_offset = [18, 2];
 		text_point.x += text_offset[0];
