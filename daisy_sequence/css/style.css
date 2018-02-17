@@ -44,3 +44,7 @@ div{
 	background-color: rgba(0, 128, 255, 0.3);
 }
 
+#canvas-div input{
+	width: 80px;
+}
+

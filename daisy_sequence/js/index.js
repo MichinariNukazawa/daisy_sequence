@@ -111,12 +111,11 @@ class Daisy{
 	constructor()
 	{
 		this.current_doc_id = -1;
+		this.event_listener_current_doc_changes = [];
 	}
 
 	append_doc_id(doc_id)
 	{
-		this.current_doc_id = doc_id;
-
 		if(-1 !== doc_id){
 			let doc = doc_collection.get_doc_from_id(doc_id);
 			let diagram = Doc.get_diagram(doc);
@@ -125,18 +124,30 @@ class Daisy{
 			let focus = Doc.get_focus(doc);
 			Focus.add_event_listener_focus_change(focus, callback_focus_change, doc);
 
-			Renderer.rerendering(get_draw(), daisy.get_current_doc());
-			callback_history_change_doc(doc, '-');
-		}
+			this.set_current_doc_id_(doc_id);
 
-		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+			callback_history_change_doc(doc, '-');
+
+			Renderer.rerendering(get_draw(), daisy.get_current_doc());
+		}else{
+			this.set_current_doc_id_(doc_id);
+
+			Renderer.rerendering(get_draw(), daisy.get_current_doc());
+		}
 	}
 
 	remove_doc_id(doc_id)
 	{
-		this.current_doc_id = -1;
+		this.set_current_doc_id_(-1);
 		doc_collection.remove_doc(doc_id);
 		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	}
+
+	set_current_doc_id_(doc_id)
+	{
+		this.current_doc_id = doc_id;
+		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+		this.call_event_listener_current_doc_change_();
 	}
 
 	get_current_doc_id()
@@ -187,6 +198,18 @@ class Daisy{
 
 		return draw.svg();
 	}
+
+	add_event_listener_current_doc_change(callback)
+	{
+		this.event_listener_current_doc_changes.push(callback);
+	}
+
+	call_event_listener_current_doc_change_()
+	{
+		for(let i = 0; i < this.event_listener_current_doc_changes.length; i++){
+			this.event_listener_current_doc_changes[i](this.current_doc_id);
+		}
+	}
 };
 
 
@@ -200,6 +223,7 @@ window.onload = function(e){
 	draw = SVG('drawing').size(0, 0);
 
 	daisy = new Daisy();
+	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
 	daisy.append_doc_id(doc_collection.create_doc());
 
 	// document.addEventListener('mousemove', callback);
@@ -238,6 +262,18 @@ window.onload = function(e){
 
 	document.getElementById('editor__message-spec').addEventListener('change', callback_change_message_spec, false);
 	document.getElementById('editor__message-reply').addEventListener('change', callback_change_message_reply, false);
+
+	let canvas__diagram_width = document.getElementById('canvas__diagram-width');
+	add_event_listener_first_input_with_history(
+			canvas__diagram_width, callback_input_with_history_diagram_width);
+	let canvas__diagram_height = document.getElementById('canvas__diagram-height');
+	add_event_listener_first_input_with_history(
+			canvas__diagram_height, callback_input_with_history_diagram_height);
+
+	canvas__diagram_width.min = Diagram.MIN_SIZE();
+	canvas__diagram_width.max = Diagram.MAX_SIZE();
+	canvas__diagram_height.min = Diagram.MIN_SIZE();
+	canvas__diagram_height.max = Diagram.MAX_SIZE();
 
 	tool = new Tool();
 	tool.add_callback_tool_change(callback_tool_change);
@@ -321,6 +357,27 @@ function add_event_listener_first_input_for_single_element_with_history(
 	textarea_element.addEventListener('input', cb, false);
 }
 
+function add_event_listener_first_input_with_history(
+			textarea_element, callback)
+{
+	let cb = function(e){
+		if(is_focusin_first){
+			Doc.history_add(daisy.get_current_doc());
+
+			is_focusin_first = false;
+		}
+
+		callback();
+
+		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	};
+	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
+	textarea_element.addEventListener('input', cb, false);
+	textarea_element.addEventListener('focusout', function(){
+		callback_current_doc_change(daisy.get_current_doc_id());
+	}, false);
+}
+
 function callback_input_with_history_axis_value(value_name)
 {
 	let element = daisy.get_current_single_focus_element();
@@ -393,6 +450,44 @@ function callback_input_editor__background_transparent_with_history()
 	editor__background_transparent_view.textContent = sprintf("%3d", v) + '%';
 }
 
+function callback_input_with_history_diagram_width()
+{
+	let diagram = daisy.get_current_diagram();
+	if(null === diagram){
+		return;
+	}
+
+	let s = document.getElementById('canvas__diagram-width').value;
+	let v = parseInt(s, 10);
+
+	let size = Diagram.get_size(diagram);
+	size.width = v;
+	const res = Diagram.set_size(diagram, size);
+
+	if(res){
+		callback_current_doc_change(daisy.get_current_doc_id());
+	}
+}
+
+function callback_input_with_history_diagram_height()
+{
+	let diagram = daisy.get_current_diagram();
+	if(null === diagram){
+		return;
+	}
+
+	let s = document.getElementById('canvas__diagram-height').value;
+	let v = parseInt(s, 10);
+
+	let size = Diagram.get_size(diagram);
+	size.height = v;
+	const res = Diagram.set_size(diagram, size);
+
+	if(res){
+		callback_current_doc_change(daisy.get_current_doc_id());
+	}
+}
+
 function callback_history_change_doc(doc, event_kind)
 {
 	let s = sprintf("history: %2d/%2d(%s)",
@@ -402,8 +497,28 @@ function callback_history_change_doc(doc, event_kind)
 	document.getElementById('history_info').textContent = s;
 
 	callback_focus_change(Doc.get_focus(doc), doc);
+	callback_current_doc_change(daisy.get_current_doc_id());
 
 	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+}
+
+function callback_current_doc_change(doc_id)
+{
+	let canvas__diagram_width = document.getElementById('canvas__diagram-width');
+	let canvas__diagram_height = document.getElementById('canvas__diagram-height');
+	if(-1 === doc_id){
+		canvas__diagram_width.disabled = true;
+		canvas__diagram_height.disabled = true;
+	}else{
+		canvas__diagram_width.disabled = false;
+		canvas__diagram_height.disabled = false;
+
+		console.log(doc_id);
+		const diagram = Doc.get_diagram(doc_collection.get_doc_from_id(doc_id));
+		const size = Diagram.get_size(diagram);
+		canvas__diagram_width.value = size.width;
+		canvas__diagram_height.value = size.height;
+	}
 }
 
 function callback_focus_change(focus, user_data)

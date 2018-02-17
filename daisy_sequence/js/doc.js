@@ -632,15 +632,46 @@ class Diagram{
 
 	static resize_from_diff(diagram, diff)
 	{
-		diagram.width += diff.x;
-		diagram.height += diff.y;
+		let size = Diagram.get_size(diagram);
+		size.width += diff.x;
+		size.height += diff.y;
+		return Diagram.set_size(size);
+	}
 
-		if(128 > diagram.width){
-			diagram.width = 128;
+	static get_size(diagram)
+	{
+		return {
+			'width':	diagram.width,
+			'height':	diagram.height,
+		};
+	}
+
+	static MAX_SIZE()
+	{
+		return 30000;
+	}
+
+	static MIN_SIZE()
+	{
+		return 150;
+	}
+
+	static set_size(diagram, size)
+	{
+		if(! Number.isFinite(size.width)
+				|| Diagram.MIN_SIZE() > size.width
+				|| Diagram.MAX_SIZE() < size.width){
+			return false;
 		}
-		if(128 > diagram.height){
-			diagram.height = 128;
+		if(! Number.isFinite(size.height)
+				|| Diagram.MIN_SIZE() > size.height
+				|| Diagram.MAX_SIZE() < size.height){
+			return false;
 		}
+		diagram.width = Math.round(size.width);
+		diagram.height = Math.round(size.height);
+
+		return true;
 	}
 
 	static get_element_from_id(diagram, id)
