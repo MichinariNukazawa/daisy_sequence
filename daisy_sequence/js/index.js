@@ -159,6 +159,21 @@ class Daisy{
 		return Doc.get_diagram(doc);
 	}
 
+	get_current_single_focus_element()
+	{
+		const doc = this.get_current_doc();
+		if(null === doc){
+			return null;
+		}
+		const focus = Doc.get_focus(doc);
+		const elements = Focus.get_elements(focus);
+		if(1 !== elements.length){
+			return null;
+		}else{
+			return elements[0];
+		}
+	}
+
 	get_current_doc_svg_format_string()
 	{
 		if(-1 === this.current_doc_id){
@@ -239,17 +254,6 @@ window.onload = function(e){
 
 }
 
-function get_current_single_focus_element()
-{
-	const focus = Doc.get_focus(daisy.get_current_doc());
-	const elements = Focus.get_elements(focus);
-	if(1 !== elements.length){
-		return null;
-	}else{
-		return elements[0];
-	}
-}
-
 function delete_current_focus_elements()
 {
 	{
@@ -311,7 +315,7 @@ function add_event_listener_first_input_with_history(textarea_element, callback)
 
 function callback_input_with_history_axis_value(value_name)
 {
-	let element = get_current_single_focus_element();
+	let element = daisy.get_current_single_focus_element();
 	if(null === element){
 		return;
 	}
@@ -346,7 +350,7 @@ function callback_input_with_history_axis_height()
 
 function callback_input_with_history_text()
 {
-	let element = get_current_single_focus_element();
+	let element = daisy.get_current_single_focus_element();
 	if(null === element){
 		return;
 	}
@@ -357,7 +361,7 @@ function callback_input_with_history_text()
 
 function callback_input_fragment_kind_with_history()
 {
-	let element = get_current_single_focus_element();
+	let element = daisy.get_current_single_focus_element();
 	if(null === element){
 		return;
 	}
@@ -368,7 +372,7 @@ function callback_input_fragment_kind_with_history()
 
 function callback_input_editor__background_transparent_with_history()
 {
-	let element = get_current_single_focus_element();
+	let element = daisy.get_current_single_focus_element();
 	if(null === element){
 		return;
 	}
@@ -406,7 +410,7 @@ function callback_focus_change(focus, user_data)
 	let edit_control__axis_height = document.getElementById('edit-control__axis-height');
 
 	// const doc = user_data;
-	const focus_element = get_current_single_focus_element();
+	const focus_element = daisy.get_current_single_focus_element();
 	if(null === focus_element){
 		element_text_elem.disabled = true;
 		fragment_kind_elem.disabled = true;
@@ -726,7 +730,7 @@ function callback_mousemove_drawing(e)
 function callback_change_fragment_is_auto_size()
 {
 	{
-		let element = get_current_single_focus_element();
+		let element = daisy.get_current_single_focus_element();
 		if(null === element){
 			return;
 		}
@@ -739,7 +743,7 @@ function callback_change_fragment_is_auto_size()
 	const checked = fragment_is_auto_size_elem.checked;
 
 	Doc.history_add(daisy.get_current_doc());
-	let element = get_current_single_focus_element();
+	let element = daisy.get_current_single_focus_element();
 
 	fragment_is_auto_size_elem.checked = checked;
 	element.is_auto_size = checked;
@@ -751,7 +755,7 @@ function callback_change_fragment_is_auto_size()
 function callback_change_message_spec()
 {
 	{
-		let element = get_current_single_focus_element();
+		let element = daisy.get_current_single_focus_element();
 		if(null === element){
 			return;
 		}
@@ -764,7 +768,7 @@ function callback_change_message_spec()
 	const checked = message_spec_elem.checked;
 
 	Doc.history_add(daisy.get_current_doc());
-	let element = get_current_single_focus_element();
+	let element = daisy.get_current_single_focus_element();
 
 	//if(! message_spec_elem.checked){
 	message_spec_elem.checked = checked;
@@ -782,7 +786,7 @@ function callback_change_message_spec()
 function callback_change_message_reply()
 {
 	{
-		let element = get_current_single_focus_element();
+		let element = daisy.get_current_single_focus_element();
 		if(null === element){
 			return;
 		}
@@ -795,7 +799,7 @@ function callback_change_message_reply()
 	const checked = message_reply_elem.checked;
 
 	Doc.history_add(daisy.get_current_doc());
-	let element = get_current_single_focus_element();
+	let element = daisy.get_current_single_focus_element();
 
 	message_reply_elem.checked = checked;
 	if(! checked){
