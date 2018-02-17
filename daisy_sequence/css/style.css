@@ -48,3 +48,14 @@ div{
 	width: 80px;
 }
 
+#drawing-container{
+	padding:	5px;
+	width:		90vh;
+	height:		85vh;
+	overflow:	auto;
+}
+
+#drawing{
+	margin: 0px;
+}
+
