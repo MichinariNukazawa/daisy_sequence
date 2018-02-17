@@ -210,24 +210,31 @@ window.onload = function(e){
 	// document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
 
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
-	add_event_listener_first_input_with_history(edit_control__axis_x, callback_input_with_history_axis_x);
+	add_event_listener_first_input_for_single_element_with_history(
+			edit_control__axis_x, callback_input_with_history_axis_x);
 	let edit_control__axis_y = document.getElementById('edit-control__axis-y');
-	add_event_listener_first_input_with_history(edit_control__axis_y, callback_input_with_history_axis_y);
+	add_event_listener_first_input_for_single_element_with_history(
+			edit_control__axis_y, callback_input_with_history_axis_y);
 	let edit_control__axis_width = document.getElementById('edit-control__axis-width');
-	add_event_listener_first_input_with_history(edit_control__axis_width, callback_input_with_history_axis_width);
+	add_event_listener_first_input_for_single_element_with_history(
+			edit_control__axis_width, callback_input_with_history_axis_width);
 	let edit_control__axis_height = document.getElementById('edit-control__axis-height');
-	add_event_listener_first_input_with_history(edit_control__axis_height, callback_input_with_history_axis_height);
+	add_event_listener_first_input_for_single_element_with_history(
+			edit_control__axis_height, callback_input_with_history_axis_height);
 
 	let editor__fragment_kind = document.getElementById('editor__fragment-kind');
-	add_event_listener_first_input_with_history(editor__fragment_kind, callback_input_fragment_kind_with_history);
+	add_event_listener_first_input_for_single_element_with_history(
+			editor__fragment_kind, callback_input_fragment_kind_with_history);
 
 	let editor__background_transparent = document.getElementById('editor__background-transparent');
-	add_event_listener_first_input_with_history(editor__background_transparent, callback_input_editor__background_transparent_with_history);
+	add_event_listener_first_input_for_single_element_with_history(
+			editor__background_transparent, callback_input_editor__background_transparent_with_history);
 
 	document.getElementById('editor__fragment-is_auto_size').addEventListener('change', callback_change_fragment_is_auto_size, false);
 
 	let editor__element_text = document.getElementById('editor__element-text');
-	add_event_listener_first_input_with_history(editor__element_text, callback_input_with_history_text);
+	add_event_listener_first_input_for_single_element_with_history(
+			editor__element_text, callback_input_with_history_text);
 
 	document.getElementById('editor__message-spec').addEventListener('change', callback_change_message_spec, false);
 	document.getElementById('editor__message-reply').addEventListener('change', callback_change_message_reply, false);
@@ -287,7 +294,8 @@ function callback_tool_change(tool_kind)
 }
 
 let is_focusin_first = false;
-function add_event_listener_first_input_with_history(textarea_element, callback)
+function add_event_listener_first_input_for_single_element_with_history(
+			textarea_element, callback)
 {
 	let cb = function(e){
 		if(is_focusin_first){
