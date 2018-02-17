@@ -284,9 +284,10 @@ var template = [
 				}
 			}
 
-			daisy.remove_doc_id(doc.id);
+			const doc_id = doc_collection.get_doc_id_from_doc(doc);
+			daisy.remove_doc_id(doc_id);
 
-			console.log("Close");
+			console.log("Close %d", doc_id);
 		}
 	},
 	{

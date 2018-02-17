@@ -24,6 +24,21 @@ class DocCollection{
 		return 0; // doc_id
 	}
 
+	remove_doc(doc_id)
+	{
+		if(undefined === this.docs[doc_id]){
+			console.error("%d", doc_id);
+			return;
+		}
+
+		if(null === this.docs[doc_id]){
+			console.error("%d", doc_id);
+			return;
+		}
+
+		this.docs[doc_id] = null;
+	}
+
 	create_doc_from_native_format_string(strdata, err)
 	{
 		const doc = Doc.create_from_native_format_string(strdata, err);
@@ -44,6 +59,17 @@ class DocCollection{
 		}else{
 			return this.docs[doc_id];
 		}
+	}
+
+	get_doc_id_from_doc(doc)
+	{
+		for(let i = 0; i < this.docs.length; i++){
+			if(doc === this.docs[i]){
+				return i;
+			}
+		}
+
+		return -1;
 	}
 
 	assign_doc_id_()

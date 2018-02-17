@@ -26,8 +26,13 @@ class Renderer{
 			}else if('fragment' == diagram.diagram_elements[i].kind){
 				Renderer.draw_fragment(draw, diagram.diagram_elements[i]);
 			}else{
-				console.error("%d %d", i, diagram.diagram_elements[i].kind);
-				alert('internal error');
+				const msg = sprintf("internal error: invalid element kind `%s`(%d,%d)",
+						diagram.diagram_elements[i].kind,
+						diagram.diagram_elements[i].id,
+						i
+						);
+				console.error(msg);
+				alert(msg);
 			}
 		}
 

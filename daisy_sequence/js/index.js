@@ -134,7 +134,8 @@ class Daisy{
 
 	remove_doc_id(doc_id)
 	{
-		this.current_doc_id = doc_id;
+		this.current_doc_id = -1;
+		doc_collection.remove_doc(doc_id);
 		Renderer.rerendering(get_draw(), daisy.get_current_doc());
 	}
 
