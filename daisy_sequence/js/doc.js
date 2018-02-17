@@ -170,6 +170,7 @@ function get_default_doc()
 		'height':		40,
 		'is_auto_size':		true,
 		'fragment_kind':	'alt',
+		'background_opacity':	'0.1',
 		'text':			'text\nmemo fragment',
 	},
 	{
@@ -181,6 +182,7 @@ function get_default_doc()
 		'height':		40,
 		'is_auto_size':		false,
 		'fragment_kind':	'',
+		'background_opacity':	'0.1',
 		'text':			'text\nmemo fragment',
 	},
 	];
@@ -863,6 +865,7 @@ class Diagram{
 			'height':		40,
 			'is_auto_size':		true,
 			'fragment_kind':	'',
+			'background_opacity':	0.1,
 			'text':			'',
 		};
 

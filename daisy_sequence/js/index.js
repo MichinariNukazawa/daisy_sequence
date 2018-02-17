@@ -205,6 +205,9 @@ window.onload = function(e){
 	let editor__fragment_kind = document.getElementById('editor__fragment-kind');
 	add_event_listener_first_input_with_history(editor__fragment_kind, callback_input_fragment_kind_with_history);
 
+	let editor__background_transparent = document.getElementById('editor__background-transparent');
+	add_event_listener_first_input_with_history(editor__background_transparent, callback_input_editor__background_transparent_with_history);
+
 	document.getElementById('editor__fragment-is_auto_size').addEventListener('change', callback_change_fragment_is_auto_size, false);
 
 	let editor__element_text = document.getElementById('editor__element-text');
@@ -362,6 +365,21 @@ function callback_input_fragment_kind_with_history()
 	element.fragment_kind = s;
 }
 
+function callback_input_editor__background_transparent_with_history()
+{
+	let element = get_current_single_focus_element();
+	if(null === element){
+		return;
+	}
+
+	let s = document.getElementById('editor__background-transparent').value;
+	let v = parseInt(s, 10);
+	element.background_opacity = v / 100.0;
+
+	let editor__background_transparent_view = document.getElementById('editor__background-transparent-view');
+	editor__background_transparent_view.textContent = sprintf("%3d", v) + '%';
+}
+
 function callback_history_change_doc(doc, event_kind)
 {
 	let s = sprintf("history: %2d/%2d(%s)",
@@ -447,6 +465,8 @@ function callback_focus_change(focus, user_data)
 	}
 
 	let fragment_is_auto_size_elem = document.getElementById('editor__fragment-is_auto_size');
+	let editor__background_transparent = document.getElementById('editor__background-transparent');
+	let editor__background_transparent_view = document.getElementById('editor__background-transparent-view');
 	if(null !== focus_element && 'fragment' === focus_element.kind){
 		fragment_kind_elem.disabled = false;
 		fragment_kind_elem.value = focus_element.fragment_kind;
@@ -457,9 +477,16 @@ function callback_focus_change(focus, user_data)
 			edit_control__axis_width.disabled = true;
 			edit_control__axis_height.disabled = true;
 		}
+
+		editor__background_transparent.disabled = false;
+		const v = focus_element.background_opacity * 100;
+		editor__background_transparent.value = v;
+		editor__background_transparent_view.textContent = sprintf("%3d", v) + '%';
 	}else{
 		fragment_kind_elem.disabled = true;
 		fragment_is_auto_size_elem.disabled = true;
+		editor__background_transparent.disabled = true;
+		editor__background_transparent_view.textContent = '(---%)';
 	}
 
 }

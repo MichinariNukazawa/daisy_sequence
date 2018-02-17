@@ -300,14 +300,17 @@ class Renderer{
 
 	static draw_fragment(draw, fragment)
 	{
+		let fragment_group = draw.group().addClass('fragment-group');
+
 		const padding = [5, 0];
 		// ** fragment_kind
+		let fragment_kind_text = null;
 		let fragment_kind_size;
 		{
 			if('' == fragment.fragment_kind || '(comment)' == fragment.fragment_kind){
 				fragment_kind_size = [0, 0];
 			}else{
-				let fragment_kind_text = draw.text(fragment.fragment_kind).move(fragment.x, fragment.y);
+				fragment_kind_text = fragment_group.text(fragment.fragment_kind).move(fragment.x, fragment.y);
 				const b = fragment_kind_text.bbox();
 				fragment_kind_size = [
 					b.width,
@@ -328,7 +331,7 @@ class Renderer{
 
 		// ** contents
 		const show_text = (! /^\s*$/.test(fragment.text))? fragment.text : '-';
-		let text = draw.text(show_text)
+		let text = fragment_group.text(show_text)
 			.move(fragment.x, fragment_kind_size[1] + fragment.y);
 
 		// ** frame
@@ -349,26 +352,34 @@ class Renderer{
 		const attr = {
 			'stroke':		'#000',
 			'stroke-width':		'1',
-			'fill-opacity':		'0.1',
+			'fill-opacity':		fragment.background_opacity,
 			'fill': '#1080FF',
 		};
-		draw.rect(box.width, box.height).move(box.x, box.y)
+		let background_rect = fragment_group.rect(box.width, box.height).move(box.x, box.y)
 			.radius(radius).attr(attr);
 
 		// ** frame resize icon
 		if(! fragment.is_auto_size){
-			let group_edge_icon = draw.group().addClass('fragment__edge-icon');
+			let group_edge_icon = fragment_group.group().addClass('fragment__edge-icon');
 			group_edge_icon.svg(edge_icon_svg)
 				.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8).scale(0.5, 0.5).attr({
 					'opacity':	0.3,
 				});
 		}
 
+		// ** reorder
+		if(null !== fragment_kind_text){
+			background_rect.after(fragment_kind_text);
+		}
+		background_rect.after(text);
+
 		// ** work.rect
 		if(! fragment.hasOwnProperty('work')){
 			fragment.work = {};
 		}
 		fragment.work.rect = Object.assign({}, box);
+
+		return fragment_group;
 	}
 
 	static draw_message_turnback(draw, position)
