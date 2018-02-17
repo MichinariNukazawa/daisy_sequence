@@ -53,12 +53,6 @@ class Renderer{
 			}
 		}
 
-		// ** frame resize icon
-		let group_edge_icon = draw.group().addClass('edge-icon');
-		group_edge_icon.svg(edge_icon_svg).move(diagram.width - 32, diagram.height - 32).attr({
-			'opacity':	0.3,
-		});
-
 		// ** frame
 		let rect = draw.rect(diagram.width, diagram.height).attr({
 			'stroke':		'#ddd',

@@ -680,12 +680,6 @@ function callback_mousedown_drawing_allow(point)
 
 		return;
 	}
-
-	// ** focus diagram area size
-	if(32 > Math.abs(diagram.width - point.x) && 32 > Math.abs(diagram.height - point.y)){
-		console.log('resize');
-		Focus.set_diagram_resize(focus, true);
-	}
 }
 
 function callback_mousedown_drawing_lifeline(point)
@@ -777,7 +771,6 @@ function callback_mouseup_drawing(e)
 	mouse_state.is_down = false;
 
 	let focus = Doc.get_focus(daisy.get_current_doc());
-	Focus.set_diagram_resize(focus, false);
 
 	callback_focus_change();
 
@@ -842,10 +835,6 @@ function callback_mousemove_drawing(e)
 		for(let i = 0; i < elements.length; i++){
 			move_element(diagram, elements[i], move);
 		}
-	}
-
-	if(true === Focus.get_diagram_resize(focus)){
-		Diagram.resize_from_diff(diagram, move);
 	}
 
 	Renderer.rerendering(get_draw(), daisy.get_current_doc());

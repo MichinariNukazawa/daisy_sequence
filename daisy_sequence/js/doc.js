@@ -258,7 +258,6 @@ class Doc{
 			'focus_state':{
 				'side': '',
 				'edge': '',
-				'is_diagram_resize': false,
 			},
 			'elements': [],
 		};
@@ -482,20 +481,6 @@ class Focus{
 	static clear(focus)
 	{
 		focus.elements.length = 0;
-		focus.focus_state.is_diagram_resize = false;
-	}
-
-	static set_diagram_resize(focus, flag)
-	{
-		if(flag){
-			Focus.clear(focus);
-		}
-		focus.focus_state.is_diagram_resize = flag;
-	}
-
-	static get_diagram_resize(focus)
-	{
-		return focus.focus_state.is_diagram_resize;
 	}
 
 	static set_side(focus, side){
@@ -628,14 +613,6 @@ class Diagram{
 	{
 		//! @todo not implement
 		return object_deepcopy(src_diagram);
-	}
-
-	static resize_from_diff(diagram, diff)
-	{
-		let size = Diagram.get_size(diagram);
-		size.width += diff.x;
-		size.height += diff.y;
-		return Diagram.set_size(size);
 	}
 
 	static get_size(diagram)
