@@ -1,10 +1,10 @@
 'use strict';
 
-var SVG = require('svg.js');
+let SVG = require('svg.js');
 const sprintf = require('sprintf-js').sprintf;
 const fs = require("fs");
 const path = require('path');
-var xml_formatter = require('xml-formatter');
+const xml_formatter = require('xml-formatter');
 
 let doc_collection = new DocCollection();
 

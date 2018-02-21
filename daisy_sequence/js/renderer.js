@@ -202,7 +202,7 @@ class Renderer{
 		}else{
 			y_end = stop_message.y;
 		}
-		var line = lifeline_group.line(
+		let line = lifeline_group.line(
 				line_point.x,
 				line_point.y,
 				line_point.x + 0,
@@ -248,7 +248,7 @@ class Renderer{
 			let b = svg_elem.bbox();
 			message.work.rect = Object.assign({}, b);
 		}else{
-			var line = other_group.line(
+			let line = other_group.line(
 					position.x,
 					position.y,
 					position.x + position.width,
