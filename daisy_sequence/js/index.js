@@ -4,6 +4,7 @@ var SVG = require('svg.js');
 const sprintf = require('sprintf-js').sprintf;
 const fs = require("fs");
 const path = require('path');
+var xml_formatter = require('xml-formatter');
 
 let doc_collection = new DocCollection();
 
@@ -196,7 +197,11 @@ class Daisy{
 
 		Renderer.rerendering(rendering_handle, this.get_current_doc());
 
-		return s;
+		const h = sprintf("<!-- Generator: %s %s  -->", Version.get_name(), Version.get_version());
+		s = h + s;
+
+		let options = {indentation: '\t',};
+		return xml_formatter(s, options);
 	}
 
 	add_event_listener_current_doc_change(callback)
