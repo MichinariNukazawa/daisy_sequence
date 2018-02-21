@@ -1069,6 +1069,61 @@ class Message{
 		}
 		return point;
 	}
+
+	static get_end_side_point(message, diagram)
+	{
+		const parent_message_position = Message.get_position(message, diagram);
+		const end_side_point = Message.get_end_side_point_from_position(parent_message_position, [0,0]);
+		return end_side_point;
+	}
+
+	static get_position(message, diagram)
+	{
+		let position = {
+			'x': 0,
+			'y': 0,
+			'width': 0,
+			'height': 0,
+		};
+
+		if(message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id){
+
+			let lifeline = Diagram.get_element_from_id(diagram, message.start.lifeline_id);
+			if(null === lifeline || 'lifeline' != lifeline.kind){
+				console.error(message.start);
+				alert('bug');
+				return position;
+			}
+			position.x = lifeline.x;
+		}else if(message.start.hasOwnProperty('position_x')){
+			position.x = message.start.position_x;
+		}else{
+			console.error(message.start);
+			alert('bug');
+			return position;
+		}
+
+		position.y = message.y;
+
+		if(message.end.hasOwnProperty('lifeline_id') && 0 <= message.end.lifeline_id){
+
+			let lifeline = Diagram.get_element_from_id(diagram, message.end.lifeline_id);
+			if(null == lifeline || 'lifeline' != lifeline.kind){
+				console.error(message.end);
+				alert('bug');
+				return position;
+			}
+			position.width = lifeline.x - position.x;
+		}else if(message.end.hasOwnProperty('position_x')){
+			position.width = message.end.position_x - position.x;
+		}else{
+			console.error(message.start);
+			alert('bug');
+			return position;
+		}
+
+		return position;
+	}
 };
 
 class Fragment{

@@ -89,6 +89,8 @@ class Renderer{
 			}
 		}
 
+		Renderer.process_spec_(rendering_handle, diagram);
+
 		Renderer.draw_focus(rendering_handle, doc);
 
 		// ** frame
@@ -97,6 +99,31 @@ class Renderer{
 			'fill-opacity':		'0',
 			'stroke-width':		'2',
 		});
+	}
+
+	static process_spec_(rendering_handle, diagram)
+	{
+		let specs = [];
+		for(let i = 0; i < diagram.diagram_elements.length; i++){
+			let element = diagram.diagram_elements[i];
+			if('message' !== element.kind){
+				continue;
+			}
+			if(! element.hasOwnProperty('spec') || null === element.spec){
+				continue;
+			}
+
+			specs.push({'message': element, 'rank': 0,});
+		}
+
+		for(let i = 0; i < specs.length; i++){
+			let message = specs[i].message;
+			Renderer.draw_spec(
+					rendering_handle,
+					diagram,
+					message,
+					);
+		}
 	}
 
 	static draw_focus(rendering_handle, doc)
@@ -195,9 +222,6 @@ class Renderer{
 	{
 		let other_group = rendering_handle.get_other_group();
 
-		let is_found = false;
-		let is_lost = false;
-
 		if('reply' === message.message_kind){
 			message.start = object_deepcopy(parent_message.end);
 			message.end = object_deepcopy(parent_message.start);
@@ -205,52 +229,7 @@ class Renderer{
 			delete message.end.position_x;
 		}
 
-		var position = {
-			'x': 0,
-			'y': 0,
-			'width': 0,
-			'height': 0,
-		};
-
-		let is_touch_start_side_lifeline = false;
-		if(message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id){
-			is_touch_start_side_lifeline = true;
-
-			let lifeline = Diagram.get_element_from_id(diagram, message.start.lifeline_id);
-			if(null === lifeline || 'lifeline' != lifeline.kind){
-				console.error(message.start);
-				alert('bug');
-				return;
-			}
-			position.x = lifeline.x;
-		}else if(message.start.hasOwnProperty('position_x')){
-			position.x = message.start.position_x;
-			is_found = true;
-		}else{
-			console.error(message.start);
-			alert('bug');
-		}
-
-		position.y = message.y;
-
-		let is_touch_end_side_lifeline = false;
-		if(message.end.hasOwnProperty('lifeline_id') && 0 <= message.end.lifeline_id){
-			is_touch_end_side_lifeline = true;
-
-			let lifeline = Diagram.get_element_from_id(diagram, message.end.lifeline_id);
-			if(null == lifeline || 'lifeline' != lifeline.kind){
-				console.error(message.end);
-				alert('bug');
-				return;
-			}
-			position.width = lifeline.x - position.x;
-		}else if(message.end.hasOwnProperty('position_x')){
-			position.width = message.end.position_x - position.x;
-			is_lost = true;
-		}else{
-			console.error(message.start);
-			alert('bug');
-		}
+		let position = Message.get_position(message, diagram);
 
 		if(! message.hasOwnProperty('work')){
 			message.work = {};
@@ -290,6 +269,9 @@ class Renderer{
 				Renderer.draw_message_stop_icon_of_foot(rendering_handle, position);
 			}
 
+			let is_found = (! (message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id));
+			let is_lost = (! (message.end.hasOwnProperty('lifeline_id') && 0 <= message.end.lifeline_id));
+
 			if(is_found){
 				const size = 16;
 				const point_head = Message.get_start_side_point_from_position(position, [(size/2), 0]);
@@ -316,10 +298,12 @@ class Renderer{
 		text_point.y += text_offset[1];
 		let text = other_group.text(message.text).move(text_point.x, text_point.y);
 
+		let is_touch_start_side_lifeline
+			= (message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id);
+		let is_touch_end_side_lifeline
+			= (message.end.hasOwnProperty('lifeline_id') && 0 <= message.end.lifeline_id);
 		if(is_touch_end_side_lifeline){
 			if(message.hasOwnProperty('spec') && null !== message.spec){
-				Renderer.draw_spec(rendering_handle, diagram, message, position);
-
 				if(is_touch_end_side_lifeline && is_touch_start_side_lifeline){
 					if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
 						Renderer.draw_message(rendering_handle, diagram, message.reply_message, message);
@@ -329,7 +313,7 @@ class Renderer{
 		}
 	}
 
-	static draw_spec(rendering_handle, diagram, message, parent_message_position)
+	static draw_spec(rendering_handle, diagram, message)
 	{
 		let spec_group = rendering_handle.get_spec_group();
 
@@ -352,10 +336,10 @@ class Renderer{
 			height = message.reply_message.y - message.y;
 		}
 
-		let end_point = Message.get_end_side_point_from_position(parent_message_position, [0,0]);
+		const end_side_point = Message.get_end_side_point(message, diagram);
 		let box = {
-			'x':		end_point.x - 1,
-			'y':		end_point.y + spec.y_offset,
+			'x':		end_side_point.x - 1,
+			'y':		end_side_point.y + spec.y_offset,
 			'width':	width,
 			'height':	height,
 		};
