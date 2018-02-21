@@ -10,7 +10,7 @@ let doc_collection = new DocCollection();
 let tool = null;
 let daisy = null;
 
-let draw = null;
+let rendering_handle = null;
 let edge_icon_svg;
 
 let mouse_state = {
@@ -19,11 +19,6 @@ let mouse_state = {
 	'is_down': false,
 	'is_small_move': true,
 };
-
-function get_draw()
-{
-	return draw;
-}
 
 class Tool{
 	constructor(){
@@ -128,11 +123,11 @@ class Daisy{
 
 			callback_history_change_doc(doc, '-');
 
-			Renderer.rerendering(get_draw(), daisy.get_current_doc());
+			Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 		}else{
 			this.set_current_doc_id_(doc_id);
 
-			Renderer.rerendering(get_draw(), daisy.get_current_doc());
+			Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 		}
 	}
 
@@ -140,13 +135,13 @@ class Daisy{
 	{
 		this.set_current_doc_id_(-1);
 		doc_collection.remove_doc(doc_id);
-		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+		Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 	}
 
 	set_current_doc_id_(doc_id)
 	{
 		this.current_doc_id = doc_id;
-		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+		Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 		this.call_event_listener_current_doc_change_();
 	}
 
@@ -191,12 +186,17 @@ class Daisy{
 			return null;
 		}
 
-		let draw = get_draw();
+		let draw = rendering_handle.get_draw();
 		if(null === draw){
 			return null;
 		}
 
-		return draw.svg();
+		rendering_handle.get_focus_group().remove();
+		let s = draw.svg();
+
+		Renderer.rerendering(rendering_handle, this.get_current_doc());
+
+		return s;
 	}
 
 	add_event_listener_current_doc_change(callback)
@@ -220,7 +220,8 @@ window.onload = function(e){
 	}catch(err){
 		console.error(err);
 	}
-	draw = SVG('drawing').size(0, 0);
+
+	rendering_handle = new RenderingHandle('drawing');
 
 	daisy = new Daisy();
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
@@ -321,7 +322,7 @@ function delete_current_focus_elements()
 	Diagram.delete_elements(diagram, focus_elements);
 	Focus.clear(focus);
 
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
 function callback_tool_change(tool_kind)
@@ -351,7 +352,7 @@ function add_event_listener_first_input_for_single_element_with_history(
 
 		callback();
 
-		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+		Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 	};
 	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
 	textarea_element.addEventListener('input', cb, false);
@@ -369,7 +370,7 @@ function add_event_listener_first_input_with_history(
 
 		callback();
 
-		Renderer.rerendering(get_draw(), daisy.get_current_doc());
+		Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 	};
 	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
 	textarea_element.addEventListener('input', cb, false);
@@ -499,7 +500,7 @@ function callback_history_change_doc(doc, event_kind)
 	callback_focus_change(Doc.get_focus(doc), doc);
 	callback_current_doc_change(daisy.get_current_doc_id());
 
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
 function callback_current_doc_change(doc_id)
@@ -651,7 +652,7 @@ function callback_mousedown_drawing(e)
 		console.error(tool_kind);
 	}
 
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
 function callback_mousedown_drawing_allow(point)
@@ -774,7 +775,7 @@ function callback_mouseup_drawing(e)
 
 	callback_focus_change();
 
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
 function callback_mousemove_drawing(e)
@@ -837,7 +838,7 @@ function callback_mousemove_drawing(e)
 		}
 	}
 
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 function callback_change_fragment_is_auto_size()
 {
@@ -861,7 +862,7 @@ function callback_change_fragment_is_auto_size()
 	element.is_auto_size = checked;
 
 	callback_focus_change(Doc.get_focus(daisy.get_current_doc()), null);
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
 function callback_change_message_spec()
@@ -892,7 +893,7 @@ function callback_change_message_spec()
 		element.spec = spec;
 	}
 
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
 function callback_change_message_reply()
@@ -929,6 +930,6 @@ function callback_change_message_reply()
 		element.reply_message = reply_message;
 	}
 
-	Renderer.rerendering(get_draw(), daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 

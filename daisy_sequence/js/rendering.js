@@ -1,14 +1,66 @@
 'use strict';
 
-class Renderer{
-	static rerendering(draw, doc)
+class RenderingHandle{
+	constructor(elemId)
 	{
-		get_draw().clear();
-		Renderer.rendering(draw, doc);
+		this.draw = null;
+		this.groups = [];
+
+		this.draw = SVG(elemId).size(0, 0);
+		this.clear();
 	}
 
-	static rendering(draw, doc)
+	get_draw()
 	{
+		return this.draw;
+	}
+
+	get_other_group()
+	{
+		return this.groups.other_group;
+	}
+
+	get_lifeline_group()
+	{
+		return this.groups.lifeline_group;
+	}
+
+	get_spec_group()
+	{
+		return this.groups.spec_group;
+	}
+
+	get_focus_group()
+	{
+		return this.groups.focus_group;
+	}
+
+	clear()
+	{
+		this.draw.clear();
+		this.groups.lifeline_group = this.draw.group().addClass('dd__lifeline-group');
+		this.groups.spec_group = this.draw.group().addClass('dd__spec-group');
+		this.groups.other_group = this.draw.group().addClass('dd__other-group');
+		this.groups.focus_group = this.draw.group().addClass('dd__focus-group');
+	}
+};
+
+class Renderer{
+	static rerendering(rendering_handle, doc)
+	{
+		let other_group = rendering_handle.get_other_group();
+		if(null === other_group){
+			return;
+		}
+
+		rendering_handle.clear();
+		Renderer.rendering(rendering_handle, doc);
+	}
+
+	static rendering(rendering_handle, doc)
+	{
+		let other_group = rendering_handle.get_other_group();
+
 		if(null === doc){
 			console.debug('Rendering:doc is null');
 			return;
@@ -16,15 +68,16 @@ class Renderer{
 
 		const diagram = Doc.get_diagram(doc);
 
+		let draw = rendering_handle.get_draw();
 		draw.size(diagram.width, diagram.height);
 
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
 			if('lifeline' == diagram.diagram_elements[i].kind){
-				Renderer.draw_lifeline(draw, diagram, diagram.diagram_elements[i]);
+				Renderer.draw_lifeline(rendering_handle, diagram, diagram.diagram_elements[i]);
 			}else if('message' == diagram.diagram_elements[i].kind){
-				Renderer.draw_message(draw, diagram, diagram.diagram_elements[i], null);
+				Renderer.draw_message(rendering_handle, diagram, diagram.diagram_elements[i], null);
 			}else if('fragment' == diagram.diagram_elements[i].kind){
-				Renderer.draw_fragment(draw, diagram.diagram_elements[i]);
+				Renderer.draw_fragment(rendering_handle, diagram.diagram_elements[i]);
 			}else{
 				const msg = sprintf("internal error: invalid element kind `%s`(%d,%d)",
 						diagram.diagram_elements[i].kind,
@@ -36,6 +89,20 @@ class Renderer{
 			}
 		}
 
+		Renderer.draw_focus(rendering_handle, doc);
+
+		// ** frame
+		let rect = other_group.rect(diagram.width, diagram.height).attr({
+			'stroke':		'#ddd',
+			'fill-opacity':		'0',
+			'stroke-width':		'2',
+		});
+	}
+
+	static draw_focus(rendering_handle, doc)
+	{
+		let focus_group = rendering_handle.get_focus_group();
+
 		// focusing
 		const focus = Doc.get_focus(doc);
 		const elements = Focus.get_elements(focus);
@@ -45,24 +112,19 @@ class Renderer{
 				alert('internal error');
 			}else{
 				rect = Rect.expand(rect, [3,3]);
-				let rect_ = draw.rect(rect.width, rect.height).move(rect.x, rect.y).attr({
+				let rect_ = focus_group.rect(rect.width, rect.height).move(rect.x, rect.y).attr({
 					'stroke':		'#3af',
 					'fill-opacity':		'0',
 					'stroke-width':		'1.5',
 				});
 			}
 		}
-
-		// ** frame
-		let rect = draw.rect(diagram.width, diagram.height).attr({
-			'stroke':		'#ddd',
-			'fill-opacity':		'0',
-			'stroke-width':		'2',
-		});
 	}
 
-	static draw_lifeline(draw, diagram, lifeline)
+	static draw_lifeline(rendering_handle, diagram, lifeline)
 	{
+		let lifeline_group = rendering_handle.get_lifeline_group();
+
 		let message_of_create = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.id, 'create');
 		if(null !== message_of_create){
 			lifeline.y = message_of_create.y;
@@ -70,7 +132,7 @@ class Renderer{
 
 		// 空の名前を表示しようとすると、lifelineの表示が消えて位置計算もおかしくなるので、対処する
 		const show_name = (! /^\s*$/.test(lifeline.text))? lifeline.text : '-';
-		let text = draw.text(show_name).move(lifeline.x, lifeline.y).font({
+		let text = lifeline_group.text(show_name).move(lifeline.x, lifeline.y).font({
 			'fill': '#000' ,
 			'size': '150%'
 		});
@@ -91,7 +153,7 @@ class Renderer{
 			'width': b.width + (padding * 2) + offset[0],
 			'height': b.height + offset[1],
 		};
-		draw.rect(box.width, box.height).move(box.x, box.y)
+		lifeline_group.rect(box.width, box.height).move(box.x, box.y)
 			.attr(attr).radius(radius);
 
 		if(! lifeline.hasOwnProperty('work')){
@@ -113,7 +175,7 @@ class Renderer{
 		}else{
 			y_end = stop_message.y;
 		}
-		var line = draw.line(
+		var line = lifeline_group.line(
 				line_point.x,
 				line_point.y,
 				line_point.x + 0,
@@ -129,8 +191,10 @@ class Renderer{
 
 	}
 
-	static draw_message(draw, diagram, message, parent_message)
+	static draw_message(rendering_handle, diagram, message, parent_message)
 	{
+		let other_group = rendering_handle.get_other_group();
+
 		let is_found = false;
 		let is_lost = false;
 
@@ -200,12 +264,12 @@ class Renderer{
 				&& message.end.hasOwnProperty('lifeline_id')
 				&& message.start.lifeline_id == message.end.lifeline_id
 				&& 0 <= message.start.lifeline_id){
-			let svg_elem = Renderer.draw_message_turnback(draw, position);
+			let svg_elem = Renderer.draw_message_turnback(rendering_handle, position);
 			is_turnback = true;
 			let b = svg_elem.bbox();
 			message.work.rect = Object.assign({}, b);
 		}else{
-			var line = draw.line(
+			var line = other_group.line(
 					position.x,
 					position.y,
 					position.x + position.width,
@@ -221,20 +285,20 @@ class Renderer{
 			}
 
 			if('stop' != message.end_kind){
-				Renderer.draw_message_array_of_foot(draw, position, message.message_kind);
+				Renderer.draw_message_array_of_foot(rendering_handle, position, message.message_kind);
 			}else{
-				Renderer.draw_message_stop_icon_of_foot(draw, position);
+				Renderer.draw_message_stop_icon_of_foot(rendering_handle, position);
 			}
 
 			if(is_found){
 				const size = 16;
 				const point_head = Message.get_start_side_point(position, [(size/2), 0]);
-				draw.circle(size).move(point_head.x - (size/2), point_head.y - (size/2));
+				other_group.circle(size).move(point_head.x - (size/2), point_head.y - (size/2));
 			}
 			if(is_lost){
 				const size = 16;
 				const point_end = Message.get_end_side_point(position, [(size/2), 0]);
-				draw.circle(size).move(point_end.x - (size/2), point_end.y - (size/2))
+				other_group.circle(size).move(point_end.x - (size/2), point_end.y - (size/2))
 					//.fill('none').stroke('#00f');
 					.fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 			}
@@ -250,23 +314,25 @@ class Renderer{
 		const text_offset = [18, 2];
 		text_point.x += text_offset[0];
 		text_point.y += text_offset[1];
-		let text = draw.text(message.text).move(text_point.x, text_point.y);
+		let text = other_group.text(message.text).move(text_point.x, text_point.y);
 
 		if(is_touch_end_side_lifeline){
 			if(message.hasOwnProperty('spec') && null !== message.spec){
-				Renderer.draw_spec(draw, diagram, message, position);
+				Renderer.draw_spec(rendering_handle, diagram, message, position);
 
 				if(is_touch_end_side_lifeline && is_touch_start_side_lifeline){
 					if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
-						Renderer.draw_message(draw, diagram, message.reply_message, message);
+						Renderer.draw_message(rendering_handle, diagram, message.reply_message, message);
 					}
 				}
 			}
 		}
 	}
 
-	static draw_spec(draw, diagram, message, parent_message_position)
+	static draw_spec(rendering_handle, diagram, message, parent_message_position)
 	{
+		let spec_group = rendering_handle.get_spec_group();
+
 		if(! (message.hasOwnProperty('spec') && null !== message.spec)){
 			console.error('bug');
 			return;
@@ -294,7 +360,7 @@ class Renderer{
 			'height':	height,
 		};
 		box = Rect.abs(box);
-		draw.rect(box.width, box.height).move(box.x, box.y).attr(attr);
+		spec_group.rect(box.width, box.height).move(box.x, box.y).attr(attr);
 
 		if(! spec.hasOwnProperty('work')){
 			spec.work = {};
@@ -302,9 +368,11 @@ class Renderer{
 		spec.work.rect = Object.assign({}, box);
 	}
 
-	static draw_fragment(draw, fragment)
+	static draw_fragment(rendering_handle, fragment)
 	{
-		let fragment_group = draw.group().addClass('fragment-group');
+		let other_group = rendering_handle.get_other_group();
+
+		let fragment_group = rendering_handle.get_spec_group().addClass('fragment-group');
 
 		const padding = [5, 0];
 		// ** fragment_kind
@@ -328,7 +396,7 @@ class Renderer{
 					b.x + b.width + 5 , b.y + b.height - 5,
 					b.x + b.width + 5 , b.y,
 				];
-				let fragment_kind_polyline = draw.polyline(points)
+				let fragment_kind_polyline = other_group.polyline(points)
 					.stroke({ width: 1, linecap: 'round', }).fill('none');
 			}
 		}
@@ -386,8 +454,10 @@ class Renderer{
 		return fragment_group;
 	}
 
-	static draw_message_turnback(draw, position)
+	static draw_message_turnback(rendering_handle, position)
 	{
+		let other_group = rendering_handle.get_other_group();
+
 		const height = 10;
 		const points = [
 			position.x, position.y,
@@ -395,34 +465,38 @@ class Renderer{
 			position.x + 100, position.y + height,
 			position.x + 0, position.y + height,
 		];
-		let polyline = draw.polyline(points).stroke({ width: 2, }).fill('none');
+		let polyline = other_group.polyline(points).stroke({ width: 2, }).fill('none');
 
 		const point = {'x': position.x, 'y': position.y + height};
-		let array_polyline = Renderer.draw_array_top(draw, point, [6, 6], true);
+		let array_polyline = Renderer.draw_array_top(rendering_handle, point, [6, 6], true);
 
 		return polyline;
 	}
 
-	static draw_message_array_of_foot(draw, position, message_kind)
+	static draw_message_array_of_foot(rendering_handle, position, message_kind)
 	{
+		let other_group = rendering_handle.get_other_group();
+
 		let point = {'x': position.x + position.width, 'y': position.y + position.height};
 		let offset = [8, 8];
 		if(0 < position.width){
 			offset = [-8, -8];
 		}
 
-		let polyline = Renderer.draw_array_top(draw, point, offset, ('sync' == message_kind));
+		let polyline = Renderer.draw_array_top(rendering_handle, point, offset, ('sync' == message_kind));
 	}
 
-	static draw_array_top(draw, point, offset, is_fill)
+	static draw_array_top(rendering_handle, point, offset, is_fill)
 	{
+		let other_group = rendering_handle.get_other_group();
+
 		let points = [
 			point.x + offset[0], point.y + offset[1],
 			point.x, point.y,
 			point.x + offset[0], point.y - offset[1],
 		];
 
-			let polyline = draw.polyline(points).stroke({ width: 3, linecap: 'round', });
+			let polyline = other_group.polyline(points).stroke({ width: 3, linecap: 'round', });
 			if(!is_fill){
 				polyline.fill('none').plot();
 			}
@@ -430,20 +504,22 @@ class Renderer{
 			return polyline;
 	}
 
-	static draw_message_stop_icon_of_foot(draw, position)
+	static draw_message_stop_icon_of_foot(rendering_handle, position)
 	{
+		let other_group = rendering_handle.get_other_group();
+
 		const size = 16;
 		const point_end = Message.get_end_side_point(position, [0, 0]);
 		let l0 = [
 			point_end.x - (size/2), point_end.y - (size/2),
 			point_end.x + (size/2), point_end.y + (size/2),
 		];
-		draw.line(l0).fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
+		other_group.line(l0).fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 		let l1 = [
 			point_end.x + (size/2), point_end.y - (size/2),
 			point_end.x - (size/2), point_end.y + (size/2),
 		];
-		draw.line(l1).fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
+		other_group.line(l1).fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 	}
 };
 
