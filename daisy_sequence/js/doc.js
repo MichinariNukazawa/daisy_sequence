@@ -1124,6 +1124,28 @@ class Message{
 
 		return position;
 	}
+
+	static get_end_lifeline_id(message)
+	{
+
+		if(message.end.hasOwnProperty('lifeline_id') && 0 <= message.end.lifeline_id){
+			return message.end.lifeline_id;
+		}
+
+		return -1;
+	}
+};
+
+class Spec{
+	static get_height(spec, message)
+	{
+		let height = spec.height;
+		if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
+			height = message.reply_message.y - message.y;
+		}
+
+		return height;
+	}
 };
 
 class Fragment{

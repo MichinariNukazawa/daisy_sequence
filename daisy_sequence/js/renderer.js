@@ -105,7 +105,7 @@ class Renderer{
 	{
 		let specs = [];
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
-			let element = diagram.diagram_elements[i];
+			const element = diagram.diagram_elements[i];
 			if('message' !== element.kind){
 				continue;
 			}
@@ -113,8 +113,42 @@ class Renderer{
 				continue;
 			}
 
-			specs.push({'message': element, 'rank': 0,});
+			let position = Message.get_position(element, diagram);
+			position.height = Spec.get_height(element.spec, element);
+			specs.push({'message': element, 'position': position, 'rank': 0,});
 		}
+
+		specs.sort(function(a, b){
+			return a.position.y - b.position.y;
+		});
+
+		let rank_obj = {};
+		for(let i = 0; i < specs.length; i++){
+			const message = specs[i].message;
+			const end_lifeline_id = Message.get_end_lifeline_id(message);
+			if(undefined === rank_obj[end_lifeline_id]){
+				rank_obj[end_lifeline_id] = [];
+			}
+
+			const ob = specs[i];
+			for(let t = rank_obj[end_lifeline_id].length - 1; 0 <= t; t--){
+				const ob_ = rank_obj[end_lifeline_id][t];
+				const y = ob_.position.y + ob_.position.height;
+				if(y < ob.position.y){
+					rank_obj[end_lifeline_id].pop();
+				}else{
+					break;
+				}
+			}
+			ob.rank = rank_obj[end_lifeline_id].length;
+			rank_obj[end_lifeline_id].push(ob);
+			/* console.log("%d lifeline:%d rank:%d %d %d",
+			   ob.message.spec.id, end_lifeline_id, rank_obj[end_lifeline_id].length,
+			   ob.position.y, ob.position.height);
+			   */
+		}
+
+		// console.log(rank_obj);
 
 		for(let i = 0; i < specs.length; i++){
 			let message = specs[i].message;
@@ -122,6 +156,7 @@ class Renderer{
 					rendering_handle,
 					diagram,
 					message,
+					specs[i].rank
 					);
 		}
 	}
@@ -313,7 +348,7 @@ class Renderer{
 		}
 	}
 
-	static draw_spec(rendering_handle, diagram, message)
+	static draw_spec(rendering_handle, diagram, message, rank)
 	{
 		let spec_group = rendering_handle.get_spec_group();
 
@@ -331,14 +366,11 @@ class Renderer{
 		};
 
 		const width = 5;
-		let height = spec.height;
-		if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
-			height = message.reply_message.y - message.y;
-		}
+		const height = Spec.get_height(message.spec, message);
 
 		const end_side_point = Message.get_end_side_point(message, diagram);
 		let box = {
-			'x':		end_side_point.x - 1,
+			'x':		end_side_point.x - 1 + (rank * width),
 			'y':		end_side_point.y + spec.y_offset,
 			'width':	width,
 			'height':	height,
