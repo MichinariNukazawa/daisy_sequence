@@ -1041,7 +1041,7 @@ class Message{
 		return side;
 	}
 
-	static get_start_side_point(position, offset)
+	static get_start_side_point_from_position(position, offset)
 	{
 		let point;
 		if(0 < position.width){
@@ -1057,7 +1057,7 @@ class Message{
 		return point;
 	}
 
-	static get_end_side_point(position, offset)
+	static get_end_side_point_from_position(position, offset)
 	{
 		let point = {'x': position.x + position.width, 'y': position.y + position.height};
 		if(0 < position.width){

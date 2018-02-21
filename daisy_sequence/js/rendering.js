@@ -292,12 +292,12 @@ class Renderer{
 
 			if(is_found){
 				const size = 16;
-				const point_head = Message.get_start_side_point(position, [(size/2), 0]);
+				const point_head = Message.get_start_side_point_from_position(position, [(size/2), 0]);
 				other_group.circle(size).move(point_head.x - (size/2), point_head.y - (size/2));
 			}
 			if(is_lost){
 				const size = 16;
-				const point_end = Message.get_end_side_point(position, [(size/2), 0]);
+				const point_end = Message.get_end_side_point_from_position(position, [(size/2), 0]);
 				other_group.circle(size).move(point_end.x - (size/2), point_end.y - (size/2))
 					//.fill('none').stroke('#00f');
 					.fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
@@ -352,7 +352,7 @@ class Renderer{
 			height = message.reply_message.y - message.y;
 		}
 
-		let end_point = Message.get_end_side_point(parent_message_position, [0,0]);
+		let end_point = Message.get_end_side_point_from_position(parent_message_position, [0,0]);
 		let box = {
 			'x':		end_point.x - 1,
 			'y':		end_point.y + spec.y_offset,
@@ -509,7 +509,7 @@ class Renderer{
 		let other_group = rendering_handle.get_other_group();
 
 		const size = 16;
-		const point_end = Message.get_end_side_point(position, [0, 0]);
+		const point_end = Message.get_end_side_point_from_position(position, [0, 0]);
 		let l0 = [
 			point_end.x - (size/2), point_end.y - (size/2),
 			point_end.x + (size/2), point_end.y + (size/2),
