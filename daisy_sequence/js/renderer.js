@@ -314,7 +314,8 @@ class Renderer{
 				&& message.end.hasOwnProperty('lifeline_id')
 				&& message.start.lifeline_id == message.end.lifeline_id
 				&& 0 <= message.start.lifeline_id){
-			let svg_elem = Renderer.draw_message_turnback(rendering_handle, position);
+			const is_spec = (message.hasOwnProperty('spec') && null !== message.spec);
+			let svg_elem = Renderer.draw_message_turnback(rendering_handle, position, is_spec);
 			is_turnback = true;
 			let b = svg_elem.bbox();
 			message.work.rect = Object.assign({}, b);
@@ -505,21 +506,24 @@ class Renderer{
 		return fragment_group;
 	}
 
-	static draw_message_turnback(rendering_handle, position)
+	static draw_message_turnback(rendering_handle, position, is_spec)
 	{
 		let other_group = rendering_handle.get_other_group();
 
 		const height = 10;
+		const end_point = {
+			'x': position.x + 0 + ((is_spec)? Spec.WIDTH():0), 'y': position.y + height,
+		};
+
 		const points = [
 			position.x, position.y,
 			position.x + 100, position.y + 0,
 			position.x + 100, position.y + height,
-			position.x + 0, position.y + height,
+			end_point.x, end_point.y,
 		];
 		let polyline = other_group.polyline(points).stroke({ width: 2, }).fill('none');
 
-		const point = {'x': position.x, 'y': position.y + height};
-		let array_polyline = Renderer.draw_array_top(rendering_handle, point, [6, 6], true);
+		let array_polyline = Renderer.draw_array_top(rendering_handle, end_point, [6, 6], true);
 
 		return polyline;
 	}

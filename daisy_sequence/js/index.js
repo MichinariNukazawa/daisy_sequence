@@ -502,8 +502,10 @@ function callback_history_change_doc(doc, event_kind)
 			event_kind);
 	document.getElementById('history_info').textContent = s;
 
-	callback_focus_change(Doc.get_focus(doc), doc);
-	callback_current_doc_change(daisy.get_current_doc_id());
+	if('add' !== event_kind){
+		callback_focus_change(Doc.get_focus(doc), doc);
+		callback_current_doc_change(daisy.get_current_doc_id());
+	}
 
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
