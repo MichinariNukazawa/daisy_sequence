@@ -221,14 +221,14 @@ class Renderer{
 
 		let message_of_create = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.id, 'create');
 		if(null !== message_of_create){
-			lifeline.y = message_of_create.y;
+			lifeline.y = message_of_create.y - (24 + 5);
 		}
 
 		// 空の名前を表示しようとすると、lifelineの表示が消えて位置計算もおかしくなるので、対処する
 		const show_name = (! /^\s*$/.test(lifeline.text))? lifeline.text : '-';
 		let text = lifeline_group.text(show_name).move(lifeline.x, lifeline.y).font({
 			'fill': '#000' ,
-			'size': '150%'
+			'size': '24px',
 		});
 
 		const attr = {
@@ -238,7 +238,7 @@ class Renderer{
 		};
 		const padding = 5;
 		const radius = 3;
-		const offset = [0, 1];
+		const offset = [8, 1];
 
 		let b = text.bbox();
 		let box = {

@@ -87,20 +87,20 @@ function get_default_doc()
 		'kind': 'lifeline',
 		'id': 0,
 		'x': 150,
-		'y': 30,
+		'y': 20,
 		'text': 'Object1'
 	},
 	{
 		'kind': 'lifeline',
 		'id': 1,
 		'x': 300,
-		'y': 30,
+		'y': 20,
 		'text': 'Object2'
 	},
 	{
 		'kind':		'message',
 		'id':		2,
-		'y':		70,
+		'y':		90,
 		'start':	{'position_x': 20},		// from found
 		'end':		{'lifeline_id': 0},
 		'end_kind':	'none',
