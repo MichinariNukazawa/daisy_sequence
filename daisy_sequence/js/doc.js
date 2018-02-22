@@ -397,6 +397,11 @@ class Doc{
 
 	static set_filepath(doc, filepath)
 	{
+		if(typeof filepath !== 'string'){
+			console.error(filepath); // BUG
+			filepath = '';
+		}
+
 		doc.filepath = filepath;
 	}
 

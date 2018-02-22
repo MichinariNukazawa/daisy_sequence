@@ -218,7 +218,36 @@ class Daisy{
 };
 
 
+let arg = {
+	'open_filepath': null,
+};
+function process_argument()
+{
+	let argv = remote.process.argv;
+	if(argv[0].endsWith('electron') && argv[1] == '.'){
+		argv.shift(), argv.shift();
+	}else{
+		argv.shift();
+	}
+	// console.log(argv);
+
+	if(typeof argv[0] === 'string'){
+		arg.open_filepath = argv[0];
+	}
+
+	// console.log(remote.getGlobal('sharedObject').osx_open_file);
+	if(typeof remote.getGlobal('sharedObject').osx_open_file === 'string'){
+		if(null === arg.open_filepath){
+			arg.open_filepath = remote.getGlobal('sharedObject').osx_open_file;
+		}
+	}
+
+	console.log(arg);
+}
+
 window.onload = function(e){
+	process_argument();
+
 	try{
 		const filepath = path.join(__dirname, 'image/edge.svg');
 		edge_icon_svg = fs.readFileSync(filepath, 'utf8');
@@ -230,7 +259,15 @@ window.onload = function(e){
 
 	daisy = new Daisy();
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
-	daisy.append_doc_id(doc_collection.create_doc());
+
+	if(null !== arg.open_filepath){
+		let doc_id = DaisyIO.open_doc_from_path(arg.open_filepath);
+		if(-1 === doc_id){
+			console.error(arg.open_filepath);
+		}
+	}else{
+		// NOP
+	}
 
 	// document.addEventListener('mousemove', callback);
 	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
@@ -337,7 +374,7 @@ function callback_tool_change(tool_kind)
 
 let is_focusin_first = false;
 function add_event_listener_first_input_for_single_element_with_history(
-			textarea_element, callback)
+		textarea_element, callback)
 {
 	let cb = function(e){
 		if(is_focusin_first){
@@ -364,7 +401,7 @@ function add_event_listener_first_input_for_single_element_with_history(
 }
 
 function add_event_listener_first_input_with_history(
-			textarea_element, callback)
+		textarea_element, callback)
 {
 	let cb = function(e){
 		if(is_focusin_first){

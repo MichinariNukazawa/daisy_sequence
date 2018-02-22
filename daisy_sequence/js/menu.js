@@ -110,6 +110,35 @@ function export_dialog(default_filepath, format_name)
 	return filepath;
 }
 
+class DaisyIO{
+	static open_doc_from_path(filepath)
+	{
+		let strdata = '';
+		try{
+			strdata = fs.readFileSync(filepath, 'utf-8');
+		}catch(err){
+			console.error(err.message);
+			message_dialog('warning', "Open", err.message);
+			return -1;
+		}
+
+		let err = {};
+		const doc_id = doc_collection.create_doc_from_native_format_string(strdata, err);
+		if(-1 === doc_id){
+			message_dialog('warning', "Open", err.message);
+			return -1;
+		}
+
+		daisy.append_doc_id(doc_id);
+
+		let doc = doc_collection.get_doc_from_id(doc_id);
+		Doc.set_filepath(doc, filepath);
+		Doc.on_save(doc);
+
+		return doc_id;
+	}
+};
+
 var template = [
 {
 	label: 'File',
@@ -158,27 +187,10 @@ var template = [
 			}
 			console.debug(filepath);
 
-			let strdata = '';
-			try{
-				strdata = fs.readFileSync(filepath, 'utf-8');
-			}catch(err){
-				console.error(err);
-				message_dialog('warning', "Open", err.message);
+			if(-1 == DaisyIO.open_doc_from_path(filepath)){
+				console.error(filepath);
 				return;
 			}
-
-			let err = {};
-			const doc_id = doc_collection.create_doc_from_native_format_string(strdata, err);
-			if(-1 === doc_id){
-				message_dialog('warning', "Open", err.message);
-				return;
-			}
-
-			daisy.append_doc_id(doc_id);
-
-			let doc = doc_collection.get_doc_from_id(doc_id);
-			Doc.set_filepath(doc, filepath);
-			Doc.on_save(doc);
 
 			console.log("Open:`%s`", filepath);
 		}

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "electron .",
+    "run-open": "electron . sample.daisydiagram",
     "test": "npm test"
   },
   "repository": "<project_name>",

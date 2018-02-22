@@ -1,0 +1,280 @@
+{
+	"editor_info": {
+		"application_name": "daisy diagram",
+		"version": "201802.0.0-devel"
+	},
+	"diagram": {
+		"width": 500,
+		"height": 600,
+		"diagram_elements": [
+			{
+				"kind": "lifeline",
+				"id": 0,
+				"x": 150,
+				"y": 30,
+				"text": "Object1"
+			},
+			{
+				"kind": "lifeline",
+				"id": 1,
+				"x": 300,
+				"y": 63,
+				"text": "Object2"
+			},
+			{
+				"kind": "message",
+				"id": 2,
+				"y": 71,
+				"start": {
+					"position_x": 20
+				},
+				"end": {
+					"lifeline_id": 0,
+					"position_x": 122
+				},
+				"end_kind": "none",
+				"message_kind": "sync",
+				"text": "message\nfrom found",
+				"spec": {
+					"kind": "spec",
+					"id": 10,
+					"y_offset": 0,
+					"height": 446
+				}
+			},
+			{
+				"kind": "message",
+				"id": 3,
+				"y": 92,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"lifeline_id": 1,
+					"position_x": 276
+				},
+				"end_kind": "create",
+				"message_kind": "async",
+				"text": "create lifeline"
+			},
+			{
+				"kind": "message",
+				"id": 4,
+				"y": 125,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"lifeline_id": 1
+				},
+				"end_kind": "none",
+				"message_kind": "sync",
+				"text": "lifeline to lifeline",
+				"spec": {
+					"kind": "spec",
+					"id": 11,
+					"y_offset": 0,
+					"height": 54
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 6,
+					"y": 428,
+					"message_kind": "reply",
+					"end_kind": "none",
+					"text": "message of reply",
+					"start": {
+						"lifeline_id": 1
+					},
+					"end": {
+						"lifeline_id": 0
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 5,
+				"y": 207,
+				"start": {
+					"lifeline_id": 1,
+					"position_x": 307
+				},
+				"end": {
+					"lifeline_id": 1
+				},
+				"end_kind": "none",
+				"message_kind": "sync",
+				"text": "turnback",
+				"spec": {
+					"kind": "spec",
+					"id": 26,
+					"y_offset": 0,
+					"height": 20
+				}
+			},
+			{
+				"kind": "message",
+				"id": 8,
+				"y": 467,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 420
+				},
+				"end_kind": "none",
+				"message_kind": "async",
+				"text": "message async to lost"
+			},
+			{
+				"kind": "message",
+				"id": 9,
+				"y": 502,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"lifeline_id": 1,
+					"position_x": 279
+				},
+				"end_kind": "stop",
+				"message_kind": "sync",
+				"text": "stop to lifeline"
+			},
+			{
+				"kind": "fragment",
+				"id": 12,
+				"x": 23,
+				"y": 149,
+				"width": 451.890625,
+				"height": 210.5625,
+				"is_auto_size": false,
+				"fragment_kind": "alt",
+				"background_opacity": "0.1",
+				"text": "text\nmemo fragment"
+			},
+			{
+				"kind": "fragment",
+				"id": 13,
+				"x": 335,
+				"y": 391,
+				"width": 120,
+				"height": 40,
+				"is_auto_size": false,
+				"fragment_kind": "",
+				"background_opacity": "0.1",
+				"text": "text\nmemo fragment"
+			},
+			{
+				"kind": "message",
+				"id": 14,
+				"y": 161,
+				"start": {
+					"position_x": 271,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 149,
+					"lifeline_id": 0
+				},
+				"end_kind": "none",
+				"message_kind": "sync",
+				"text": "in message01",
+				"spec": {
+					"kind": "spec",
+					"id": 15,
+					"y_offset": 0,
+					"height": 20
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 22,
+					"y": 191,
+					"message_kind": "reply",
+					"end_kind": "none",
+					"text": "reply",
+					"start": {
+						"lifeline_id": 0
+					},
+					"end": {
+						"lifeline_id": 1
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 18,
+				"y": 239,
+				"start": {
+					"position_x": 269,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 159,
+					"lifeline_id": 0
+				},
+				"end_kind": "none",
+				"message_kind": "sync",
+				"text": "in message02",
+				"spec": {
+					"kind": "spec",
+					"id": 21,
+					"y_offset": 0,
+					"height": 20
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 20,
+					"y": 340,
+					"message_kind": "reply",
+					"end_kind": "none",
+					"text": "reply",
+					"start": {
+						"lifeline_id": 0
+					},
+					"end": {
+						"lifeline_id": 1
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 23,
+				"y": 274,
+				"start": {
+					"position_x": 149,
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 164,
+					"lifeline_id": 0
+				},
+				"end_kind": "none",
+				"message_kind": "sync",
+				"text": "in turnback",
+				"spec": {
+					"kind": "spec",
+					"id": 25,
+					"y_offset": 0,
+					"height": 20
+				}
+			},
+			{
+				"kind": "message",
+				"id": 24,
+				"y": 314,
+				"start": {
+					"position_x": 152,
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 457,
+					"lifeline_id": -1
+				},
+				"end_kind": "none",
+				"message_kind": "sync",
+				"text": "in message to lost"
+			}
+		]
+	}
+}
