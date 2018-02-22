@@ -298,9 +298,9 @@ class Renderer{
 
 		let position = Message.get_position(message, diagram);
 		// console.log("%d %d %d", position.width, start_rank, end_rank);
-		const start_offset_x = start_rank * 5;
+		const start_offset_x = start_rank * Spec.WIDTH();
 		position.x += start_offset_x;
-		position.width += (end_rank * 5) - start_offset_x;
+		position.width += (end_rank * Spec.WIDTH()) - start_offset_x;
 
 		if(! message.hasOwnProperty('work')){
 			message.work = {};
@@ -401,14 +401,13 @@ class Renderer{
 			'stroke-width':		'1.2',
 		};
 
-		const width = 5;
 		const height = Spec.get_height(message.spec, message);
 
 		const end_side_point = Message.get_end_side_point(message, diagram);
 		let box = {
-			'x':		end_side_point.x - 1 + (rank * width),
+			'x':		end_side_point.x - 1 + (rank * Spec.WIDTH()),
 			'y':		end_side_point.y + spec.y_offset,
-			'width':	width,
+			'width':	Spec.WIDTH(),
 			'height':	height,
 		};
 		box = Rect.abs(box);

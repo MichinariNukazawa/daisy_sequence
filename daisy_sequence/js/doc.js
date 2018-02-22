@@ -1147,6 +1147,11 @@ class Message{
 };
 
 class Spec{
+	static WIDTH()
+	{
+		return 5;
+	}
+
 	static get_height(spec, message)
 	{
 		let height = spec.height;
