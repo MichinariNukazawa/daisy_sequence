@@ -1125,6 +1125,16 @@ class Message{
 		return position;
 	}
 
+	static get_start_lifeline_id(message)
+	{
+
+		if(message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id){
+			return message.start.lifeline_id;
+		}
+
+		return -1;
+	}
+
 	static get_end_lifeline_id(message)
 	{
 

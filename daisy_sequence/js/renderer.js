@@ -75,7 +75,7 @@ class Renderer{
 			if('lifeline' == diagram.diagram_elements[i].kind){
 				Renderer.draw_lifeline(rendering_handle, diagram, diagram.diagram_elements[i]);
 			}else if('message' == diagram.diagram_elements[i].kind){
-				Renderer.draw_message(rendering_handle, diagram, diagram.diagram_elements[i], null);
+				// Renderer.draw_message(rendering_handle, diagram, diagram.diagram_elements[i], null);
 			}else if('fragment' == diagram.diagram_elements[i].kind){
 				Renderer.draw_fragment(rendering_handle, diagram.diagram_elements[i]);
 			}else{
@@ -109,13 +109,15 @@ class Renderer{
 			if('message' !== element.kind){
 				continue;
 			}
-			if(! element.hasOwnProperty('spec') || null === element.spec){
-				continue;
-			}
 
 			let position = Message.get_position(element, diagram);
-			position.height = Spec.get_height(element.spec, element);
-			specs.push({'message': element, 'position': position, 'rank': 0,});
+			if(element.hasOwnProperty('spec') && null !== element.spec){
+				position.height = Spec.get_height(element.spec, element);
+			}else{
+				position.height = 0;
+			}
+
+			specs.push({'message': element, 'position': position, 'start_rank': 0, 'end_rank': 0,});
 		}
 
 		specs.sort(function(a, b){
@@ -125,12 +127,25 @@ class Renderer{
 		let rank_obj = {};
 		for(let i = 0; i < specs.length; i++){
 			const message = specs[i].message;
+			const start_lifeline_id = Message.get_start_lifeline_id(message);
+			if(undefined === rank_obj[start_lifeline_id]){
+				rank_obj[start_lifeline_id] = [];
+			}
 			const end_lifeline_id = Message.get_end_lifeline_id(message);
 			if(undefined === rank_obj[end_lifeline_id]){
 				rank_obj[end_lifeline_id] = [];
 			}
 
 			const ob = specs[i];
+			for(let t = rank_obj[start_lifeline_id].length - 1; 0 <= t; t--){
+				const ob_ = rank_obj[start_lifeline_id][t];
+				const y = ob_.position.y + ob_.position.height;
+				if(y < ob.position.y){
+					rank_obj[start_lifeline_id].pop();
+				}else{
+					break;
+				}
+			}
 			for(let t = rank_obj[end_lifeline_id].length - 1; 0 <= t; t--){
 				const ob_ = rank_obj[end_lifeline_id][t];
 				const y = ob_.position.y + ob_.position.height;
@@ -140,7 +155,14 @@ class Renderer{
 					break;
 				}
 			}
-			ob.rank = rank_obj[end_lifeline_id].length;
+			ob.start_rank = rank_obj[start_lifeline_id].length;
+			if(-1 == start_lifeline_id){
+				ob.start_rank = 0;
+			}
+			ob.end_rank = rank_obj[end_lifeline_id].length;
+			if(-1 == end_lifeline_id){
+				ob.end_rank = 0;
+			}
 			rank_obj[end_lifeline_id].push(ob);
 			/* console.log("%d lifeline:%d rank:%d %d %d",
 			   ob.message.spec.id, end_lifeline_id, rank_obj[end_lifeline_id].length,
@@ -152,11 +174,21 @@ class Renderer{
 
 		for(let i = 0; i < specs.length; i++){
 			let message = specs[i].message;
-			Renderer.draw_spec(
+			if(message.hasOwnProperty('spec') && null !== message.spec){
+				Renderer.draw_spec(
+						rendering_handle,
+						diagram,
+						message,
+						specs[i].end_rank
+						);
+			}
+			Renderer.draw_message(
 					rendering_handle,
 					diagram,
 					message,
-					specs[i].rank
+					null,
+					specs[i].start_rank,
+					specs[i].end_rank
 					);
 		}
 	}
@@ -253,7 +285,7 @@ class Renderer{
 
 	}
 
-	static draw_message(rendering_handle, diagram, message, parent_message)
+	static draw_message(rendering_handle, diagram, message, parent_message, start_rank, end_rank)
 	{
 		let other_group = rendering_handle.get_other_group();
 
@@ -265,6 +297,10 @@ class Renderer{
 		}
 
 		let position = Message.get_position(message, diagram);
+		// console.log("%d %d %d", position.width, start_rank, end_rank);
+		const start_offset_x = start_rank * 5;
+		position.x += start_offset_x;
+		position.width += (end_rank * 5) - start_offset_x;
 
 		if(! message.hasOwnProperty('work')){
 			message.work = {};
@@ -341,7 +377,7 @@ class Renderer{
 			if(message.hasOwnProperty('spec') && null !== message.spec){
 				if(is_touch_end_side_lifeline && is_touch_start_side_lifeline){
 					if(message.hasOwnProperty('reply_message') && null !== message.reply_message){
-						Renderer.draw_message(rendering_handle, diagram, message.reply_message, message);
+						Renderer.draw_message(rendering_handle, diagram, message.reply_message, message, end_rank, start_rank - 1);
 					}
 				}
 			}
