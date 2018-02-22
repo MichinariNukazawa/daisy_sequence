@@ -410,11 +410,11 @@ class Doc{
 		let diagram = object_deepcopy(src_diagram);
 		object_remove_key(diagram, 'work');
 		let native_doc = {
-			'diagram': diagram,
 			'editor_info': {
 				'application_name':	Version.get_name(),
 				'version':		Version.get_version(),
 			},
+			'diagram': diagram,
 		};
 		const strdata = JSON.stringify(native_doc, null, '\t');
 		return strdata;
