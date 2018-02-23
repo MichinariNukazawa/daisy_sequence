@@ -658,32 +658,17 @@ class Diagram{
 
 	static get_element_from_id(diagram, id)
 	{
-		for(let i = 0; i < diagram.diagram_elements.length; i++){
-			const element = diagram.diagram_elements[i];
-			if(id === element.id){
-				return element;
+		let func = function(recurse_info, element, opt){
+			if(opt.id === element.id){
+				opt.element = element;
+				return false;
 			}
-		}
+			return true;
+		};
+		let opt = {'id': id, 'element': null};
+		Element.recursive(diagram.diagram_elements, func, opt);
 
-		for(let i = 0; i < diagram.diagram_elements.length; i++){
-			const element = diagram.diagram_elements[i];
-
-			if('message' !== element.kind){
-				continue;
-			}
-			if(element.hasOwnProperty('spec') && null !== element.spec){
-				if(id === element.spec.id){
-					return element.spec;
-				}
-			}
-			if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
-				if(id === element.reply_message.id){
-					return element.reply_message;
-				}
-			}
-		}
-
-		return null;
+		return opt.element;
 	}
 
 	static get_element_of_touch(diagram, point)
@@ -978,6 +963,69 @@ class Element{
 		}
 
 		return '';
+	}
+
+	static recursive(obj, func, func_opt)
+	{
+		let recurse_info = {
+			'level': 0,
+			'count': 0,
+			'last_element': null,
+			'parent_objs': [],
+			'get_parent_id': function(){
+				for(let i = this.level - 1; 0 <= i; i--){
+					let obj = this.parent_objs[i];
+					if(undefined === obj){
+						continue;
+					}
+					if(null === obj){
+						continue;
+					}
+					if(obj.hasOwnProperty('kind')){// is element
+						return obj.id;
+					}
+				}
+				return -1;
+			},
+		};
+
+		return Element.recursive_inline_(recurse_info, obj, func, func_opt);
+	}
+
+	static recursive_inline_(recurse_info, obj, func, func_opt)
+	{
+		/*
+		console.debug("id:%d level:%d count:%d",
+				0, //obj.id,
+				recurse_info.level,
+				recurse_info.count,
+				0);//parent_id);
+		*/
+
+		if(obj.hasOwnProperty('kind')){// is element
+			recurse_info.count++;
+			let res = func(recurse_info, obj, func_opt);
+			recurse_info.last_element = obj;
+
+			if(! res){
+				return false;
+			}
+		}
+
+		// ** recurse children
+		recurse_info.parent_objs[recurse_info.level] = obj;
+		recurse_info.level++;
+		for(let key in obj){
+			if(typeof obj[key] !== 'object' && typeof obj[key] !== 'array'){
+				continue;
+			}
+			if(! Element.recursive_inline_(recurse_info, obj[key], func, func_opt)){
+				return false;
+			}
+		}
+		recurse_info.level--;
+
+		return true;
 	}
 };
 
