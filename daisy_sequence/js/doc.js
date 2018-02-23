@@ -673,54 +673,33 @@ class Diagram{
 
 	static get_element_of_touch(diagram, point)
 	{
-		for(let i = 0; i < diagram.diagram_elements.length; i++){
-			const element = diagram.diagram_elements[i];
-
-			if(Diagram.is_touch_element_by_work_rect_(element, point)){
-				return element;
+		const func_is_touch_element_by_work_rect_ = function(element, point)
+		{
+			let rect = Element.get_rect(element);
+			if(null == rect){
+				return false;
 			}
-		}
 
-		for(let i = 0; i < diagram.diagram_elements.length; i++){
-			const element = diagram.diagram_elements[i];
+			let collision_rect = Object.assign({}, rect);
 
-			if('message' !== element.kind){
-				continue;
+			let offset = [0, 0];
+			if(Rect.is_touch(collision_rect, point, offset)){
+				return true;
 			}
-			if(element.hasOwnProperty('spec') && null !== element.spec){
-				if(Diagram.is_touch_element_by_work_rect_(element.spec, point)){
-					return element.spec;
-				}
-			}
-			if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
-				if(Diagram.is_touch_element_by_work_rect_(element.reply_message, point)){
-					return element.reply_message;
-				}
-			}
-		}
 
-		return null;
-	}
-
-	static is_touch_element_by_work_rect_(element, point)
-	{
-		let rect = Element.get_rect(element);
-		if(null == rect){
 			return false;
-		}
-
-		let collision_rect = Object.assign({}, rect);
-
-		let offset = [0, 0];
-		if('spec' == element.kind){
-			offset = [16, 16];
-		}
-
-		if(Rect.is_touch(collision_rect, point, offset)){
+		};
+		const func = function(recurse_info, element, opt){
+			if(func_is_touch_element_by_work_rect_(element, opt.point)){
+				opt.element = element;
+				return false;
+			}
 			return true;
-		}
+		};
+		let opt = {'point': point, 'element': null};
+		Element.recursive(diagram.diagram_elements, func, opt);
 
-		return false;
+		return opt.element;
 	}
 
 	static get_lifeline_from_name(diagram, lifeline_name)
