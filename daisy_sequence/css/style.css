@@ -48,6 +48,10 @@ div{
 	width: 80px;
 }
 
+#editor input{
+	vertical-align: middle;
+}
+
 #drawing-container{
 	padding:	5px;
 	width:		90vh;
