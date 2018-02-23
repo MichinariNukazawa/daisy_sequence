@@ -768,29 +768,16 @@ class Diagram{
 
 	static get_max_id_(diagram)
 	{
-		let id = -1;
-		for(let i = 0; i < diagram.diagram_elements.length; i++){
-			const element = diagram.diagram_elements[i];
-			if(id < element.id){
-				id = element.id;
+		let func = function(recurse_info, element, opt){
+			if(opt.id < element.id){
+				opt.id = element.id;
 			}
+			return true;
+		};
+		let opt = {'id': -1};
+		Element.recursive(diagram.diagram_elements, func, opt);
 
-			if('message' !== element.kind){
-				continue;
-			}
-			if(element.hasOwnProperty('spec') && null !== element.spec){
-				if(id < element.spec.id){
-					id = element.spec.id;
-				}
-			}
-			if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
-				if(id < element.reply_message.id){
-					id = element.reply_message.id;
-				}
-			}
-		}
-
-		return id;
+		return opt.id;
 	}
 
 	static create_lifeline_(src)
