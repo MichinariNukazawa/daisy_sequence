@@ -576,6 +576,7 @@ function callback_focus_change(focus, user_data)
 	let edit_control__axis_y = document.getElementById('edit-control__axis-y');
 	let edit_control__axis_width = document.getElementById('edit-control__axis-width');
 	let edit_control__axis_height = document.getElementById('edit-control__axis-height');
+	let focus_info_elem = document.getElementById('focus_info');
 
 	// const doc = user_data;
 	const focus_element = daisy.get_current_single_focus_element();
@@ -588,6 +589,8 @@ function callback_focus_change(focus, user_data)
 		edit_control__axis_y.disabled = true;
 		edit_control__axis_width.disabled = true;
 		edit_control__axis_height.disabled = true;
+
+		focus_info_elem.textContent = "[  ]";
 	}else{
 		element_text_elem.disabled = false;
 		fragment_kind_elem.disabled = false;
@@ -597,6 +600,8 @@ function callback_focus_change(focus, user_data)
 		edit_control__axis_y.disabled = false;
 		edit_control__axis_width.disabled = false;
 		edit_control__axis_height.disabled = false;
+
+		focus_info_elem.textContent = sprintf("[%2d]", focus_element.id);
 	}
 
 	if(null !== focus_element && focus_element.hasOwnProperty('text')){
