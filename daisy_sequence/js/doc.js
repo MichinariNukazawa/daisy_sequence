@@ -585,30 +585,56 @@ class Diagram{
 		}
 	}
 
+	static get_parent_element_from_id_(diagram, id)
+	{
+		let func = function(recurse_info, element, opt){
+			if(opt.id === element.id){
+				opt.parent_element = recurse_info.get_parent_element();
+				return false;
+			}
+			return true;
+		};
+		let opt = {'id': id, 'parent_element': null};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		return opt.parent_element;
+	}
 	static delete_element_from_id_(diagram, id)
 	{
-		for(let i = 0; i < diagram.diagram_elements.length; i++){
-			let element = diagram.diagram_elements[i];
-			if(id === element.id){
-				diagram.diagram_elements.splice(i, 1);
-				return true;
+		let func = function(recurse_info, element, opt){
+			if(opt.id === element.id){
+				// console.debug(recurse_info);
+				opt.parent_obj = recurse_info.parent_objs[recurse_info.level - 1];
+				return false;
 			}
+			return true;
+		};
+		let opt = {'id': id, 'parent_obj': null};
+		Element.recursive(diagram.diagram_elements, func, opt);
 
-			if('message' !== element.kind){
-				continue;
-			}
-			if(element.hasOwnProperty('spec') && null !== element.spec){
-				if(id === element.spec.id){
-					element.spec = null;
+		if(null === opt.parent_obj){
+			console.error(id, opt.parent_obj);
+			return;
+		}
+
+		let obj = opt.parent_obj;
+		if(Array.isArray(obj)){
+			for(let i = 0; i < obj.length; i++){
+				if(obj[i].hasOwnProperty('id') && obj[i].id === id){
+					obj.splice(i, 1);
 					return true;
 				}
 			}
-			if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
-				if(id === element.reply_message.id){
-					element.reply_message = null;
+		}else if(typeof obj === 'object'){
+			for(let key in obj){
+				if(obj[key].hasOwnProperty('id') && obj[key].id === id){
+					delete obj[key];
 					return true;
 				}
 			}
+		}else{
+			console.error(id, opt.parent_obj);
+			return false;
 		}
 
 		return false;
@@ -743,6 +769,10 @@ class Diagram{
 	{
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
 			const element = diagram.diagram_elements[i];
+			if(! element.hasOwnProperty('kind')){
+				console.error(element);
+				continue;
+			}
 			if('message' != element.kind){
 				continue;
 			}
