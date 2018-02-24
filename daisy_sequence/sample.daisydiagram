@@ -156,7 +156,7 @@
 					{
 						"kind": "operand",
 						"id": 26,
-						"relate_y":20,
+						"relate_y": 20,
 						"text": "[condition A]"
 					},
 					{
@@ -166,7 +166,6 @@
 						"text": "[else]"
 					}
 				]
-
 			},
 			{
 				"kind": "fragment",
