@@ -305,6 +305,7 @@ window.onload = function(e){
 
 	document.getElementById('editor__message-spec').addEventListener('change', callback_change_message_spec, false);
 	document.getElementById('editor__message-reply').addEventListener('change', callback_change_message_reply, false);
+	document.getElementById('editor__fragment__add-operand').addEventListener('click', callback_click_fragment_add_operand, false);
 
 	let canvas__diagram_width = document.getElementById('canvas__diagram-width');
 	add_event_listener_first_input_with_history(
@@ -645,6 +646,7 @@ function callback_focus_change(focus, user_data)
 	let fragment_is_auto_size_elem = document.getElementById('editor__fragment-is_auto_size');
 	let editor__background_transparent = document.getElementById('editor__background-transparent');
 	let editor__background_transparent_view = document.getElementById('editor__background-transparent-view');
+	let editor__fragment__add_operand = document.getElementById('editor__fragment__add-operand');
 	if(null !== focus_element && 'fragment' === focus_element.kind){
 		fragment_kind_elem.disabled = false;
 		fragment_kind_elem.value = focus_element.fragment_kind;
@@ -660,11 +662,14 @@ function callback_focus_change(focus, user_data)
 		const v = focus_element.background_opacity * 100;
 		editor__background_transparent.value = v;
 		editor__background_transparent_view.textContent = sprintf("%3d", v) + '%';
+
+		editor__fragment__add_operand.disabled = false;
 	}else{
 		fragment_kind_elem.disabled = true;
 		fragment_is_auto_size_elem.disabled = true;
 		editor__background_transparent.disabled = true;
 		editor__background_transparent_view.textContent = '(---%)';
+		editor__fragment__add_operand.disabled = true;
 	}
 
 }
@@ -881,6 +886,14 @@ function callback_mousemove_drawing(e)
 		}
 	}
 
+	if(1 === elements.length && 'operand' === elements[0].kind){
+		elements[0].relate_y += move.y;
+		if(0 > elements[0].relate_y){
+			elements[0].relate_y = 0;
+		}
+		is_move = false;
+	}
+
 	if(is_move){
 		for(let i = 0; i < elements.length; i++){
 			move_element(diagram, elements[i], move);
@@ -978,6 +991,31 @@ function callback_change_message_reply()
 		reply_message.y = element.y + element.spec.height;
 		element.reply_message = reply_message;
 	}
+
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+}
+
+function callback_click_fragment_add_operand()
+{
+	{
+		let element = daisy.get_current_single_focus_element();
+		if(null === element){
+			return;
+		}
+		if('fragment' !== element.kind && 'operand' !== element.kind ){
+			return;
+		}
+	}
+
+	Doc.history_add(daisy.get_current_doc());
+	let element = daisy.get_current_single_focus_element();
+
+	let diagram = daisy.get_current_diagram();
+	if('operand' === element.kind ){
+		element = Diagram.get_parent_element_from_id(diagram, element.id);
+	}
+
+	Fragment.add_create_operand(element, diagram, {});
 
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }

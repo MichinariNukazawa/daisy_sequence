@@ -94,7 +94,7 @@
 			{
 				"kind": "message",
 				"id": 5,
-				"y": 207,
+				"y": 200,
 				"start": {
 					"lifeline_id": 1,
 					"position_x": 307
@@ -145,13 +145,28 @@
 				"kind": "fragment",
 				"id": 12,
 				"x": 23,
-				"y": 149,
+				"y": 135,
 				"width": 451.890625,
-				"height": 210.5625,
+				"height": 230,
 				"is_auto_size": false,
 				"fragment_kind": "alt",
 				"background_opacity": "0.1",
-				"text": "text\nmemo fragment"
+				"text": "",
+				"operands": [
+					{
+						"kind": "operand",
+						"id": 26,
+						"relate_y":20,
+						"text": "[condition A]"
+					},
+					{
+						"kind": "operand",
+						"id": 27,
+						"relate_y": 95,
+						"text": "[else]"
+					}
+				]
+
 			},
 			{
 				"kind": "fragment",

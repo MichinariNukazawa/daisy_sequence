@@ -232,7 +232,7 @@ class Doc{
 		try{
 			native_doc = JSON.parse(strdata);
 		}catch(err){
-			console.debug(err.message);
+			console.debug(err);
 			err_.message = err.message;
 			return null;
 		}
@@ -560,6 +560,8 @@ class Diagram{
 			element = Diagram.create_reply_message_(data);
 		}else if('fragment' === kind){
 			element = Diagram.create_fragment_(data);
+		}else if('operand' === kind){
+			element = Diagram.create_operand_(data);
 		}else{
 			return null;
 		}
@@ -585,7 +587,7 @@ class Diagram{
 		}
 	}
 
-	static get_parent_element_from_id_(diagram, id)
+	static get_parent_element_from_id(diagram, id)
 	{
 		let func = function(recurse_info, element, opt){
 			if(opt.id === element.id){
@@ -599,6 +601,7 @@ class Diagram{
 
 		return opt.parent_element;
 	}
+
 	static delete_element_from_id_(diagram, id)
 	{
 		let func = function(recurse_info, element, opt){
@@ -699,36 +702,35 @@ class Diagram{
 
 	static get_element_of_touch(diagram, point)
 	{
-		const func_is_touch_element_by_work_rect_ = function(element, point)
+		const func = function(recurse_info, element, opt)
 		{
 			if(opt.exclude_kinds.includes(element.kind)){
-				return false;
+				return true;
 			}
 
 			let rect = Element.get_rect(element);
 			if(null == rect){
-				return false;
+				return true;
 			}
 
 			let collision_rect = Object.assign({}, rect);
 
 			let offset = [0, 0];
-			if(Rect.is_touch(collision_rect, point, offset)){
-				return true;
-			}
-
-			return false;
-		};
-		const func = function(recurse_info, element, opt){
-			if(func_is_touch_element_by_work_rect_(element, opt.point)){
+			if(Rect.is_touch(collision_rect, opt.point, offset)){
 				opt.element = element;
 				return false;
 			}
+
 			return true;
 		};
 
 		let opt = {'point': point, 'element': null};
-		// opt.exclude_kinds = ['operand', 'fragment'];
+		opt.exclude_kinds = ['operand', 'fragment'];
+		Element.recursive(diagram.diagram_elements, func, opt);
+		if(null !== opt.element){
+			return opt.element;
+		}
+
 		opt.exclude_kinds = ['fragment'];
 		Element.recursive(diagram.diagram_elements, func, opt);
 		if(null !== opt.element){
@@ -909,6 +911,20 @@ class Diagram{
 
 		return spec;
 	}
+
+	static create_operand_(src)
+	{
+		let operand = {
+			"kind": "operand",
+			"id": -1,
+			"relate_y":10,
+			"text": "[]"
+		};
+
+		operand = Object.assign(operand, src);
+
+		return operand;
+	}
 };
 
 class Element{
@@ -1004,19 +1020,23 @@ class Element{
 		return Element.recursive_inline_(recurse_info, obj, func, func_opt);
 	}
 
-	static recursive_inline_(recurse_info, obj, func, func_opt)
-	{
-		/*
-		console.debug("id:%d level:%d count:%d",
-				0, //obj.id,
+	static debug_recursive(recurse_info, element, opt){
+		const parent_id = recurse_info.get_parent_id();
+		console.log("id:%d level:%d count:%d parent:%d",
+				element.id,
 				recurse_info.level,
 				recurse_info.count,
-				0);//parent_id);
-		*/
+				parent_id);
 
+		return true;
+	}
+
+	static recursive_inline_(recurse_info, obj, func, opt)
+	{
 		if(obj.hasOwnProperty('kind')){// is element
+			// Element.debug_recursive(recurse_info, obj, opt);
 			recurse_info.count++;
-			let res = func(recurse_info, obj, func_opt);
+			let res = func(recurse_info, obj, opt);
 			recurse_info.last_element = obj;
 
 			if(! res){
@@ -1031,7 +1051,7 @@ class Element{
 			if(typeof obj[key] !== 'object' && typeof obj[key] !== 'array'){
 				continue;
 			}
-			if(! Element.recursive_inline_(recurse_info, obj[key], func, func_opt)){
+			if(! Element.recursive_inline_(recurse_info, obj[key], func, opt)){
 				return false;
 			}
 		}
@@ -1239,6 +1259,19 @@ class Fragment{
 		];
 	
 		return infos;
+	}
+
+	static add_create_operand(fragment, diagram, data)
+	{
+		let operand = Diagram.create_element(diagram, 'operand', {});
+		if(! fragment.hasOwnProperty('operands')){
+			fragment.operands = [];
+		}
+		fragment.operands.push(operand);
+
+		operand.relate_y = fragment.height;
+		fragment.height += 30;
+		fragment.is_auto_size = false;
 	}
 };
 

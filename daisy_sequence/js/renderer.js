@@ -429,11 +429,9 @@ class Renderer{
 		const padding = [5, 0];
 		// ** fragment_kind
 		let fragment_kind_text = null;
-		let fragment_kind_size;
+		let fragment_kind_size = [0, 0];
 		{
-			if('' == fragment.fragment_kind || '(comment)' == fragment.fragment_kind){
-				fragment_kind_size = [0, 0];
-			}else{
+			if('' !== fragment.fragment_kind){
 				fragment_kind_text = fragment_group.text(fragment.fragment_kind).move(fragment.x, fragment.y);
 				const b = fragment_kind_text.bbox();
 				fragment_kind_size = [
@@ -454,22 +452,30 @@ class Renderer{
 		}
 
 		// ** contents
-		const show_text = (! /^\s*$/.test(fragment.text))? fragment.text : '-';
-		let text = fragment_group.text(show_text)
-			.move(fragment.x, fragment_kind_size[1] + fragment.y);
+		let b = {
+			'x': fragment.x,
+			'y': fragment.y,
+			'width': 0,
+			'height': 0,
+		};
+		let text = null;
+		if(! /^\s*$/.test(fragment.text)){
+			text = fragment_group.text(fragment.text)
+				.move(fragment.x, fragment_kind_size[1] + fragment.y);
+			b = text.bbox();
+		}
 
 		// ** frame
 		const radius = 1;
-		const b = text.bbox();
 		if(fragment.is_auto_size){
 			fragment.width = b.width;
 			fragment.height = b.height;
 		}
 		let box = {
 			'x':		b.x,
-			'y':		b.y - fragment_kind_size[1],
+			'y':		b.y,
 			'width':	Math.max(fragment.width, fragment_kind_size[0]),
-			'height':	fragment.height + fragment_kind_size[1],
+			'height':	fragment.height,
 		};
 		box = Rect.expand(box, padding);
 		box = Rect.add_size(box, [8, 2]);
@@ -495,7 +501,16 @@ class Renderer{
 		if(null !== fragment_kind_text){
 			background_rect.after(fragment_kind_text);
 		}
-		background_rect.after(text);
+		if(null !== text){
+			background_rect.after(text);
+		}
+
+		// ** operands
+		if(fragment.hasOwnProperty('operands') && null !== fragment.operands){
+			for(let i = 0; i < fragment.operands.length; i++){
+				Renderer.draw_operand(rendering_handle, fragment.operands[i], fragment, box);
+			}
+		}
 
 		// ** work.rect
 		if(! fragment.hasOwnProperty('work')){
@@ -504,6 +519,46 @@ class Renderer{
 		fragment.work.rect = Object.assign({}, box);
 
 		return fragment_group;
+	}
+
+	static draw_operand(rendering_handle, operand, fragment, fragment_position)
+	{
+		let fragment_group = rendering_handle.get_spec_group().addClass('fragment-group');
+
+		// console.log("operand:%d %d %s", operand.id, operand.relate_y, operand.text);
+
+		let position = {
+			'x': fragment_position.x,
+			'y': fragment_position.y + operand.relate_y,
+			'width': fragment_position.width,
+			'height': 16,
+		};
+
+		let line = fragment_group.line(
+				position.x,
+				position.y,
+				position.x + position.width,
+				position.y + 0
+				)
+			.stroke({
+				'width': '1.2',
+			})
+		.attr({
+			'stroke-opacity':	'0.6',
+			'stroke-dasharray':	'5',
+		});
+
+		if(! /^\s*$/.test(operand.text)){
+			let text = fragment_group.text(operand.text)
+				.move(position.x + 5, position.y);
+		}
+
+		// ** work.rect
+		if(! operand.hasOwnProperty('work')){
+			operand.work = {};
+		}
+		operand.work.rect = Object.assign({}, position);
+
 	}
 
 	static draw_message_turnback(rendering_handle, position, is_spec)
