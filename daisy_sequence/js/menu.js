@@ -59,7 +59,7 @@ function open_dialog(default_filepath)
 	return filepath;
 }
 
-function save_dialog(default_filepath)
+function save_dialog(title, default_filepath)
 {
 	const {app} = require('electron').remote;
 	const {dialog} = require('electron').remote;
@@ -71,7 +71,7 @@ function save_dialog(default_filepath)
 	let filepath = dialog.showSaveDialog(
 			remote.getCurrentWindow(),
 			{
-				title: 'Save',
+				'title': title,
 				defaultPath: default_filepath,
 				filters: [
 				{name: 'Documents', extensions: ['daisydiagram']},
@@ -209,7 +209,7 @@ var template = [
 
 			let filepath = Doc.get_filepath(doc);
 			if('' == filepath){
-				filepath = save_dialog('');
+				filepath = save_dialog('Save', '');
 				if('' == filepath){
 					return;
 				}
@@ -237,6 +237,48 @@ var template = [
 			Doc.on_save(doc);
 
 			console.log("Save:`%s`", filepath);
+		}
+	},
+	{
+		label: 'Save As',
+		accelerator: 'CmdOrCtrl+Shift+S',
+		click: function () {
+			const doc = daisy.get_current_doc();
+			if(null === doc){
+				message_dialog(
+						'info', "Save As",
+						"nothing opened document.");
+				return;
+			}
+
+			let filepath = Doc.get_filepath(doc);
+			filepath = save_dialog('Save As', filepath);
+			if('' == filepath){
+				return;
+			}
+			console.debug(filepath);
+
+			const strdata = Doc.get_native_format_string(doc);
+			if(null === strdata){
+				message_dialog(
+						'warning', "Save As",
+						"internal error. (get_native_format)");
+				return;
+			}
+
+			try{
+				fs.writeFileSync(filepath, strdata);
+			}catch(err){
+				message_dialog(
+						'warning', "Save As",
+						"internal error. (writeFile):\n`" + filepath + "`");
+				return;
+			}
+
+			Doc.set_filepath(doc, filepath);
+			Doc.on_save(doc);
+
+			console.log("Save As:`%s`", filepath);
 		}
 	},
 	{
