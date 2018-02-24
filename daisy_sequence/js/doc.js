@@ -701,6 +701,10 @@ class Diagram{
 	{
 		const func_is_touch_element_by_work_rect_ = function(element, point)
 		{
+			if(opt.exclude_kinds.includes(element.kind)){
+				return false;
+			}
+
 			let rect = Element.get_rect(element);
 			if(null == rect){
 				return false;
@@ -722,8 +726,20 @@ class Diagram{
 			}
 			return true;
 		};
+
 		let opt = {'point': point, 'element': null};
+		// opt.exclude_kinds = ['operand', 'fragment'];
+		opt.exclude_kinds = ['fragment'];
 		Element.recursive(diagram.diagram_elements, func, opt);
+		if(null !== opt.element){
+			return opt.element;
+		}
+
+		opt.exclude_kinds = [];
+		Element.recursive(diagram.diagram_elements, func, opt);
+		if(null !== opt.element){
+			return opt.element;
+		}
 
 		return opt.element;
 	}
