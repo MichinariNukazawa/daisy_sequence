@@ -24,6 +24,10 @@ input[type="number"]{
 	width: 70px;
 }
 
+input[type="checkbox"][disabled] + span{
+	color: #707070;
+}
+
 #editor__background-transparent-view{
 	font-size: 12px;
 }
