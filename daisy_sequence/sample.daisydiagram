@@ -10,27 +10,27 @@
 			{
 				"kind": "lifeline",
 				"id": 0,
-				"x": 150,
-				"y": 30,
+				"x": 148,
+				"y": 10,
 				"text": "Object1"
 			},
 			{
 				"kind": "lifeline",
 				"id": 1,
 				"x": 300,
-				"y": 63,
+				"y": 47,
 				"text": "Object2"
 			},
 			{
 				"kind": "message",
 				"id": 2,
-				"y": 71,
+				"y": 57,
 				"start": {
 					"position_x": 20
 				},
 				"end": {
 					"lifeline_id": 0,
-					"position_x": 122
+					"position_x": 124
 				},
 				"end_kind": "none",
 				"message_kind": "sync",
@@ -45,7 +45,7 @@
 			{
 				"kind": "message",
 				"id": 3,
-				"y": 92,
+				"y": 76,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -60,7 +60,7 @@
 			{
 				"kind": "message",
 				"id": 4,
-				"y": 125,
+				"y": 111,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -79,7 +79,7 @@
 				"reply_message": {
 					"kind": "message",
 					"id": 6,
-					"y": 428,
+					"y": 408,
 					"message_kind": "reply",
 					"end_kind": "none",
 					"text": "message of reply",
@@ -94,10 +94,10 @@
 			{
 				"kind": "message",
 				"id": 5,
-				"y": 200,
+				"y": 206,
 				"start": {
 					"lifeline_id": 1,
-					"position_x": 307
+					"position_x": 313
 				},
 				"end": {
 					"lifeline_id": 1
@@ -115,7 +115,7 @@
 			{
 				"kind": "message",
 				"id": 8,
-				"y": 467,
+				"y": 460,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -129,7 +129,7 @@
 			{
 				"kind": "message",
 				"id": 9,
-				"y": 502,
+				"y": 496,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -145,9 +145,9 @@
 				"kind": "fragment",
 				"id": 12,
 				"x": 23,
-				"y": 135,
-				"width": 451.890625,
-				"height": 230,
+				"y": 134,
+				"width": 450.890625,
+				"height": 245,
 				"is_auto_size": false,
 				"fragment_kind": "alt",
 				"background_opacity": "0.1",
@@ -162,7 +162,7 @@
 					{
 						"kind": "operand",
 						"id": 27,
-						"relate_y": 95,
+						"relate_y": 104,
 						"text": "[else]"
 					}
 				]
@@ -182,9 +182,9 @@
 			{
 				"kind": "message",
 				"id": 14,
-				"y": 161,
+				"y": 170,
 				"start": {
-					"position_x": 271,
+					"position_x": 279,
 					"lifeline_id": 1
 				},
 				"end": {
@@ -203,7 +203,7 @@
 				"reply_message": {
 					"kind": "message",
 					"id": 22,
-					"y": 191,
+					"y": 193,
 					"message_kind": "reply",
 					"end_kind": "none",
 					"text": "reply",
@@ -218,7 +218,7 @@
 			{
 				"kind": "message",
 				"id": 18,
-				"y": 239,
+				"y": 254,
 				"start": {
 					"position_x": 269,
 					"lifeline_id": 1
@@ -239,7 +239,7 @@
 				"reply_message": {
 					"kind": "message",
 					"id": 20,
-					"y": 340,
+					"y": 356,
 					"message_kind": "reply",
 					"end_kind": "none",
 					"text": "reply",
@@ -254,13 +254,13 @@
 			{
 				"kind": "message",
 				"id": 23,
-				"y": 274,
+				"y": 288,
 				"start": {
 					"position_x": 149,
 					"lifeline_id": 0
 				},
 				"end": {
-					"position_x": 164,
+					"position_x": 162,
 					"lifeline_id": 0
 				},
 				"end_kind": "none",
@@ -276,7 +276,7 @@
 			{
 				"kind": "message",
 				"id": 24,
-				"y": 314,
+				"y": 323,
 				"start": {
 					"position_x": 152,
 					"lifeline_id": 0
