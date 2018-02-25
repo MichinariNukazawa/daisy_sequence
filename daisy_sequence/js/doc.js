@@ -1074,6 +1074,13 @@ class Element{
 
 	static recursive_inline_(recurse_info, obj, func, opt)
 	{
+		if(undefined === obj){
+			return true;
+		}
+		if(null === obj){
+			return true;
+		}
+
 		if(obj.hasOwnProperty('kind')){// is element
 			// Element.debug_recursive(recurse_info, obj, opt);
 			recurse_info.count++;
