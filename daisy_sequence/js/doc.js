@@ -602,6 +602,45 @@ class Diagram{
 		return opt.parent_element;
 	}
 
+	static pre_delete_element_(diagram, id)
+	{
+		const func = function(recurse_info, element, opt){
+			if('message' === element.kind){
+				let is = false;
+				if(element.hasOwnProperty('start')){
+					if(element.start.hasOwnProperty('lifeline_id')){
+						if(opt.id === element.start.lifeline_id){
+							is = true;
+						}
+					}
+				}
+				if(is){
+					const lifeline = Diagram.get_element_from_id(opt.diagram, opt.id);
+					element.start.position_x = lifeline.x;
+					delete element.start.lifeline_id;
+				}
+				is = false;
+				if(element.hasOwnProperty('end')){
+					if(element.end.hasOwnProperty('lifeline_id')){
+						if(opt.id === element.end.lifeline_id){
+							is = true;
+						}
+					}
+				}
+				if(is){
+					const lifeline = Diagram.get_element_from_id(opt.diagram, opt.id);
+					element.end.position_x = lifeline.x;
+					delete element.end.lifeline_id;
+				}
+			}
+			return true;
+		};
+		let opt = {'id': id, 'diagram': diagram,};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		return;
+	}
+
 	static delete_element_from_id_(diagram, id)
 	{
 		let func = function(recurse_info, element, opt){
@@ -619,6 +658,8 @@ class Diagram{
 			console.error(id, opt.parent_obj);
 			return;
 		}
+
+		Diagram.pre_delete_element_(diagram, id);
 
 		let obj = opt.parent_obj;
 		if(Array.isArray(obj)){
@@ -1176,7 +1217,7 @@ class Message{
 			let lifeline = Diagram.get_element_from_id(diagram, message.start.lifeline_id);
 			if(null === lifeline || 'lifeline' != lifeline.kind){
 				console.error(message.start);
-				alert('bug');
+				// alert('bug');
 				return position;
 			}
 			position.x = lifeline.x;
@@ -1195,7 +1236,7 @@ class Message{
 			let lifeline = Diagram.get_element_from_id(diagram, message.end.lifeline_id);
 			if(null == lifeline || 'lifeline' != lifeline.kind){
 				console.error(message.end);
-				alert('bug');
+				// alert('bug');
 				return position;
 			}
 			position.width = lifeline.x - position.x;
