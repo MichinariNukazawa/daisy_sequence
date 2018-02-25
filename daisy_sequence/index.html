@@ -19,9 +19,8 @@
 			height:<input id='edit-control__axis-height' type='number' />px
 		</div>
 		<div class='box-container'>
-			<div id="tool" class='frame'>
-				tool
-				<br>
+			<fieldset id="tool" class='frame'>
+				<legend>Tool</legend>
 				<button id="tool__allow">
 					<object data="image/allow.svg" type="image/svg+xml" width="32"></object>
 				</button>
@@ -37,15 +36,15 @@
 				<button id="tool__fragment">
 					<object data="image/fragment.svg" type="image/svg+xml" width="32"></object>
 				</button>
-			</div>
-			<div id="editor" class='frame'>
+			</fieldset>
+			<fieldset id="editor" class='frame'>
+				<legend>Editor</legend>
 				<span>text</span>
 				<br>
 				<textarea id="editor__element-text" rows="3" style='width:95%'></textarea>
 				<br>
-				<div class='frame clearfix'>
-					Document
-					<br>
+				<fieldset class='frame'>
+					<legend>Document</legend>
 					<table>
 						<tr>
 							<th>
@@ -64,17 +63,15 @@
 							</td>
 						</tr>
 					</table>
-				</div>
-				<div class='frame'>
-					Message
-					<br>
+				</fieldset>
+				<fieldset class='frame'>
+					<legend>Message</legend>
 					<input id='editor__message-spec' type="checkbox">Spec</input>
 					<br>
 					<input id='editor__message-reply' type="checkbox">Reply</input>
-				</div>
-				<div class='frame'>
-					Fragment
-					<br>
+				</fieldset>
+				<fieldset class='frame'>
+					<legend>Fragment</legend>
 					Kind
 					<input id='editor__fragment-kind' type="text"></input>
 					<br>
@@ -92,8 +89,8 @@
 						Add operand
 					</button>
 					<br>
-				</div>
-			</div>
+				</fieldset>
+			</fieldset>
 			<div id='canvas-div'>
 				<div>
 					<span id='canvas-header'>
