@@ -38,11 +38,33 @@
 					<object data="image/fragment.svg" type="image/svg+xml" width="32"></object>
 				</button>
 			</div>
-			<div id="editor">
+			<div id="editor" class='frame'>
 				<span>text</span>
 				<br>
 				<textarea id="editor__element-text" rows="3" style='width:95%'></textarea>
 				<br>
+				<div class='frame clearfix'>
+					Document
+					<br>
+					<table>
+						<tr>
+							<th>
+								width:
+							</th>
+							<td>
+								<input id='canvas__diagram-width' type='number' step='50'/>px
+							</td>
+						</tr>
+						<tr>
+							<th>
+								height:
+							</th>
+							<td>
+								<input id='canvas__diagram-height' type='number'  step='50'/>px
+							</td>
+						</tr>
+					</table>
+				</div>
 				<div class='frame'>
 					Message
 					<br>
@@ -60,7 +82,7 @@
 					<br>
 					Background transparent
 					<br>
-					<input id='editor__background-transparent'
+					<input id='editor__background-transparent' style='width:70%;'
 					       type="range" min="0" max="100" step="10" value="0">
 					<span id='editor__background-transparent-view'>(---%)</span>
 					</input>
@@ -74,8 +96,6 @@
 			</div>
 			<div id='canvas-div'>
 				<div>
-					width:<input id='canvas__diagram-width' type='number' step='50'/>px
-					height:<input id='canvas__diagram-height' type='number'  step='50'/>px
 					<span id='canvas-header'>
 						<span id="history_info">(-)</span>
 						<span id="mouse_position">(-,-)</span>
