@@ -236,14 +236,14 @@ class Renderer{
 			'fill-opacity':		'0',
 			'stroke-width':		'3',
 		};
-		const padding = 5;
+		const padding = 7;
 		const radius = 3;
-		const offset = [8, 1];
+		const offset = [12, 10];
 
 		let b = text.bbox();
 		let box = {
-			'x': (b.x - padding),
-			'y': b.y,
+			'x': b.x - padding,
+			'y': b.y - padding,
 			'width': b.width + (padding * 2) + offset[0],
 			'height': b.height + offset[1],
 		};
