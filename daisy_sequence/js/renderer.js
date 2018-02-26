@@ -232,7 +232,7 @@ class Renderer{
 		});
 
 		const attr = {
-			'stroke':		'#e7c902',
+			'stroke':		'#70C0C0',
 			'fill-opacity':		'0',
 			'stroke-width':		'3',
 		};
