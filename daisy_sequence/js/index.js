@@ -1,6 +1,9 @@
 'use strict';
 
 let SVG = require('svg.js');
+// let saveSvgAsPng = require('save-svg-as-png').svgAsPngUri;
+let svgAsPngUri = require('save-svg-as-png').svgAsPngUri;
+let dataUriToBuffer = require('data-uri-to-buffer');
 const sprintf = require('sprintf-js').sprintf;
 const fs = require("fs");
 const path = require('path');
@@ -338,7 +341,6 @@ window.onload = function(e){
 			delete_current_focus_elements();
 		}
 	}
-
 }
 
 function delete_current_focus_elements()

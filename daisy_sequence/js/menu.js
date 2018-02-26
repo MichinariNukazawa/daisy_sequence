@@ -282,7 +282,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Export',
+		label: 'Export SVG',
 		accelerator: 'CmdOrCtrl+Shift+E',
 		click: function () {
 			const doc = daisy.get_current_doc();
@@ -313,6 +313,43 @@ var template = [
 						'warning', "Export",
 						"internal error. (writeFile):\n`" + filepath + "`");
 				return;
+			}
+
+			console.log("Export");
+		}
+	},
+	{
+		label: 'Export PNG (x3 size)',
+		click: function () {
+			const doc = daisy.get_current_doc();
+			if(null === doc){
+				message_dialog(
+						'info', "Export",
+						"nothing opened document.");
+				return;
+			}
+
+			let filepath = Doc.get_filepath(doc);
+			filepath = export_dialog(filepath, 'png');
+			if('' == filepath){
+				return;
+			}
+
+			{
+				let draw = rendering_handle.get_draw();
+				let svg_elem = draw.node;
+				// saveSvgAsPng(svg_elem, filepath, {scale: 3});
+				svgAsPngUri(svg_elem, {scale: 3}, function(uri) {
+					const decoded = dataUriToBuffer(uri)
+					try{
+						fs.writeFileSync(filepath, decoded);
+					}catch(err){
+						message_dialog(
+								'warning', "Export",
+								"internal error. (writeFile):\n`" + filepath + "`");
+						return;
+					}
+				});
 			}
 
 			console.log("Export");
