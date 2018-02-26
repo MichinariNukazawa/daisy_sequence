@@ -92,6 +92,8 @@ function export_dialog(default_filepath, format_name)
 
 	if('' == default_filepath){
 		default_filepath = path.join(app.getPath('home'), '.' + format_name);
+	}else{
+		default_filepath = default_filepath.replace(/\.[a-zA-Z0-9]*$/, '.' + format_name);
 	}
 	let filepath = dialog.showSaveDialog(
 			remote.getCurrentWindow(),
