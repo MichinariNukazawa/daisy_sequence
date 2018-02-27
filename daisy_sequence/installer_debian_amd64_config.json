@@ -1,0 +1,13 @@
+{
+	"name": "daisy-sequence",
+	"src": "../release/release/daisy_sequence-linux-x64/",
+	"dest": "../release/release/",
+	"arch": "amd64",
+	"icon": "image/icon.png",
+	"categories": [
+		"Utility"
+	],
+	"lintianOverrides": [
+		"changelog-file-missing-in-native-package"
+	]
+}

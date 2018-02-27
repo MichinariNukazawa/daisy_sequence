@@ -6,6 +6,7 @@
   "scripts": {
     "build": "electron .",
     "run-open": "electron . sample.daisydiagram",
+    "debian_installer_debian": "electron-installer-debian --config ./installer_debian_amd64_config.json",
     "test": "npm test"
   },
   "repository": "<project_name>",
@@ -16,9 +17,11 @@
     "electron": "^1.7.12",
     "save-svg-as-png": "^1.2.0",
     "sprintf-js": "^1.1.1",
-    "svg.js": "^2.6.3"
+    "svg.js": "^2.6.3",
+    "xml-formatter": "^1.0.1"
   },
   "devDependencies": {
-    "xml-formatter": "^1.0.1"
+    "electron-installer-debian": "^0.7.1",
+    "electron-packager": "^11.0.1"
   }
 }

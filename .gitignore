@@ -54,6 +54,6 @@ doxygen/
 
 node_modules/
 daisy_sequence-*/
-release/
+release/release/
 daisy_sequence/package-lock.json
 
