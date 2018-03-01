@@ -143,10 +143,10 @@ class DaisyIO{
 
 var template = [
 {
-	label: 'File',
+	label: '&File',
 	submenu: [
 	{
-		label: 'New',
+		label: '&New',
 		accelerator: 'CmdOrCtrl+N',
 		click: function () {
 			{
@@ -170,7 +170,7 @@ var template = [
 		},
 	},
 	{
-		label: 'Open',
+		label: '&Open',
 		accelerator: 'CmdOrCtrl+O',
 		click: function () {
 			{
@@ -198,7 +198,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Save',
+		label: '&Save',
 		accelerator: 'CmdOrCtrl+S',
 		click: function () {
 			const doc = daisy.get_current_doc();
@@ -242,7 +242,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Save As',
+		label: 'Save &As',
 		accelerator: 'CmdOrCtrl+Shift+S',
 		click: function () {
 			const doc = daisy.get_current_doc();
@@ -284,7 +284,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Export SVG',
+		label: '&Export SVG',
 		accelerator: 'CmdOrCtrl+Shift+E',
 		click: function () {
 			const doc = daisy.get_current_doc();
@@ -358,7 +358,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Close',
+		label: '&Close',
 		accelerator: 'CmdOrCtrl+W',
 		click: function () {
 			const doc = daisy.get_current_doc();
@@ -384,7 +384,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Quit',
+		label: '&Quit',
 		accelerator: 'CmdOrCtrl+Q',
 		click: function () {
 			const {app} = require('electron').remote;
@@ -408,10 +408,10 @@ var template = [
 	]
 },
 {
-	label: 'Edit',
+	label: '&Edit',
 	submenu: [
 	{
-		label: 'Undo',
+		label: '&Undo',
 		accelerator: 'CmdOrCtrl+Z',
 		click: function () {
 			let doc = daisy.get_current_doc();
@@ -421,7 +421,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Redo',
+		label: '&Redo',
 		accelerator: 'CmdOrCtrl+Shift+Z',
 		click: function () {
 			let doc = daisy.get_current_doc();
@@ -431,7 +431,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Delete Element(s)',
+		label: '&Delete Element(s)',
 		accelerator: 'Delete',
 		click: function () {
 			delete_current_focus_elements();
@@ -480,7 +480,7 @@ var template = [
 	]
 },
 {
-	label: 'Help',
+	label: '&Help',
 	role: 'help',
 	submenu: [
 	{
@@ -497,7 +497,7 @@ var template = [
 		]
 	},
 	{
-		label: 'bug report',
+		label: 'Bug and Request',
 		submenu: [
 		{
 			label: 'mailto:michinari.nukazawa@gmail.com',
@@ -510,7 +510,7 @@ var template = [
 		]
 	},
 	{
-		label: 'Help',
+		label: '&Help',
 		click: function () {
 			message_dialog(
 					'info', "Help",
