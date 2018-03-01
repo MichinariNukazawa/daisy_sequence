@@ -1,4 +1,4 @@
-daisy sequence UML Sequence Diagram Editor
+daisy sequence (not) UML Sequence Diagram Editor
 ====
 
 # 概要
