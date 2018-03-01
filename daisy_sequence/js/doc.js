@@ -756,7 +756,7 @@ class Diagram{
 
 			let collision_rect = Object.assign({}, rect);
 
-			let offset = [0, 0];
+			let offset = [4, 4];
 			if(Rect.is_touch(collision_rect, opt.point, offset)){
 				opt.element = element;
 				return false;
