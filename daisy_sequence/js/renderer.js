@@ -30,6 +30,11 @@ class RenderingHandle{
 		return this.groups.spec_group;
 	}
 
+	get_fragment_group()
+	{
+		return this.groups.fragment_group;
+	}
+
 	get_focus_group()
 	{
 		return this.groups.focus_group;
@@ -41,6 +46,7 @@ class RenderingHandle{
 		this.groups.lifeline_group = this.draw.group().addClass('dd__lifeline-group');
 		this.groups.spec_group = this.draw.group().addClass('dd__spec-group');
 		this.groups.other_group = this.draw.group().addClass('dd__other-group');
+		this.groups.fragment_group = this.draw.group().addClass('dd__fragment-group');
 		this.groups.focus_group = this.draw.group().addClass('dd__focus-group');
 	}
 };
@@ -422,9 +428,7 @@ class Renderer{
 
 	static draw_fragment(rendering_handle, fragment)
 	{
-		let other_group = rendering_handle.get_other_group();
-
-		let fragment_group = rendering_handle.get_spec_group().addClass('fragment-group');
+		let fragment_group = rendering_handle.get_fragment_group();
 
 		const padding = [5, 0];
 		// ** fragment_kind
@@ -446,7 +450,7 @@ class Renderer{
 					b.x + b.width + 5 , b.y + b.height - 5,
 					b.x + b.width + 5 , b.y,
 				];
-				let fragment_kind_polyline = other_group.polyline(points)
+				let fragment_kind_polyline = fragment_group.polyline(points)
 					.stroke({ width: 1, linecap: 'round', }).fill('none');
 			}
 		}
