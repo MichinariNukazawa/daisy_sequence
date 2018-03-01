@@ -8,6 +8,7 @@ const sprintf = require('sprintf-js').sprintf;
 const fs = require("fs");
 const path = require('path');
 const xml_formatter = require('xml-formatter');
+let ad = new Ad();
 
 let doc_collection = new DocCollection();
 
@@ -341,6 +342,8 @@ window.onload = function(e){
 			delete_current_focus_elements();
 		}
 	}
+
+	ad.start();
 }
 
 function delete_current_focus_elements()
