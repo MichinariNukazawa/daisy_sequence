@@ -767,19 +767,19 @@ class Diagram{
 
 		let opt = {'point': point, 'element': null};
 		opt.exclude_kinds = ['operand', 'fragment'];
-		Element.recursive(diagram.diagram_elements, func, opt);
+		Element.recursive_top_reverse(diagram.diagram_elements, func, opt);
 		if(null !== opt.element){
 			return opt.element;
 		}
 
 		opt.exclude_kinds = ['fragment'];
-		Element.recursive(diagram.diagram_elements, func, opt);
+		Element.recursive_top_reverse(diagram.diagram_elements, func, opt);
 		if(null !== opt.element){
 			return opt.element;
 		}
 
 		opt.exclude_kinds = [];
-		Element.recursive(diagram.diagram_elements, func, opt);
+		Element.recursive_top_reverse(diagram.diagram_elements, func, opt);
 		if(null !== opt.element){
 			return opt.element;
 		}
@@ -1036,6 +1036,15 @@ class Element{
 
 	static recursive(obj, func, func_opt)
 	{
+		return this.recursive_(true, obj, func, func_opt);
+	}
+	static recursive_top_reverse(obj, func, func_opt)
+	{
+		return this.recursive_(false, obj, func, func_opt);
+	}
+
+	static recursive_(is_top_order, obj, func, func_opt)
+	{
 		let recurse_info = {
 			'level': 0,
 			'count': 0,
@@ -1058,7 +1067,16 @@ class Element{
 			},
 		};
 
-		return Element.recursive_inline_(recurse_info, obj, func, func_opt);
+		if(! is_top_order && Array.isArray(obj)){
+			for(let i = obj.length - 1; 0 <= i; i--){
+				let res = Element.recursive_inline_(recurse_info, obj[i], func, func_opt);
+				if(false === res){
+					return false;
+				}
+			}
+		}else{
+			return Element.recursive_inline_(recurse_info, obj, func, func_opt);
+		}
 	}
 
 	static debug_recursive(recurse_info, element, opt){
