@@ -15,7 +15,7 @@ test:
 	cd daisy_sequence && npm run test
 
 clean:
-	rm -rf release
+	rm -rf release/release
 
 .PHONY: package package_desktop
 package: package_desktop
