@@ -472,10 +472,10 @@ class Renderer{
 			fragment.height = b.height;
 		}
 		let box = {
-			'x':		b.x,
-			'y':		b.y,
+			'x':		fragment.x,
+			'y':		fragment.y,
 			'width':	Math.max(fragment.width, fragment_kind_size[0]),
-			'height':	fragment.height,
+			'height':	fragment.height + fragment_kind_size[1],
 		};
 		box = Rect.expand(box, padding);
 		box = Rect.add_size(box, [8, 2]);
