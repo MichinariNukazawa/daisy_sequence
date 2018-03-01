@@ -2,147 +2,24 @@ daisy sequence UML Sequence Diagram Editor
 ====
 
 # 概要
-daisy sequenceは、Win/Mac/Linux用のシーケンス図エディタです。
+daisy sequenceは、Win/Mac/Linux用のシーケンス図エディタです。  
 
-# コアコンセプト
-要素技術としては、 electron/javascript/SVG
+# Download
 
-Win/Mac/Linux対応
-electron上のSPAとしてjavascriptで構築することで実現する。
+# License
+配布パッケージは個人/企業/商用/非商用に関わらず無償  
+ソースコードの改変利用は個人は無償、企業は有償ライセンス  
 
+コントリビュートの際はライセンスに同意する必要があります。  
 
-# ファーストリリース機能
-- オブジェクトの配置・描画・移動・削除
- オブジェクト:
-  ライフライン・実行仕様・各種メッセージ・ファウンド・ロスト・停止・Memo・複合フラグメント
-- プロジェクト読み込み・保存
-- SVG書き出し
-- Undo/Redo
+# Feature
+- Edit elements(Lifeline, Message, ExecutionSpecification (spec), Fragment, Operand)
+- Export for SVG/PNG
 
-ライフラインの縦横位置調整
-メッセージ終端のライフラインへのスナップ
-
-# ファーストリリース見送り機能
-UML Strict Mode(UML準拠)
-自動位置調整(Lineline表示の重なりなどを自動で解決する)
-複合フラグメントの種別ごとの形状(Memoを重ねれば足りるはず)
-重ね順の並び替え
-
-# 楽ちんの皮算用
-- asterとか使ってたから、シーケンス図エディタのドメインがざっくりわかる
-- vecterion\_vge設計用でUML準拠を目指さないので必要な機能しか作らなくてすむ
-- その他UI等の詳細も妥協していける
- (ex. lifelineが中央寄せより配置計算しやすい左寄せ)
-- javascriptなのでfree()考えなくていい
-- electronなので描画にSVGとSVGライブラリが使える
-- その他nodeの便利ライブラリが使える
-- save/openはドキュメントのオブジェクトをjsonで書き出す/読み込むだけ
-- exportは描画しているsvgを書き出すだけ
-- export pngもnodeにラスタライズ機能が何か用意されてるはず
-- electronなのでwin/mac/linuxがワンソース
-- ステート管理などはvecterion\_vgeの経験があるので流用できる
-- electronの配布パッケージはlina\_dictoの経験があるので流用できる
-- lina\_dictoの経験から、javascriptでも、そんなにパフォーマンス/リソースを気にせず作れるはず
- (特にUndo/Redoはドキュメントのdeepcopyベースでいけると思う)
-
-
-# データ構造
-
-DocCollection{
-	Doc docs[]{
-		int diagram_history_index;
-		DiagramHistory diagram_historys[]{
-			Diagram diagram;		//!< stateless diagram document structure
-			Focus focus{
-				FocusState focus_state{
-					//! focusing (one) side. ex.message cap''(none)/'start'/'end'
-					side,
-				};
-				Element elements[];
-
-				void clear(focus);
-				void set_element(focus);
-				bool is_focusing(focus);
-				FocusState get_focus_state(focus);
-
-				bool add_event_listener_focus_change(
-						focus,
-						function(focus, user_data),
-						user_data/* doc */);
-			};
-
-			DiagramHistory DiagramHistory.create_copy();
-		};
-
-		Doc create();			//!< create new doc
-		Diagram get_diagram(doc);	//!< in current history
-		Focus get_focus(doc);		//!< in current history
-
-		//! history system
-		bool add_event_listener_history_change(doc, function(doc, 'undo'/'redo'/'add'));
-		void undo(doc);
-		void redo(doc);
-		void add_history(doc);
-		/* etc.. */
-	};
-
-	DocId create_doc();
-	Doc get_doc_from_id(docId);
-};
-
-## ドキュメント構造
-{
-	index,				//current diagram
-	diagrams:[
-		[Element, Element, ...],
-		[Element, Element, ...], // ex. <- current diagram index is 1
-		[Element, Element, ...],
-	],
-}
-
-### Lifeline
-{
-	kind, id,
-	x,
-	y,
-	// width is text.BBox().width
-	// height is text.BBox().height
-	text,		// lifeline name
-}
-
-### Message
-{
-	// x is start
-	y,
-	// width is start between end
-	// height is zero.
-	start,		// Lifeline or positon{x} for found
-	end,		// Lifeline or positon{x} for lost
-	end_kind,	// [none, create, stop]
-	message_kind,		// [sync, async, reply]
-	text,		// message text
-	spec,		// spec object(optional)
-}
-
-### ExecutionSpecification (spec)
-{
-	// x is parent_message.x
-	// y is parent_message.y - this.y_offset,
-	// width is zero.
-	// parent_message,
-	y_offset,	// this y position from parent_message.y offset
-	end,		// height or 'reply'
-}
-
-### Flugment
-{
-	x,
-	y,
-	// width is text.BBox().width or kind string (max)
-	// height is text.BBox().height + kind string
-	kind,		// string [memo, ref, ...]
-	text,		// for memo text
-}
-
-
+# TODO
+- More usefull editor
+- Auto save backup
+- Auto positioning (ex. fix Messages between height, Fragment overwrap relocation)
+- UML Strict Mode (need you?)
+- design customize (CSS based)
 
