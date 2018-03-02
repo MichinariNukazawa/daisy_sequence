@@ -7,6 +7,11 @@ daisy sequenceは、Win/Mac/Linuxで動作する、シーケンス図エディ�
 
 ![daisy sequence](document/image/daisy_sequence_201802.png)  
 
+## 特徴
+- Win/Mac/Linuxに対応
+- SVG/PNG書き出し
+- バージョン管理しやすいJSONテキストベースのネイティブファイルフォーマット
+
 # Download
 [Download for latest release](https://github.com/MichinariNukazawa/daisy_sequence/releases)  
 
