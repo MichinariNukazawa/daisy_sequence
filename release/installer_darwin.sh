@@ -36,7 +36,7 @@ EX=""
 if [ -n "${GIT_STATUS_SHORT}" ] ; then
 EX="develop"
 fi
-PACKAGE_NAME=${APP_NAME}-darwin-${SHOW_VERSION}${EX}-${GIT_HASH}${PACKAGE_POSTFIX}
+PACKAGE_NAME=${APP_NAME}-macosx-${SHOW_VERSION}${EX}-${GIT_HASH}${PACKAGE_POSTFIX}
 
 ## build
 rm -rf ${BUILD_DIR}
