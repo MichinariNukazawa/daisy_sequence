@@ -208,6 +208,12 @@ class Daisy{
 		return xml_formatter(s, options);
 	}
 
+	change()
+	{
+		this.call_event_listener_current_doc_change_();
+		Renderer.rerendering(rendering_handle, this.get_current_doc());
+	}
+
 	add_event_listener_current_doc_change(callback)
 	{
 		this.event_listener_current_doc_changes.push(callback);

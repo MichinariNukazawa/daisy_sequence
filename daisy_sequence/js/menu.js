@@ -430,6 +430,84 @@ var template = [
 			}
 		}
 	},
+	{type: 'separator'},
+	{
+		label: 'Raise',
+		accelerator: 'CmdOrCtrl+Shift+PageUp',
+		click: function () {
+			let element = daisy.get_current_single_focus_element();
+			if(null === element){
+				return;
+			}
+
+			{
+				Doc.history_add(daisy.get_current_doc());
+			}
+
+			let diagram = daisy.get_current_diagram();
+			Diagram.reorder_from_element_id(diagram, element.id, "Raise");
+
+			daisy.change();
+		}
+	},
+	{
+		label: 'Lower',
+		accelerator: 'CmdOrCtrl+Shift+PageDown',
+		click: function () {
+			let element = daisy.get_current_single_focus_element();
+			if(null === element){
+				return;
+			}
+
+			{
+				Doc.history_add(daisy.get_current_doc());
+			}
+
+			let diagram = daisy.get_current_diagram();
+			Diagram.reorder_from_element_id(diagram, element.id, "Lower");
+
+			daisy.change();
+		}
+	},
+	{
+		label: 'Raise to Top',
+		accelerator: 'CmdOrCtrl+Shift+Home',
+		click: function () {
+			let element = daisy.get_current_single_focus_element();
+			if(null === element){
+				return;
+			}
+
+			{
+				Doc.history_add(daisy.get_current_doc());
+			}
+
+			let diagram = daisy.get_current_diagram();
+			Diagram.reorder_from_element_id(diagram, element.id, "Top");
+
+			daisy.change();
+		}
+	},
+	{
+		label: 'Lower to End',
+		accelerator: 'CmdOrCtrl+Shift+End',
+		click: function () {
+			let element = daisy.get_current_single_focus_element();
+			if(null === element){
+				return;
+			}
+
+			{
+				Doc.history_add(daisy.get_current_doc());
+			}
+
+			let diagram = daisy.get_current_diagram();
+			Diagram.reorder_from_element_id(diagram, element.id, "End");
+
+			daisy.change();
+		}
+	},
+	{type: 'separator'},
 	{
 		label: '&Delete Element(s)',
 		accelerator: 'Delete',

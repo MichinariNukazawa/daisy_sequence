@@ -672,6 +672,40 @@ class Diagram{
 		return false;
 	}
 
+	static reorder_from_element_id(diagram, element_id, reorder_kind)
+	{
+		let elements = diagram.diagram_elements;
+		if(1 >= elements.length){
+			return false;
+		}
+		for(let i = 0; i < elements.length; i++){
+			if(element_id === elements[i].id){
+				const e = elements[i];
+				elements.splice(i, 1);
+				if('Top' === reorder_kind){
+					elements.splice((elements.length - 1), 0, e);
+				}else if('End' === reorder_kind){
+					elements.splice(0, 0, e);
+				}else if('Raise' === reorder_kind){
+					const max = (elements.length - 1);
+					const ix = ((max < (i + 1))? max : (i + 1));
+					elements.splice(ix, 0, e);
+				}else if('Lower' === reorder_kind){
+					const min = 0;
+					const ix = ((min > (i - 1))? min : (i - 1));
+					elements.splice(ix, 0, e);
+				}else{
+					console.error(reorder_kind);
+					return false;
+				}
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	static sanitize(src_diagram, err_)
 	{
 		//! @todo not implement
@@ -1311,7 +1345,7 @@ class Fragment{
 		{id: 2, name:'loop'},
 		{id: 3, name:'break'},
 		];
-	
+
 		return infos;
 	}
 

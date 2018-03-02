@@ -73,6 +73,10 @@ class Renderer{
 		}
 
 		const diagram = Doc.get_diagram(doc);
+		if(null === diagram){
+			console.debug('Rendering:diagram is null');
+			return;
+		}
 
 		let draw = rendering_handle.get_draw();
 		draw.size(diagram.width, diagram.height);
@@ -85,12 +89,12 @@ class Renderer{
 			}else if('fragment' == diagram.diagram_elements[i].kind){
 				Renderer.draw_fragment(rendering_handle, diagram.diagram_elements[i]);
 			}else{
+				console.error(i, diagram.diagram_elements[i]);
 				const msg = sprintf("internal error: invalid element kind `%s`(%d,%d)",
 						diagram.diagram_elements[i].kind,
 						diagram.diagram_elements[i].id,
 						i
 						);
-				console.error(msg);
 				alert(msg);
 			}
 		}
