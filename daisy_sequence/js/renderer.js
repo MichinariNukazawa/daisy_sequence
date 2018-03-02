@@ -429,6 +429,8 @@ class Renderer{
 	static draw_fragment(rendering_handle, fragment)
 	{
 		let fragment_group = rendering_handle.get_fragment_group();
+		let bg_group = fragment_group.group().addClass('dd__fragment-bg');
+		let fg_group = fragment_group.group().addClass('dd__fragment-fg');
 
 		const padding = [5, 0];
 		// ** fragment_kind
@@ -436,7 +438,7 @@ class Renderer{
 		let fragment_kind_size = [0, 0];
 		{
 			if('' !== fragment.fragment_kind){
-				fragment_kind_text = fragment_group.text(fragment.fragment_kind).move(fragment.x, fragment.y);
+				fragment_kind_text = fg_group.text(fragment.fragment_kind).move(fragment.x, fragment.y);
 				const b = fragment_kind_text.bbox();
 				fragment_kind_size = [
 					b.width,
@@ -450,12 +452,12 @@ class Renderer{
 					b.x + b.width + 5 , b.y + b.height - 5,
 					b.x + b.width + 5 , b.y,
 				];
-				let fragment_kind_polyline = fragment_group.polyline(points)
+				let fragment_kind_polyline = fg_group.polyline(points)
 					.stroke({ width: 1, linecap: 'round', }).fill('none');
 			}
 		}
 
-		// ** contents
+		// ** text
 		let b = {
 			'x': fragment.x,
 			'y': fragment.y,
@@ -464,12 +466,12 @@ class Renderer{
 		};
 		let text = null;
 		if(! /^\s*$/.test(fragment.text)){
-			text = fragment_group.text(fragment.text)
+			text = fg_group.text(fragment.text)
 				.move(fragment.x, fragment_kind_size[1] + fragment.y);
 			b = text.bbox();
 		}
 
-		// ** frame
+		// ** get rect
 		const radius = 1;
 		if(fragment.is_auto_size){
 			fragment.width = b.width;
@@ -483,30 +485,24 @@ class Renderer{
 		};
 		box = Rect.expand(box, padding);
 		box = Rect.add_size(box, [8, 2]);
+
+		// ** frame
 		const attr = {
 			'stroke':		'#000',
 			'stroke-width':		'1',
 			'fill-opacity':		fragment.background_opacity,
 			'fill': '#1080FF',
 		};
-		let background_rect = fragment_group.rect(box.width, box.height).move(box.x, box.y)
+		let background_rect = bg_group.rect(box.width, box.height).move(box.x, box.y)
 			.radius(radius).attr(attr);
 
 		// ** frame resize icon
 		if(! fragment.is_auto_size){
-			let group_edge_icon = fragment_group.group().addClass('fragment__edge-icon');
+			let group_edge_icon = fg_group.group().addClass('fragment__edge-icon');
 			group_edge_icon.svg(edge_icon_svg)
 				.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8).scale(0.5, 0.5).attr({
 					'opacity':	0.3,
 				});
-		}
-
-		// ** reorder
-		if(null !== fragment_kind_text){
-			background_rect.after(fragment_kind_text);
-		}
-		if(null !== text){
-			background_rect.after(text);
 		}
 
 		// ** operands
@@ -527,7 +523,7 @@ class Renderer{
 
 	static draw_operand(rendering_handle, operand, fragment, fragment_position)
 	{
-		let fragment_group = rendering_handle.get_spec_group().addClass('fragment-group');
+		let fragment_group = rendering_handle.get_fragment_group();
 
 		// console.log("operand:%d %d %s", operand.id, operand.relate_y, operand.text);
 
