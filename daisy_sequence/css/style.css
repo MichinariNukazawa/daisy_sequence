@@ -86,5 +86,6 @@ table th{
 	margin: 0px;
 	position:absolute; top:50px; bottom:0px; left:280px; right:0px;
 	overflow:	auto;
+	cursor: default;
 }
 
