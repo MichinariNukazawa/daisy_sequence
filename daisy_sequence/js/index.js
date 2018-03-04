@@ -343,10 +343,6 @@ window.onload = function(e){
 				Doc.undo(current_doc);
 			}
 		}
-		if(e.keyCode == 46){
-			// Delete key
-			delete_current_focus_elements();
-		}
 	}
 
 	ad.start();

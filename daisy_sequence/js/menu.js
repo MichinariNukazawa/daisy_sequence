@@ -510,7 +510,7 @@ var template = [
 	{type: 'separator'},
 	{
 		label: '&Delete Element(s)',
-		accelerator: 'Delete',
+		accelerator: 'CmdOrCtrl+Delete',
 		click: function () {
 			delete_current_focus_elements();
 		}
