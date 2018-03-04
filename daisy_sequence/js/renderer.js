@@ -436,60 +436,56 @@ class Renderer{
 		let bg_group = fragment_group.group().addClass('dd__fragment-bg');
 		let fg_group = fragment_group.group().addClass('dd__fragment-fg');
 
-		if(fragment.is_auto_size){
-			fragment.width = b.width;
-			fragment.height = b.height;
-		}
 		const position = Rect.abs(fragment);
 
 		const padding = [5, 0];
 		// ** fragment_kind
-		let fragment_kind_text = null;
 		let fragment_kind_size = [0, 0];
-		{
-			if('' !== fragment.fragment_kind){
-				fragment_kind_text = fg_group.text(fragment.fragment_kind).move(position.x, position.y);
-				const b = fragment_kind_text.bbox();
-				fragment_kind_size = [
-					b.width,
-					b.height,
-				];
+		if('' !== fragment.fragment_kind){
+			let fragment_kind_text = null;
+			fragment_kind_text = fg_group.text(fragment.fragment_kind).move(position.x, position.y);
+			const b = fragment_kind_text.bbox();
+			fragment_kind_size = [
+				b.width,
+				b.height,
+			];
 
-				// *** fragment_kind frame
-				let points = [
-					b.x - padding[0], b.y + b.height,
-					b.x + b.width, b.y + b.height,
-					b.x + b.width + 5 , b.y + b.height - 5,
-					b.x + b.width + 5 , b.y,
-				];
-				let fragment_kind_polyline = fg_group.polyline(points)
-					.stroke({ width: 1, linecap: 'round', }).fill('none');
-			}
+			// *** fragment_kind frame
+			let points = [
+				b.x - padding[0], b.y + b.height,
+				b.x + b.width, b.y + b.height,
+				b.x + b.width + 5 , b.y + b.height - 5,
+				b.x + b.width + 5 , b.y,
+			];
+			let fragment_kind_polyline = fg_group.polyline(points)
+				.stroke({ width: 1, linecap: 'round', }).fill('none');
 		}
 
 		// ** text
-		let b = {
+		let text_rect = {
 			'x': position.x,
 			'y': position.y,
-			'width': 0,
-			'height': 0,
+			'width': fragment_kind_size[0],
+			'height': fragment_kind_size[1],
 		};
-		let text = null;
 		if(! /^\s*$/.test(fragment.text)){
+			let text = null;
 			text = fg_group.text(fragment.text)
 				.move(position.x, fragment_kind_size[1] + position.y);
-			b = text.bbox();
+			const b = text.bbox();
+
+			text_rect.width = Math.max(b.width, fragment_kind_size[0]);
+			text_rect.height = b.height + fragment_kind_size[1];
+		}
+
+		// ** auto size
+		if(fragment.is_auto_size){
+			fragment.width = text_rect.width;
+			fragment.height = text_rect.height;
 		}
 
 		// ** get rect
-		const radius = 1;
-		let box = {
-			'x':		position.x,
-			'y':		position.y,
-			'width':	Math.max(position.width, fragment_kind_size[0]),
-			'height':	position.height + fragment_kind_size[1],
-		};
-		box = Rect.expand(box, padding);
+		let box = Rect.expand(Rect.abs(Rect.deepcopy(fragment)), padding);
 		box = Rect.add_size(box, [8, 2]);
 
 		// ** frame
@@ -499,6 +495,7 @@ class Renderer{
 			'fill-opacity':		fragment.background_opacity,
 			'fill': '#1080FF',
 		};
+		const radius = 1;
 		let background_rect = bg_group.rect(box.width, box.height).move(box.x, box.y)
 			.radius(radius).attr(attr);
 

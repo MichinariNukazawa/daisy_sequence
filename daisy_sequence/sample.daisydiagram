@@ -1,7 +1,7 @@
 {
 	"editor_info": {
 		"application_name": "daisy diagram",
-		"version": "201802.0.0-devel"
+		"version": "201803.0.0"
 	},
 	"diagram": {
 		"width": 500,
@@ -172,9 +172,9 @@
 				"id": 13,
 				"x": 335,
 				"y": 391,
-				"width": 120,
-				"height": 40,
-				"is_auto_size": false,
+				"width": 113.890625,
+				"height": 38.5625,
+				"is_auto_size": true,
 				"fragment_kind": "",
 				"background_opacity": "0.1",
 				"text": "text\nmemo fragment"
