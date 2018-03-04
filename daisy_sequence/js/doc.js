@@ -608,6 +608,14 @@ class Focus{
 
 		return true;
 	}
+
+	static finalize_edit(focus)
+	{
+		for(let i = 0; i < focus.elements.length; i++){
+			let element = focus.elements[i];
+			Rect.abs_ref(element);
+		}
+	}
 };
 
 class Diagram{
@@ -1454,13 +1462,18 @@ class Rect{
 	static abs(src_rect)
 	{
 		let rect = Object.assign({}, src_rect);
-		if(rect.width < 0){
-			rect.x = src_rect.x + src_rect.width;
-			rect.width = src_rect.width * -1;
+		return Rect.abs_ref(rect);
+	}
+
+	static abs_ref(rect)
+	{
+		if(rect.hasOwnProperty('x') && rect.hasOwnProperty('width') && rect.width < 0){
+			rect.x = rect.x + rect.width;
+			rect.width = rect.width * -1;
 		}
-		if(rect.height < 0){
-			rect.y = src_rect.y + src_rect.height;
-			rect.height = src_rect.height * -1;
+		if(rect.hasOwnProperty('y') && rect.hasOwnProperty('height') && rect.height < 0){
+			rect.y = rect.y + rect.height;
+			rect.height = rect.height * -1;
 		}
 
 		return rect;

@@ -840,6 +840,7 @@ function callback_mouseup_canvas(e)
 	mouse_state.is_down = false;
 
 	let focus = Doc.get_focus(daisy.get_current_doc());
+	Focus.finalize_edit(focus);
 
 	callback_focus_change();
 

@@ -436,13 +436,19 @@ class Renderer{
 		let bg_group = fragment_group.group().addClass('dd__fragment-bg');
 		let fg_group = fragment_group.group().addClass('dd__fragment-fg');
 
+		if(fragment.is_auto_size){
+			fragment.width = b.width;
+			fragment.height = b.height;
+		}
+		const position = Rect.abs(fragment);
+
 		const padding = [5, 0];
 		// ** fragment_kind
 		let fragment_kind_text = null;
 		let fragment_kind_size = [0, 0];
 		{
 			if('' !== fragment.fragment_kind){
-				fragment_kind_text = fg_group.text(fragment.fragment_kind).move(fragment.x, fragment.y);
+				fragment_kind_text = fg_group.text(fragment.fragment_kind).move(position.x, position.y);
 				const b = fragment_kind_text.bbox();
 				fragment_kind_size = [
 					b.width,
@@ -463,29 +469,25 @@ class Renderer{
 
 		// ** text
 		let b = {
-			'x': fragment.x,
-			'y': fragment.y,
+			'x': position.x,
+			'y': position.y,
 			'width': 0,
 			'height': 0,
 		};
 		let text = null;
 		if(! /^\s*$/.test(fragment.text)){
 			text = fg_group.text(fragment.text)
-				.move(fragment.x, fragment_kind_size[1] + fragment.y);
+				.move(position.x, fragment_kind_size[1] + position.y);
 			b = text.bbox();
 		}
 
 		// ** get rect
 		const radius = 1;
-		if(fragment.is_auto_size){
-			fragment.width = b.width;
-			fragment.height = b.height;
-		}
 		let box = {
-			'x':		fragment.x,
-			'y':		fragment.y,
-			'width':	Math.max(fragment.width, fragment_kind_size[0]),
-			'height':	fragment.height + fragment_kind_size[1],
+			'x':		position.x,
+			'y':		position.y,
+			'width':	Math.max(position.width, fragment_kind_size[0]),
+			'height':	position.height + fragment_kind_size[1],
 		};
 		box = Rect.expand(box, padding);
 		box = Rect.add_size(box, [8, 2]);
