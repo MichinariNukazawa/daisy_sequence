@@ -538,7 +538,7 @@ class Focus{
 		for(let i = 0; i < focus.elements.length; i++){
 			let element = focus.elements[i];
 			object_make_member(element, 'work');
-			const position = object_deepcopy(element);
+			const position = Rect.deepcopy(element);
 			element.work['source_position'] = position;
 		}
 	}
@@ -1516,6 +1516,25 @@ class Rect{
 		}
 
 		return false;
+	}
+
+	static deepcopy(src)
+	{
+		let dst = {};
+		if(src.hasOwnProperty('x')){
+			dst.x = src.x;
+		}
+		if(src.hasOwnProperty('y')){
+			dst.y = src.y;
+		}
+		if(src.hasOwnProperty('width')){
+			dst.width = src.width;
+		}
+		if(src.hasOwnProperty('height')){
+			dst.height = src.height;
+		}
+
+		return dst;
 	}
 };
 
