@@ -1595,6 +1595,9 @@ function object_get_property_from_path(obj, path)
 	const keys = path.split('.');
 	let o = obj;
 	for(let i = 0; i < keys.length; i++){
+		if(undefined === o || null === o || typeof o !== 'object'){
+			return null;
+		}
 		if(! o.hasOwnProperty(keys[i])){
 			return null;
 		}else{
