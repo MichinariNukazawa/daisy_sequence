@@ -265,7 +265,7 @@ window.onload = function(e){
 		console.error(err);
 	}
 
-	rendering_handle = new RenderingHandle('drawing');
+	rendering_handle = new RenderingHandle('canvas');
 
 	daisy = new Daisy();
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
@@ -280,11 +280,11 @@ window.onload = function(e){
 	}
 
 	// document.addEventListener('mousemove', callback);
-	document.getElementById('drawing').addEventListener('mousemove', callback_mousemove_drawing);
-	document.getElementById('drawing').addEventListener('mousedown', callback_mousedown_drawing);
-	// fix mousedown -> mouseup can not pair mouseup call when drawing area out of range.
-	document.addEventListener('mouseup', callback_mouseup_drawing);
-	// document.getElementById('drawing').addEventListener('mouseup', callback_mouseup_drawing);
+	document.getElementById('canvas').addEventListener('mousemove', callback_mousemove_canvas);
+	document.getElementById('canvas').addEventListener('mousedown', callback_mousedown_canvas);
+	// fix mousedown -> mouseup can not pair mouseup call when canvas area out of range.
+	document.addEventListener('mouseup', callback_mouseup_canvas);
+	// document.getElementById('canvas').addEventListener('mouseup', callback_mouseup_canvas);
 
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
 	add_event_listener_first_input_for_single_element_with_history(
@@ -685,7 +685,7 @@ function callback_focus_change(focus, user_data)
 
 }
 
-function callback_mousedown_drawing(e)
+function callback_mousedown_canvas(e)
 {
 	// console.log('mousedown');
 	if(null === daisy.get_current_doc()){
@@ -706,13 +706,13 @@ function callback_mousedown_drawing(e)
 	const tool_kind = tool.get_tool_kind();
 
 	if('allow' === tool_kind){
-		callback_mousedown_drawing_allow(point);
+		callback_mousedown_canvas_allow(point);
 	}else if('lifeline' === tool_kind){
-		callback_mousedown_drawing_lifeline(point);
+		callback_mousedown_canvas_lifeline(point);
 	}else if('message' === tool_kind){
-		callback_mousedown_drawing_message(point);
+		callback_mousedown_canvas_message(point);
 	}else if('fragment' === tool_kind){
-		callback_mousedown_drawing_fragment(point);
+		callback_mousedown_canvas_fragment(point);
 	}else{
 		console.error(tool_kind);
 	}
@@ -720,7 +720,7 @@ function callback_mousedown_drawing(e)
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
-function callback_mousedown_drawing_allow(point)
+function callback_mousedown_canvas_allow(point)
 {
 	let diagram = daisy.get_current_diagram();
 	let focus = Doc.get_focus(daisy.get_current_doc());
@@ -748,7 +748,7 @@ function callback_mousedown_drawing_allow(point)
 	}
 }
 
-function callback_mousedown_drawing_lifeline(point)
+function callback_mousedown_canvas_lifeline(point)
 {
 	{
 		Doc.history_add(daisy.get_current_doc());
@@ -779,7 +779,7 @@ function callback_mousedown_drawing_lifeline(point)
 	Focus.set_element(focus, lifeline);
 }
 
-function callback_mousedown_drawing_message(point)
+function callback_mousedown_canvas_message(point)
 {
 	{
 		Doc.history_add(daisy.get_current_doc());
@@ -805,7 +805,7 @@ function callback_mousedown_drawing_message(point)
 	focus.focus_state.message_side = 'end';
 }
 
-function callback_mousedown_drawing_fragment(point)
+function callback_mousedown_canvas_fragment(point)
 {
 	{
 		Doc.history_add(daisy.get_current_doc());
@@ -827,7 +827,7 @@ function callback_mousedown_drawing_fragment(point)
 	Focus.set_element(focus, fragment);
 }
 
-function callback_mouseup_drawing(e)
+function callback_mouseup_canvas(e)
 {
 	// console.log('mouseup');
 	if(null === daisy.get_current_doc()){
@@ -843,7 +843,7 @@ function callback_mouseup_drawing(e)
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
-function callback_mousemove_drawing(e)
+function callback_mousemove_canvas(e)
 {
 	if(null === daisy.get_current_doc()){
 		return;

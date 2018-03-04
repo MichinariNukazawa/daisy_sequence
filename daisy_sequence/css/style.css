@@ -75,14 +75,14 @@ table th{
 	vertical-align: middle;
 }
 
-#drawing-container{
+#canvas-container{
 	padding:	5px;
 	width:		90vh;
 	height:		85vh;
 	overflow:	auto;
 }
 
-#drawing{
+#canvas{
 	margin: 0px;
 	position:absolute; top:50px; bottom:0px; left:280px; right:0px;
 	overflow:	auto;
