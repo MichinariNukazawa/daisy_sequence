@@ -21,6 +21,7 @@ clean:
 package: package_desktop
 
 package_desktop:
+	bash ./release/version.sh
 	bash ./release/installer_win32_x64.sh
 	bash ./release/installer_darwin.sh
 	bash ./release/installer_debian.sh

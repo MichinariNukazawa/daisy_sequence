@@ -8,7 +8,10 @@ class Version{
 
 	static get_version()
 	{
-		return '201802.0.0';
+		const v = {
+			"version": "201803.0.0",
+		};
+		return v.version;
 	}
 }
 
