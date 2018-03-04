@@ -668,7 +668,7 @@ class Diagram{
 			}
 			return true;
 		};
-		let opt = {'id': id, 'parent_element': null};
+		let opt = {'id': id, 'parent_element': null, 'ignore_keys':['work'],};
 		Element.recursive(diagram.diagram_elements, func, opt);
 
 		return opt.parent_element;
@@ -707,7 +707,7 @@ class Diagram{
 			}
 			return true;
 		};
-		let opt = {'id': id, 'diagram': diagram,};
+		let opt = {'id': id, 'diagram': diagram, 'ignore_keys':['work'],};
 		Element.recursive(diagram.diagram_elements, func, opt);
 
 		return;
@@ -723,7 +723,7 @@ class Diagram{
 			}
 			return true;
 		};
-		let opt = {'id': id, 'parent_obj': null};
+		let opt = {'id': id, 'parent_obj': null, 'ignore_keys':['work'],};
 		Element.recursive(diagram.diagram_elements, func, opt);
 
 		if(null === opt.parent_obj){
@@ -841,7 +841,7 @@ class Diagram{
 			}
 			return true;
 		};
-		let opt = {'id': id, 'element': null};
+		let opt = {'id': id, 'element': null, 'ignore_keys':['work'],};
 		Element.recursive(diagram.diagram_elements, func, opt);
 
 		return opt.element;
@@ -871,7 +871,7 @@ class Diagram{
 			return true;
 		};
 
-		let opt = {'point': point, 'element': null};
+		let opt = {'point': point, 'element': null, 'ignore_keys':['work'],};
 		opt.exclude_kinds = ['operand', 'fragment'];
 		Element.recursive_top_reverse(diagram.diagram_elements, func, opt);
 		if(null !== opt.element){
@@ -969,7 +969,7 @@ class Diagram{
 			}
 			return true;
 		};
-		let opt = {'id': -1};
+		let opt = {'id': -1, 'ignore_keys':['work'],};
 		Element.recursive(diagram.diagram_elements, func, opt);
 
 		return opt.id;
@@ -1221,6 +1221,9 @@ class Element{
 		recurse_info.level++;
 		for(let key in obj){
 			if(typeof obj[key] !== 'object' && typeof obj[key] !== 'array'){
+				continue;
+			}
+			if(opt.hasOwnProperty['ignore_keys'] && opt.ignore_keys.includes(key)){
 				continue;
 			}
 			if(! Element.recursive_inline_(recurse_info, obj[key], func, opt)){
