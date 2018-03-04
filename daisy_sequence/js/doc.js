@@ -532,6 +532,82 @@ class Focus{
 					focus.work.event_listener_focus_changes[i].user_data);
 		}
 	}
+
+	static preservation_element_source_position(focus)
+	{
+		for(let i = 0; i < focus.elements.length; i++){
+			let element = focus.elements[i];
+			object_make_member(element, 'work');
+			const position = object_deepcopy(element);
+			element.work['source_position'] = position;
+		}
+	}
+
+	static move_by_source_position(focus, move)
+	{
+		/*
+		if(! object_has_own_property_path(element, 'work.source_position.x')){
+			console.error(element);
+			continue;
+		}
+		*/
+
+		let elements = focus.elements;
+
+		const source_position = object_get_property_from_path(elements[0], 'work.source_position');
+		if(null === source_position){
+			console.error(element);
+			return false;
+		}
+
+		let is_move = true;
+		if(1 === elements.length && 'fragment' === elements[0].kind){
+			if('right-bottom' === focus.focus_state.edge){
+				elements[0].width = source_position.width + move.x;
+				elements[0].height = source_position.height + move.y;
+				is_move = false;
+			}
+		}
+
+		if(1 === elements.length && 'operand' === elements[0].kind){
+			elements[0].relate_y = source_position.relate_y + move.y;
+			if(0 > elements[0].relate_y){
+				elements[0].relate_y = 0;
+			}
+			is_move = false;
+		}
+
+		if(is_move){
+			for(let i = 0; i < elements.length; i++){
+				Focus.move_element_(elements[i], move);
+			}
+		}
+
+		return true;
+	}
+
+	static move_element_(element, move)
+	{
+		const source_position = object_get_property_from_path(element, 'work.source_position');
+		if(null === source_position){
+			console.error(element);
+			return false;
+		}
+
+		if('lifeline' == element.kind){
+			element.x = source_position.x + move.x;
+			element.y = source_position.y + move.y;
+		}else if('message' == element.kind){
+			element.y = source_position.y + move.y;
+		}else if('spec' == element.kind){
+			element.height = source_position.height + move.y;
+		}else if('fragment' == element.kind){
+			element.x = source_position.x + move.x;
+			element.y = source_position.y + move.y;
+		}
+
+		return true;
+	}
 };
 
 class Diagram{
@@ -1427,22 +1503,18 @@ class Rect{
 	}
 };
 
+class Point{
+	static sub(point0, point1)
+	{
+		return {
+			'x': point0.x - point1.x,
+			'y': point0.y - point1.y,
+		};
+	}
+};
+
 /**** ############### ****/
 
-function move_element(current_diagram, element, move)
-{
-	if('lifeline' == element.kind){
-		element.x += move.x;
-		element.y += move.y;
-	}else if('message' == element.kind){
-		element.y += move.y;
-	}else if('spec' == element.kind){
-		element.height += move.y;
-	}else if('fragment' == element.kind){
-		element.x += move.x;
-		element.y += move.y;
-	}
-}
 
 function object_deepcopy(obj)
 {
@@ -1474,5 +1546,27 @@ function object_remove_key(obj, keys)
 			else object_remove_key(obj[key],keys);
 		});
 	}
+}
+
+function object_make_member(obj, key)
+{
+	if(! obj.hasOwnProperty(key)){
+		obj[key] = {};
+	}
+}
+
+function object_get_property_from_path(obj, path)
+{
+	const keys = path.split('.');
+	let o = obj;
+	for(let i = 0; i < keys.length; i++){
+		if(! o.hasOwnProperty(keys[i])){
+			return null;
+		}else{
+			o = o[keys[i]];
+		}
+	}
+
+	return o;
 }
 

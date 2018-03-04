@@ -717,6 +717,9 @@ function callback_mousedown_canvas(e)
 		console.error(tool_kind);
 	}
 
+	let focus = Doc.get_focus(daisy.get_current_doc());
+	Focus.preservation_element_source_position(focus);
+
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
@@ -876,10 +879,6 @@ function callback_mousemove_canvas(e)
 
 	let focus = Doc.get_focus(daisy.get_current_doc());
 
-	const move = {
-		'x': e.movementX,
-		'y': e.movementY,
-	};
 	let elements = Focus.get_elements(focus);
 	let diagram = daisy.get_current_diagram();
 
@@ -888,28 +887,8 @@ function callback_mousemove_canvas(e)
 		Message.change_side_from_point(elements[0], diagram, message_side, point);
 	}
 
-	let is_move = true;
-	if(1 === elements.length && 'fragment' === elements[0].kind){
-		if('right-bottom' === focus.focus_state.edge){
-			elements[0].width += move.x;
-			elements[0].height += move.y;
-			is_move = false;
-		}
-	}
-
-	if(1 === elements.length && 'operand' === elements[0].kind){
-		elements[0].relate_y += move.y;
-		if(0 > elements[0].relate_y){
-			elements[0].relate_y = 0;
-		}
-		is_move = false;
-	}
-
-	if(is_move){
-		for(let i = 0; i < elements.length; i++){
-			move_element(diagram, elements[i], move);
-		}
-	}
+	const move = Point.sub(point, mouse_state.mousedown_point);
+	Focus.move_by_source_position(focus, move);
 
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
