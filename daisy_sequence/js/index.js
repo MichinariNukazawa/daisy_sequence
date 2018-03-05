@@ -12,6 +12,7 @@ let ad = new Ad();
 
 let doc_collection = new DocCollection();
 
+let default_title = 'daisy_sequence';
 let tool = null;
 let daisy = null;
 
@@ -121,6 +122,7 @@ class Daisy{
 			let diagram = Doc.get_diagram(doc);
 
 			Doc.add_event_listener_history_change(doc, callback_history_change_doc);
+			Doc.add_event_listener_on_save(doc, callback_on_save_doc);
 			let focus = Doc.get_focus(doc);
 			Focus.add_event_listener_focus_change(focus, callback_focus_change, doc);
 
@@ -256,6 +258,8 @@ function process_argument()
 }
 
 window.onload = function(e){
+	default_title = document.title;
+
 	process_argument();
 
 	try{
@@ -552,7 +556,14 @@ function callback_history_change_doc(doc, event_kind)
 		callback_current_doc_change(daisy.get_current_doc_id());
 	}
 
+	update_title_from_doc_id(daisy.get_current_doc_id());
+
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+}
+
+function callback_on_save_doc(doc)
+{
+	update_title_from_doc_id(daisy.get_current_doc_id());
 }
 
 function callback_current_doc_change(doc_id)
@@ -562,16 +573,33 @@ function callback_current_doc_change(doc_id)
 	if(-1 === doc_id){
 		canvas__diagram_width.disabled = true;
 		canvas__diagram_height.disabled = true;
+
+		document.title = default_title;
 	}else{
 		canvas__diagram_width.disabled = false;
 		canvas__diagram_height.disabled = false;
 
-		console.log(doc_id);
-		const diagram = Doc.get_diagram(doc_collection.get_doc_from_id(doc_id));
+		// console.log(doc_id);
+		const doc = doc_collection.get_doc_from_id(doc_id);
+		const diagram = Doc.get_diagram(doc);
 		const size = Diagram.get_size(diagram);
 		canvas__diagram_width.value = size.width;
 		canvas__diagram_height.value = size.height;
+
+		update_title_from_doc_id(doc_id);
 	}
+}
+
+function update_title_from_doc_id(doc_id)
+{
+	const doc = doc_collection.get_doc_from_id(doc_id);
+	const str_save = (Doc.is_on_save(doc)? '':'*');
+	let filename = Doc.get_filename(doc);
+	if(0 === filename.length){
+		filename = '(untitled)';
+	}
+	const str = sprintf("%s%s  - daisy_sequence", str_save, filename);
+	document.title = str;
 }
 
 function callback_focus_change(focus, user_data)

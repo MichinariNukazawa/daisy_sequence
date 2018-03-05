@@ -301,10 +301,6 @@ class Doc{
 			return;
 		}
 
-		if(doc.diagram_history_index < doc.on_save_diagram_history_index){
-			doc.on_save_diagram_history_index = -1;
-		}
-
 		Doc.call_event_listener_history_change_(doc, 'undo');
 	}
 
@@ -337,8 +333,13 @@ class Doc{
 		let hist = DiagramHistory.deepcopy(
 				doc.diagram_historys[(doc.diagram_history_index)]);
 		doc.diagram_historys[doc.diagram_history_index + 1] = hist;
+
 		doc.diagram_history_index++;
 		doc.diagram_historys.length = doc.diagram_history_index + 1;
+
+		if((doc.diagram_historys.length - 2) < doc.on_save_diagram_history_index){
+			doc.on_save_diagram_history_index = -1;
+		}
 
 		Doc.call_event_listener_history_change_(doc, 'add');
 	}
@@ -376,6 +377,13 @@ class Doc{
 		for(let i = 0; i < doc.work.event_listener_history_changes.length; i++){
 			doc.work.event_listener_history_changes[i](doc, event_kind);
 		}
+	}
+
+	static get_filename(doc)
+	{
+		const filepath = Doc.get_filepath(doc);
+		const filename = filepath.replace(/^.*[\\\/]/, '');
+		return filename;
 	}
 
 	static get_filepath(doc)
@@ -416,6 +424,8 @@ class Doc{
 	static on_save(doc)
 	{
 		doc.on_save_diagram_history_index = doc.diagram_history_index;
+
+		Doc.call_event_listener_on_save_(doc);
 	}
 
 	static is_on_save(doc)
@@ -425,6 +435,33 @@ class Doc{
 		}
 
 		return (doc.on_save_diagram_history_index === doc.diagram_history_index);
+	}
+
+	static add_event_listener_on_save(doc, callback)
+	{
+		object_make_member(doc, 'work.event_listener_on_saves', []);
+
+		if(doc.work.event_listener_on_saves.includes(callback)){
+			return false;
+		}
+
+		doc.work.event_listener_on_saves.push(callback);
+
+		return true;
+	}
+
+	static call_event_listener_on_save_(doc)
+	{
+		if(! doc.hasOwnProperty('work')){
+			return;
+		}
+		if(! doc.work.hasOwnProperty('event_listener_on_saves')){
+			return;
+		}
+
+		for(let i = 0; i < doc.work.event_listener_on_saves.length; i++){
+			doc.work.event_listener_on_saves[i](doc);
+		}
 	}
 };
 
@@ -537,7 +574,7 @@ class Focus{
 	{
 		for(let i = 0; i < focus.elements.length; i++){
 			let element = focus.elements[i];
-			object_make_member(element, 'work');
+			object_make_member(element, 'work', {});
 			const position = Rect.deepcopy(element);
 			element.work['source_position'] = position;
 		}
@@ -1583,11 +1620,27 @@ function object_remove_key(obj, keys)
 	}
 }
 
-function object_make_member(obj, key)
+function object_make_member(obj, path, value)
 {
-	if(! obj.hasOwnProperty(key)){
-		obj[key] = {};
+	const keys = path.split('.');
+	let o = obj;
+	for(let i = 0; i < keys.length; i++){
+		if(undefined === o || null === o || typeof o !== 'object'){
+			return false;
+		}
+
+		if(! o.hasOwnProperty(keys[i])){
+			if(i !== (keys.length - 1)){
+				o[keys[i]] = {};
+			}else{
+				o[keys[i]] = value;
+			}
+		}
+
+		o = o[keys[i]];
 	}
+
+	return true;
 }
 
 function object_get_property_from_path(obj, path)
