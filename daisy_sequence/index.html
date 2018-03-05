@@ -39,12 +39,49 @@
 					<object data="image/fragment.svg" type="image/svg+xml" width="32"></object>
 				</button>
 			</fieldset>
-			<fieldset id="editor" class='frame'>
-				<legend>Editor</legend>
-				<span>text</span>
-				<br>
-				<textarea id="editor__element-text" rows="3" style='width:95%'></textarea>
-				<br>
+			<div>
+				<fieldset id="editor" class='frame'>
+					<legend>Editor</legend>
+					<span>text</span>
+					<br>
+					<textarea id="editor__element-text" rows="3" style='width:95%'></textarea>
+					<br>
+					<fieldset class='frame'>
+						<legend>Message</legend>
+						<label for='editor__message-spec'>
+							<input id='editor__message-spec' type="checkbox"/>
+							<span>Spec</span>
+						</label>
+						<br>
+						<label for='editor__message-reply'>
+							<input id='editor__message-reply' type="checkbox"/>
+							<span>Reply</span>
+						</label>
+					</fieldset>
+					<fieldset class='frame'>
+						<legend>Fragment</legend>
+						Kind
+						<input id='editor__fragment-kind' type="text"></input>
+						<br>
+						<label for='editor__fragment-is_auto_size'>
+							<input id='editor__fragment-is_auto_size' type="checkbox"/>
+							<span>AutoSize</span>
+						</label>
+						<br>
+						Background transparent
+						<br>
+						<input id='editor__background-transparent' style='width:70%;'
+						       type="range" min="0" max="100" step="10" value="0">
+						<span id='editor__background-transparent-view'>(---%)</span>
+						</input>
+						<br>
+						Operand
+						<button id="editor__fragment__add-operand">
+							Add operand
+						</button>
+						<br>
+					</fieldset>
+				</fieldset>
 				<fieldset class='frame'>
 					<legend>Document</legend>
 					<table>
@@ -66,42 +103,7 @@
 						</tr>
 					</table>
 				</fieldset>
-				<fieldset class='frame'>
-					<legend>Message</legend>
-					<label for='editor__message-spec'>
-						<input id='editor__message-spec' type="checkbox"/>
-						<span>Spec</span>
-					</label>
-					<br>
-					<label for='editor__message-reply'>
-						<input id='editor__message-reply' type="checkbox"/>
-						<span>Reply</span>
-					</label>
-				</fieldset>
-				<fieldset class='frame'>
-					<legend>Fragment</legend>
-					Kind
-					<input id='editor__fragment-kind' type="text"></input>
-					<br>
-					<label for='editor__fragment-is_auto_size'>
-						<input id='editor__fragment-is_auto_size' type="checkbox"/>
-						<span>AutoSize</span>
-					</label>
-					<br>
-					Background transparent
-					<br>
-					<input id='editor__background-transparent' style='width:70%;'
-					       type="range" min="0" max="100" step="10" value="0">
-					<span id='editor__background-transparent-view'>(---%)</span>
-					</input>
-					<br>
-					Operand
-					<button id="editor__fragment__add-operand">
-						Add operand
-					</button>
-					<br>
-				</fieldset>
-			</fieldset>
+			</div>
 			<div id='canvas-div'>
 				<div>
 					<span id='canvas-header'>
