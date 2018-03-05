@@ -50,7 +50,7 @@ class Ad{
 	get_position_(width, height)
 	{
 		const position = {
-			'top': (window.innerHeight - height) - 50,
+			'top': (window.innerHeight - height) - 150,
 			'left': (window.innerWidth - width) / 2,
 		};
 
