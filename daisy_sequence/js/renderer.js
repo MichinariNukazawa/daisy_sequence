@@ -412,14 +412,14 @@ class Renderer{
 			'stroke-width':		'1.2',
 		};
 
-		const height = Spec.get_height(message.spec, message);
+		message.spec.height = Spec.get_height(message.spec, message);
 
 		const end_side_point = Message.get_end_side_point(message, diagram);
 		let box = {
 			'x':		end_side_point.x - 1 + (rank * Spec.WIDTH()),
 			'y':		end_side_point.y + spec.y_offset,
 			'width':	Spec.WIDTH(),
-			'height':	height,
+			'height':	message.spec.height,
 		};
 		box = Rect.abs(box);
 		spec_group.rect(box.width, box.height).move(box.x, box.y).attr(attr);
