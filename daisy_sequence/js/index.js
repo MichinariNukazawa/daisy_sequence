@@ -257,6 +257,61 @@ function process_argument()
 	console.log(arg);
 }
 
+{
+	/** documentにドラッグされた場合 / ドロップされた場合 */
+	document.ondragover = document.ondrop = function(e) {
+		e.preventDefault(); // イベントの伝搬を止めて、アプリケーションのHTMLとファイルが差し替わらないようにする
+		return false;
+	};
+}
+
+function initialize_drug_events()
+{
+	let canvas = document.getElementById('canvas');
+	// console.debug(canvas);
+	/** canvasエリアにドラッグされた場合 */
+	canvas.ondragover = function () {
+		return false;
+	};
+	/** canvasエリアから外れた or ドラッグが終了した */
+	canvas.ondragleave = canvas.ondragend = function () {
+		return false;
+	};
+	/** canvasエリアにドロップされた */
+	canvas.ondrop = function (e) {
+		e.preventDefault(); // イベントの伝搬を止めて、アプリケーションのHTMLとファイルが差し替わらないようにする
+
+		if(1 !== e.dataTransfer.files.length){
+			console.debug(e.dataTransfer.files);
+			message_dialog(
+					'info', "Open",
+					"can drop file is single.");
+			return false;
+		}
+		{
+			const doc = daisy.get_current_doc();
+			if(null !== doc){
+				message_dialog(
+						'info', "Open",
+						"already opened document.");
+				return false;
+			}
+		}
+
+		const file = e.dataTransfer.files[0];
+		let filepath = file.path;
+		console.debug(filepath);
+
+		if(-1 == DaisyIO.open_doc_from_path(filepath)){
+			console.error(filepath);
+			return;
+		}
+
+		console.log("Open from drop:`%s`", filepath);
+		return false;
+	};
+}
+
 window.onload = function(e){
 	default_title = document.title;
 
@@ -348,6 +403,8 @@ window.onload = function(e){
 			}
 		}
 	}
+
+	initialize_drug_events();
 
 	ad.start();
 }
