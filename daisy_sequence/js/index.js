@@ -28,12 +28,12 @@ let mouse_state = {
 
 class Tool{
 	constructor(){
-		this.tool_kind = 'allow';
+		this.tool_kind = 'arrow';
 
 		this.tools = [];
 		this.tools.push({
-			'kind':		'allow',
-			'element':	document.getElementById('tool__allow'),
+			'kind':		'arrow',
+			'element':	document.getElementById('tool__arrow'),
 		});
 		this.tools.push({
 			'kind':		'lifeline',
@@ -786,8 +786,8 @@ function callback_mousedown_canvas(e)
 
 	const tool_kind = tool.get_tool_kind();
 
-	if('allow' === tool_kind){
-		callback_mousedown_canvas_allow(point);
+	if('arrow' === tool_kind){
+		callback_mousedown_canvas_arrow(point);
 	}else if('lifeline' === tool_kind){
 		callback_mousedown_canvas_lifeline(point);
 	}else if('message' === tool_kind){
@@ -804,7 +804,7 @@ function callback_mousedown_canvas(e)
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
-function callback_mousedown_canvas_allow(point)
+function callback_mousedown_canvas_arrow(point)
 {
 	let diagram = daisy.get_current_diagram();
 	let focus = Doc.get_focus(daisy.get_current_doc());
