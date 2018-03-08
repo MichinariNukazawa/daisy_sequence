@@ -576,6 +576,9 @@ class Focus{
 			let element = focus.elements[i];
 			object_make_member(element, 'work', {});
 			const position = Rect.deepcopy(element);
+			if(element.hasOwnProperty('relate_y')){
+				position.relate_y = element.relate_y;
+			}
 			element.work['source_position'] = position;
 		}
 	}
