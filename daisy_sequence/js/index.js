@@ -22,7 +22,7 @@ let edge_icon_svg;
 let mouse_state = {
 	'mousedown_point': { 'x': 0, 'y': 0, },
 	'point': { 'x': 0, 'y': 0, },
-	'is_down': false,
+	'mode': 'none',
 	'is_small_move': true,
 };
 
@@ -578,7 +578,6 @@ function callback_mousedown_canvas(e)
 	mouse_state.point = point;
 	mouse_state.mousedown_point = point;
 	mouse_state.is_small_move = true;
-	mouse_state.is_down = true;
 
 	const tool_kind = tool.get_tool_kind();
 	const tool_info = tool.get_tool_info_from_kind(tool_kind);
@@ -591,6 +590,12 @@ function callback_mousedown_canvas(e)
 	let focus = Doc.get_focus(daisy.get_current_doc());
 	Focus.preservation_element_source_position(focus);
 
+	if(0 === Focus.get_elements(focus).length){
+		mouse_state.mode = 'focus_by_rect';
+	}else{
+		mouse_state.mode = 'move';
+	}
+
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
 
@@ -601,7 +606,7 @@ function callback_mouseup_canvas(e)
 		return;
 	}
 
-	mouse_state.is_down = false;
+	mouse_state.mode = 'none';
 
 	let focus = Doc.get_focus(daisy.get_current_doc());
 	Focus.finalize_edit(focus);
@@ -621,42 +626,53 @@ function callback_mousemove_canvas(e)
 		'x': e.offsetX,
 		'y': e.offsetY,
 	};
-	let s = sprintf('(%3d,%3d) %s', point.x, point.y, (mouse_state.is_down)? 'down':'up' );
+	let s = sprintf('(%3d,%3d) %12s', point.x, point.y, mouse_state.mode);
 	document.getElementById('mouse_position').textContent = s;
 
 	mouse_state.point = point;
 
-	if(! mouse_state.is_down){
-		return;
-	}
 
-	if(mouse_state.is_small_move){
-		const sensitive = 6;
-		if(sensitive > Math.abs(mouse_state.mousedown_point.x - point.x)
-				&& sensitive > Math.abs(mouse_state.mousedown_point.y - point.y)){
-			return;
-		}else{
-			mouse_state.is_small_move = false;
+	const func_mousemove_move = function (mouse_state){
+		if(mouse_state.is_small_move){
+			const sensitive = 6;
+			if(sensitive > Math.abs(mouse_state.mousedown_point.x - point.x)
+					&& sensitive > Math.abs(mouse_state.mousedown_point.y - point.y)){
+				return;
+			}else{
+				mouse_state.is_small_move = false;
 
-			Doc.history_add(daisy.get_current_doc());
+				Doc.history_add(daisy.get_current_doc());
+			}
 		}
+
+		let focus = Doc.get_focus(daisy.get_current_doc());
+
+		let elements = Focus.get_elements(focus);
+		let diagram = daisy.get_current_diagram();
+
+		if(1 === elements.length && 'message' === elements[0].kind){
+			const message_side = focus.focus_state.message_side;
+			Message.change_side_from_point(elements[0], diagram, message_side, point);
+		}
+
+		const move = Point.sub(point, mouse_state.mousedown_point);
+		Focus.move_by_source_position(focus, move);
+	};
+
+	switch(mouse_state.mode){
+		case 'none':
+			return;
+			break;
+		case 'move':
+			func_mousemove_move(mouse_state);
+			break;
+		default:
+			break;
 	}
-
-	let focus = Doc.get_focus(daisy.get_current_doc());
-
-	let elements = Focus.get_elements(focus);
-	let diagram = daisy.get_current_diagram();
-
-	if(1 === elements.length && 'message' === elements[0].kind){
-		const message_side = focus.focus_state.message_side;
-		Message.change_side_from_point(elements[0], diagram, message_side, point);
-	}
-
-	const move = Point.sub(point, mouse_state.mousedown_point);
-	Focus.move_by_source_position(focus, move);
 
 	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
 }
+
 function callback_change_fragment_is_auto_size()
 {
 	{
