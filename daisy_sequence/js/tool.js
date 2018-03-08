@@ -104,7 +104,9 @@ class Tool{
 
 		// ** focus element
 		let element = Diagram.get_element_of_touch(diagram, mouse_state.point);
-		Focus.set_element(focus, element);
+		if(! Focus.get_elements(focus).includes(element)){
+			Focus.set_element(focus, element);
+		}
 
 		// ** focus message side
 		if(null !== element && 'message' === element.kind){

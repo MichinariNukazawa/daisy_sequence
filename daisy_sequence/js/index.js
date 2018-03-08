@@ -25,6 +25,19 @@ let mouse_state = {
 	'mode': 'none',
 	'is_small_move': true,
 };
+class MouseState{
+	static get_drug_rect(mouse_state){
+		const drug_rect = {
+			'x': mouse_state.mousedown_point.x,
+			'y': mouse_state.mousedown_point.y,
+			'width': mouse_state.point.x - mouse_state.mousedown_point.x,
+			'height': mouse_state.point.y - mouse_state.mousedown_point.y,
+		};
+
+		return drug_rect;
+	}
+};
+
 
 let arg = {
 	'open_filepath': null,
@@ -229,7 +242,7 @@ function delete_current_focus_elements()
 	Diagram.delete_elements(diagram, focus_elements);
 	Focus.clear(focus);
 
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 
 function callback_tool_change(tool_kind)
@@ -259,7 +272,7 @@ function add_event_listener_first_input_for_single_element_with_history(
 
 		callback();
 
-		Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+		Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 	};
 	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
 	textarea_element.addEventListener('input', cb, false);
@@ -277,7 +290,7 @@ function add_event_listener_first_input_with_history(
 
 		callback();
 
-		Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+		Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 	};
 	textarea_element.addEventListener('focusin', function(){is_focusin_first = true;}, false);
 	textarea_element.addEventListener('input', cb, false);
@@ -411,7 +424,7 @@ function callback_history_change_doc(doc, event_kind)
 
 	update_title_from_doc_id(daisy.get_current_doc_id());
 
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 
 function callback_on_save_doc(doc)
@@ -596,7 +609,7 @@ function callback_mousedown_canvas(e)
 		mouse_state.mode = 'move';
 	}
 
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 
 function callback_mouseup_canvas(e)
@@ -613,7 +626,7 @@ function callback_mouseup_canvas(e)
 
 	callback_focus_change();
 
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 
 function callback_mousemove_canvas(e)
@@ -659,6 +672,31 @@ function callback_mousemove_canvas(e)
 		Focus.move_by_source_position(focus, move);
 	};
 
+	const func_mousemove_focus_by_rect = function (mouse_state){
+		let focus = Doc.get_focus(daisy.get_current_doc());
+		const diagram = daisy.get_current_diagram();
+
+		Focus.clear(focus);
+
+		let drug_rect = MouseState.get_drug_rect(mouse_state);
+		drug_rect = Rect.abs(drug_rect);
+
+		const func = function(recurse_info, element, opt){
+			let rect = Element.get_rect(element);
+			if(null === rect){
+				return true;
+			}
+
+			if(Rect.is_inside(opt.drug_rect, rect)){
+				Focus.append_element(opt.focus, element);
+			}
+
+			return true;
+		};
+		let opt = {'ignore_keys':['work'], 'focus':focus, 'drug_rect': drug_rect};
+		Element.recursive(diagram.diagram_elements, func, opt);
+	};
+
 	switch(mouse_state.mode){
 		case 'none':
 			return;
@@ -666,11 +704,14 @@ function callback_mousemove_canvas(e)
 		case 'move':
 			func_mousemove_move(mouse_state);
 			break;
+		case 'focus_by_rect':
+			func_mousemove_focus_by_rect(mouse_state);
+			break;
 		default:
 			break;
 	}
 
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 
 function callback_change_fragment_is_auto_size()
@@ -695,7 +736,7 @@ function callback_change_fragment_is_auto_size()
 	element.is_auto_size = checked;
 
 	callback_focus_change(Doc.get_focus(daisy.get_current_doc()), null);
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 
 function callback_change_message_spec()
@@ -726,7 +767,7 @@ function callback_change_message_spec()
 		element.spec = spec;
 	}
 
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 
 function callback_change_message_reply()
@@ -763,7 +804,7 @@ function callback_change_message_reply()
 		element.reply_message = reply_message;
 	}
 
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 
 function callback_click_fragment_add_operand()
@@ -788,6 +829,6 @@ function callback_click_fragment_add_operand()
 
 	Fragment.add_create_operand(element, diagram, {});
 
-	Renderer.rerendering(rendering_handle, daisy.get_current_doc());
+	Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
 }
 

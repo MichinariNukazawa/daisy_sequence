@@ -508,6 +508,20 @@ class Focus{
 		Focus.call_event_listener_focus_change_(focus);
 	}
 
+	static append_element(focus, element)
+	{
+		if(null === element){
+			return;
+		}
+		if(focus.elements.includes(element)){
+			return;
+		}
+
+		focus.elements.push(element);
+
+		Focus.call_event_listener_focus_change_(focus);
+	}
+
 	static clear(focus)
 	{
 		focus.elements.length = 0;
@@ -1551,14 +1565,36 @@ class Rect{
 		collision_rect = Rect.abs(collision_rect);
 		collision_rect = Rect.expand(collision_rect, offset);
 
-		if(collision_rect.x < point.x
-				&& point.x < (collision_rect.x + collision_rect.width)
-				&& collision_rect.y < point.y
-				&& point.y < (collision_rect.y + collision_rect.height)){
-			return true;
+		if(point.x < collision_rect.x || (collision_rect.x + collision_rect.width) < point.x){
+			return false;
+		}
+		if(point.y < collision_rect.y || (collision_rect.y + collision_rect.height) < point.y){
+			return false;
 		}
 
-		return false;
+		return true;
+	}
+
+	static is_inside(rect_area_, rect_target_)
+	{
+		const rect_area = Rect.abs(rect_area_);
+		const rect = Rect.abs(rect_target_);
+		const points = [
+			{'x':rect.x, 'y':rect.y,},
+			{'x':rect.x + rect.width, 'y':rect.y,},
+			{'x':rect.x, 'y':rect.y + rect.height,},
+			{'x':rect.x + rect.width, 'y':rect.y + rect.heihgt,},
+		];
+		for(let i = 0; i < points.length; i++){
+			if(! Rect.is_touch(rect_area, points[i], [0, 0])){
+				//if(rect_area.width > 300)
+				//	console.log(i, rect_area, rect);
+				return false;
+			}
+		}
+
+		console.log(rect_area, rect);
+		return true;
 	}
 
 	static deepcopy(src)

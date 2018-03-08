@@ -52,7 +52,7 @@ class RenderingHandle{
 };
 
 class Renderer{
-	static rerendering(rendering_handle, doc)
+	static rerendering(rendering_handle, doc, mouse_state)
 	{
 		let other_group = rendering_handle.get_other_group();
 		if(null === other_group){
@@ -60,10 +60,44 @@ class Renderer{
 		}
 
 		rendering_handle.clear();
-		Renderer.rendering(rendering_handle, doc);
+		Renderer.rendering(rendering_handle, doc, mouse_state);
 	}
 
-	static rendering(rendering_handle, doc)
+	static rendering(rendering_handle, doc, mouse_state)
+	{
+		let other_group = rendering_handle.get_other_group();
+
+		Renderer.rendering_(rendering_handle, doc);
+
+		Renderer.draw_focus(rendering_handle, doc);
+
+		if('focus_by_rect' === mouse_state.mode){
+			let focus_group = rendering_handle.get_focus_group();
+
+			let drug_rect = MouseState.get_drug_rect(mouse_state);
+			drug_rect = Rect.abs(drug_rect);
+
+			focus_group.rect(drug_rect.width, drug_rect.height)
+				.move(drug_rect.x, drug_rect.y)
+				.attr({
+					'stroke':		'#4cf',
+					'fill-opacity':		'0',
+					'stroke-width':		'1.2',
+				});
+		}
+
+		// ** frame
+		{
+			const diagram = Doc.get_diagram(doc);
+			let rect = other_group.rect(diagram.width, diagram.height).attr({
+				'stroke':		'#ddd',
+				'fill-opacity':		'0',
+				'stroke-width':		'2',
+			});
+		}
+	}
+
+	static rendering_(rendering_handle, doc)
 	{
 		let other_group = rendering_handle.get_other_group();
 
@@ -91,24 +125,15 @@ class Renderer{
 			}else{
 				console.error(i, diagram.diagram_elements[i]);
 				const msg = sprintf("internal error: invalid element kind `%s`(%d,%d)",
-						diagram.diagram_elements[i].kind,
-						diagram.diagram_elements[i].id,
-						i
-						);
+					diagram.diagram_elements[i].kind,
+					diagram.diagram_elements[i].id,
+					i
+				);
 				alert(msg);
 			}
 		}
 
 		Renderer.process_spec_(rendering_handle, diagram);
-
-		Renderer.draw_focus(rendering_handle, doc);
-
-		// ** frame
-		let rect = other_group.rect(diagram.width, diagram.height).attr({
-			'stroke':		'#ddd',
-			'fill-opacity':		'0',
-			'stroke-width':		'2',
-		});
 	}
 
 	static process_spec_(rendering_handle, diagram)
@@ -177,7 +202,7 @@ class Renderer{
 			/* console.log("%d lifeline:%d rank:%d %d %d",
 			   ob.message.spec.id, end_lifeline_id, rank_obj[end_lifeline_id].length,
 			   ob.position.y, ob.position.height);
-			   */
+			 */
 		}
 
 		// console.log(rank_obj);
@@ -186,20 +211,20 @@ class Renderer{
 			let message = specs[i].message;
 			if(message.hasOwnProperty('spec') && null !== message.spec){
 				Renderer.draw_spec(
-						rendering_handle,
-						diagram,
-						message,
-						specs[i].end_rank
-						);
-			}
-			Renderer.draw_message(
 					rendering_handle,
 					diagram,
 					message,
-					null,
-					specs[i].start_rank,
 					specs[i].end_rank
-					);
+				);
+			}
+			Renderer.draw_message(
+				rendering_handle,
+				diagram,
+				message,
+				null,
+				specs[i].start_rank,
+				specs[i].end_rank
+			);
 		}
 	}
 
@@ -280,18 +305,18 @@ class Renderer{
 			y_end = stop_message.y;
 		}
 		let line = lifeline_group.line(
-				line_point.x,
-				line_point.y,
-				line_point.x + 0,
-				y_end
-				)
+			line_point.x,
+			line_point.y,
+			line_point.x + 0,
+			y_end
+		)
 			.stroke({
 				'width': '2',
 			})
-		.attr({
-			'stroke-opacity':	'0.6',
-			'stroke-dasharray':	'5',
-		});
+			.attr({
+				'stroke-opacity':	'0.6',
+				'stroke-dasharray':	'5',
+			});
 
 	}
 
@@ -321,9 +346,9 @@ class Renderer{
 
 		let is_turnback = false;
 		if(message.start.hasOwnProperty('lifeline_id')
-				&& message.end.hasOwnProperty('lifeline_id')
-				&& message.start.lifeline_id == message.end.lifeline_id
-				&& 0 <= message.start.lifeline_id){
+			&& message.end.hasOwnProperty('lifeline_id')
+			&& message.start.lifeline_id == message.end.lifeline_id
+			&& 0 <= message.start.lifeline_id){
 			const is_spec = (message.hasOwnProperty('spec') && null !== message.spec);
 			let svg_elem = Renderer.draw_message_turnback(rendering_handle, position, is_spec);
 			is_turnback = true;
@@ -331,10 +356,10 @@ class Renderer{
 			message.work.rect = Object.assign({}, b);
 		}else{
 			let line = other_group.line(
-					position.x,
-					position.y,
-					position.x + position.width,
-					position.y + position.height)
+				position.x,
+				position.y,
+				position.x + position.width,
+				position.y + position.height)
 				.stroke({
 					'width': '2',
 				});
@@ -363,7 +388,7 @@ class Renderer{
 				const size = 16;
 				const point_end = Message.get_end_side_point_from_position(position, [(size/2), 0]);
 				other_group.circle(size).move(point_end.x - (size/2), point_end.y - (size/2))
-					//.fill('none').stroke('#00f');
+				//.fill('none').stroke('#00f');
 					.fill('none').stroke({'color': '#000'}).attr({'stroke-width': 2});
 			}
 		}
@@ -538,18 +563,18 @@ class Renderer{
 		};
 
 		let line = fragment_group.line(
-				position.x,
-				position.y,
-				position.x + position.width,
-				position.y + 0
-				)
+			position.x,
+			position.y,
+			position.x + position.width,
+			position.y + 0
+		)
 			.stroke({
 				'width': '1.2',
 			})
-		.attr({
-			'stroke-opacity':	'0.6',
-			'stroke-dasharray':	'5',
-		});
+			.attr({
+				'stroke-opacity':	'0.6',
+				'stroke-dasharray':	'5',
+			});
 
 		if(! /^\s*$/.test(operand.text)){
 			let text = fragment_group.text(operand.text)
@@ -609,12 +634,12 @@ class Renderer{
 			point.x + offset[0], point.y - offset[1],
 		];
 
-			let polyline = other_group.polyline(points).stroke({ width: 3, linecap: 'round', });
-			if(!is_fill){
-				polyline.fill('none').plot();
-			}
+		let polyline = other_group.polyline(points).stroke({ width: 3, linecap: 'round', });
+		if(!is_fill){
+			polyline.fill('none').plot();
+		}
 
-			return polyline;
+		return polyline;
 	}
 
 	static draw_message_stop_icon_of_foot(rendering_handle, position)
