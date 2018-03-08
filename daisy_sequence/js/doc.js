@@ -590,10 +590,13 @@ class Focus{
 		*/
 
 		let elements = focus.elements;
+		if(0 === focus.elements.length){
+			return true;
+		}
 
 		const source_position = object_get_property_from_path(elements[0], 'work.source_position');
-		if(null === source_position){
-			console.error(element);
+		if(undefined === source_position || null === source_position){
+			console.error(elements);
 			return false;
 		}
 
