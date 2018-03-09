@@ -617,12 +617,11 @@ class Focus{
 			return false;
 		}
 
-		let is_move = true;
 		if(1 === elements.length && 'fragment' === elements[0].kind){
 			if('right-bottom' === focus.focus_state.edge){
 				elements[0].width = source_position.width + move.x;
 				elements[0].height = source_position.height + move.y;
-				is_move = false;
+				return true;
 			}
 		}
 
@@ -631,11 +630,13 @@ class Focus{
 			if(0 > elements[0].relate_y){
 				elements[0].relate_y = 0;
 			}
-			is_move = false;
+			return true;
 		}
 
-		if(is_move){
-			for(let i = 0; i < elements.length; i++){
+		for(let i = 0; i < elements.length; i++){
+			if('spec' === elements[i].kind){
+				// NOP
+			}else{
 				Focus.move_element_(elements[i], move);
 			}
 		}
