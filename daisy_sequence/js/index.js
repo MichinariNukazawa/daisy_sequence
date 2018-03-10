@@ -669,9 +669,9 @@ function callback_mousemove_canvas(e)
 		}
 
 		let focus = Doc.get_focus(daisy.get_current_doc());
-
 		let elements = Focus.get_elements(focus);
 		let diagram = daisy.get_current_diagram();
+		const move = Point.sub(point, mouse_state.mousedown_point);
 
 		if(1 === elements.length && 'message' === elements[0].kind){
 			const message_side = focus.focus_state.message_side;
@@ -685,7 +685,6 @@ function callback_mousemove_canvas(e)
 			}
 		}
 
-		const move = Point.sub(point, mouse_state.mousedown_point);
 		Element.move_elements_by_source_position(Focus.get_elements(focus), move);
 	};
 

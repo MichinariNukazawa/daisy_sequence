@@ -1124,8 +1124,14 @@ class Element{
 	}
 
 	static resize_element_by_source_position(element, move){
-		elements[0].width = source_position.width + move.x;
-		elements[0].height = source_position.height + move.y;
+		const source_position = object_get_property_from_path(element, 'work.source_position');
+		if(undefined === source_position || null === source_position){
+			console.error(elements);
+			return false;
+		}
+
+		element.width = source_position.width + move.x;
+		element.height = source_position.height + move.y;
 		return true;
 	}
 
