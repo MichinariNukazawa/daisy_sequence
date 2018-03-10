@@ -633,7 +633,7 @@ function callback_mouseup_canvas(e)
 	mouse_state.mode = 'none';
 
 	let focus = Doc.get_focus(daisy.get_current_doc());
-	Focus.finalize_edit(focus);
+	Element.finalize_edit_elements(Focus.get_elements(focus));
 
 	callback_focus_change();
 
@@ -678,8 +678,15 @@ function callback_mousemove_canvas(e)
 			Message.change_side_from_point(elements[0], diagram, message_side, point);
 		}
 
+		if(1 === elements.length && 'fragment' === elements[0].kind){
+			if('right-bottom' === focus.focus_state.edge){
+				Element.resize_element_by_source_position(elements[0], move);
+				return;
+			}
+		}
+
 		const move = Point.sub(point, mouse_state.mousedown_point);
-		Focus.move_by_source_position(focus, move);
+		Element.move_elements_by_source_position(Focus.get_elements(focus), move);
 	};
 
 	const func_mousemove_move_height = function (mouse_state){
@@ -702,7 +709,7 @@ function callback_mousemove_canvas(e)
 
 		let move = Point.sub(point, mouse_state.mousedown_point);
 		move.x = 0;
-		Focus.move_by_source_position(focus, move);
+		Element.move_elements_by_source_position(Focus.get_elements(focus), move);
 
 		{
 			let size = Diagram.get_size(diagram);

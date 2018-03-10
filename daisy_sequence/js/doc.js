@@ -599,84 +599,6 @@ class Focus{
 			element.work['source_position'] = position;
 		}
 	}
-
-	static move_by_source_position(focus, move)
-	{
-		/*
-		if(! object_has_own_property_path(element, 'work.source_position.x')){
-			console.error(element);
-			continue;
-		}
-		 */
-
-		let elements = focus.elements;
-		if(0 === focus.elements.length){
-			return true;
-		}
-
-		const source_position = object_get_property_from_path(elements[0], 'work.source_position');
-		if(undefined === source_position || null === source_position){
-			console.error(elements);
-			return false;
-		}
-
-		if(1 === elements.length && 'fragment' === elements[0].kind){
-			if('right-bottom' === focus.focus_state.edge){
-				elements[0].width = source_position.width + move.x;
-				elements[0].height = source_position.height + move.y;
-				return true;
-			}
-		}
-
-		if(1 === elements.length && 'operand' === elements[0].kind){
-			elements[0].relate_y = source_position.relate_y + move.y;
-			if(0 > elements[0].relate_y){
-				elements[0].relate_y = 0;
-			}
-			return true;
-		}
-
-		for(let i = 0; i < elements.length; i++){
-			if('spec' === elements[i].kind){
-				// NOP
-			}else{
-				Focus.move_element_(elements[i], move);
-			}
-		}
-
-		return true;
-	}
-
-	static move_element_(element, move)
-	{
-		const source_position = object_get_property_from_path(element, 'work.source_position');
-		if(null === source_position){
-			console.error(element);
-			return false;
-		}
-
-		if('lifeline' == element.kind){
-			element.x = source_position.x + move.x;
-			element.y = source_position.y + move.y;
-		}else if('message' == element.kind){
-			element.y = source_position.y + move.y;
-		}else if('spec' == element.kind){
-			element.height = source_position.height + move.y;
-		}else if('fragment' == element.kind){
-			element.x = source_position.x + move.x;
-			element.y = source_position.y + move.y;
-		}
-
-		return true;
-	}
-
-	static finalize_edit(focus)
-	{
-		for(let i = 0; i < focus.elements.length; i++){
-			let element = focus.elements[i];
-			Rect.abs_ref(element);
-		}
-	}
 };
 
 class Diagram{
@@ -1199,6 +1121,83 @@ class Element{
 		}
 
 		return '';
+	}
+
+	static resize_element_by_source_position(element, move){
+		elements[0].width = source_position.width + move.x;
+		elements[0].height = source_position.height + move.y;
+		return true;
+	}
+
+	static move_elements_by_source_position(elements, move)
+	{
+		/*
+		if(! object_has_own_property_path(element, 'work.source_position.x')){
+			console.error(element);
+			continue;
+		}
+		 */
+
+		if(0 === elements.length){
+			return true;
+		}
+
+		const source_position = object_get_property_from_path(elements[0], 'work.source_position');
+		if(undefined === source_position || null === source_position){
+			console.error(elements);
+			return false;
+		}
+
+		if(1 === elements.length && 'operand' === elements[0].kind){
+			elements[0].relate_y = source_position.relate_y + move.y;
+			if(0 > elements[0].relate_y){
+				elements[0].relate_y = 0;
+			}
+			return true;
+		}
+
+		for(let i = 0; i < elements.length; i++){
+			if('spec' === elements[i].kind){
+				// NOP
+			}else if('operand' == elements[i].kind){
+				// NOP
+			}else{
+				Element.move_element_by_source_position_(elements[i], move);
+			}
+		}
+
+		return true;
+	}
+
+	static move_element_by_source_position_(element, move)
+	{
+		const source_position = object_get_property_from_path(element, 'work.source_position');
+		if(null === source_position){
+			console.error(element);
+			return false;
+		}
+
+		if('lifeline' == element.kind){
+			element.x = source_position.x + move.x;
+			element.y = source_position.y + move.y;
+		}else if('message' == element.kind){
+			element.y = source_position.y + move.y;
+		}else if('spec' == element.kind){
+			element.height = source_position.height + move.y;
+		}else if('fragment' == element.kind){
+			element.x = source_position.x + move.x;
+			element.y = source_position.y + move.y;
+		}
+
+		return true;
+	}
+
+	static finalize_edit_elements(elements)
+	{
+		for(let i = 0; i < elements.length; i++){
+			let element = elements[i];
+			Rect.abs_ref(element);
+		}
 	}
 
 	static recursive(obj, func, func_opt)
