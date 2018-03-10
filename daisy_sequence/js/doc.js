@@ -1514,6 +1514,10 @@ class Fragment{
 class Rect{
 	static expand(src_rect, offset)
 	{
+		if(null === src_rect){
+			return null;
+		}
+
 		let rect = Object.assign({}, src_rect);
 		rect.x -= offset[0];
 		rect.y -= offset[1];
@@ -1525,12 +1529,20 @@ class Rect{
 
 	static abs(src_rect)
 	{
+		if(null === src_rect){
+			return null;
+		}
+
 		let rect = Object.assign({}, src_rect);
 		return Rect.abs_ref(rect);
 	}
 
 	static abs_ref(rect)
 	{
+		if(null === rect){
+			return null;
+		}
+
 		if(rect.hasOwnProperty('x') && rect.hasOwnProperty('width') && rect.width < 0){
 			rect.x = rect.x + rect.width;
 			rect.width = rect.width * -1;
@@ -1545,6 +1557,10 @@ class Rect{
 
 	static expand(src_rect, padding)
 	{
+		if(null === src_rect){
+			return null;
+		}
+
 		let rect = Object.assign({}, src_rect);
 		rect.x		-= padding[0];
 		rect.y		-= padding[1];
@@ -1556,6 +1572,10 @@ class Rect{
 
 	static add_size(src_rect, offset)
 	{
+		if(null === src_rect){
+			return null;
+		}
+
 		let rect = Object.assign({}, src_rect);
 		rect.width	+= offset[0];
 		rect.height	+= offset[1];
@@ -1601,20 +1621,24 @@ class Rect{
 		return true;
 	}
 
-	static deepcopy(src)
+	static deepcopy(src_rect)
 	{
+		if(null === src_rect){
+			return null;
+		}
+
 		let dst = {};
-		if(src.hasOwnProperty('x')){
-			dst.x = src.x;
+		if(src_rect.hasOwnProperty('x')){
+			dst.x = src_rect.x;
 		}
-		if(src.hasOwnProperty('y')){
-			dst.y = src.y;
+		if(src_rect.hasOwnProperty('y')){
+			dst.y = src_rect.y;
 		}
-		if(src.hasOwnProperty('width')){
-			dst.width = src.width;
+		if(src_rect.hasOwnProperty('width')){
+			dst.width = src_rect.width;
 		}
-		if(src.hasOwnProperty('height')){
-			dst.height = src.height;
+		if(src_rect.hasOwnProperty('height')){
+			dst.height = src_rect.height;
 		}
 
 		return dst;
