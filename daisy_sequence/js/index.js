@@ -19,11 +19,20 @@ let daisy = null;
 let rendering_handle = null;
 let edge_icon_svg;
 
+const SENSITIVE = {
+	'x': 24,
+	'y': 6,
+};
+
 let mouse_state = {
 	'mousedown_point': { 'x': 0, 'y': 0, },
 	'point': { 'x': 0, 'y': 0, },
 	'mode': 'none',
-	'is_small_move': true,
+	'is_insensitive':{
+		'x': true,
+		'y': true,
+		'first_one': false,
+	},
 };
 class MouseState{
 	static get_drug_rect(mouse_state){
@@ -591,7 +600,11 @@ function callback_mousedown_canvas(e)
 
 	mouse_state.point = point;
 	mouse_state.mousedown_point = point;
-	mouse_state.is_small_move = true;
+	mouse_state.is_insensitive = {
+		'x': true,
+		'y': true,
+		'first_one': false,
+	};
 
 	const tool_kind = tool.get_tool_kind();
 	const tool_info = tool.get_tool_info_from_kind(tool_kind);
@@ -651,10 +664,10 @@ function callback_mousemove_canvas(e)
 		'x': e.offsetX,
 		'y': e.offsetY,
 	};
+	mouse_state.point = point;
+
 	let s = sprintf('(%3d,%3d) %12s', point.x, point.y, mouse_state.mode);
 	document.getElementById('mouse_position').textContent = s;
-
-	mouse_state.point = point;
 
 	const func_mousemove_move = function (mouse_state){
 		const func_append_focus_in_fragment_rect = function(){
@@ -685,24 +698,37 @@ function callback_mousemove_canvas(e)
 			return true;
 		};
 
-		if(mouse_state.is_small_move){
-			const sensitive = 6;
-			if(sensitive > Math.abs(mouse_state.mousedown_point.x - point.x)
-				&& sensitive > Math.abs(mouse_state.mousedown_point.y - point.y)){
-				return;
-			}else{
-				mouse_state.is_small_move = false;
+		if(SENSITIVE.x < Math.abs(mouse_state.mousedown_point.x - mouse_state.point.x)){
+			mouse_state.is_insensitive.x = false;
+			mouse_state.is_insensitive.first_one = true;
+		}
+		if(SENSITIVE.y < Math.abs(mouse_state.mousedown_point.y - mouse_state.point.y)){
+			mouse_state.is_insensitive.y = false;
+			mouse_state.is_insensitive.first_one = true;
+		}
 
-				Doc.history_add(daisy.get_current_doc());
+		if(mouse_state.is_insensitive.x && mouse_state.is_insensitive.y){
+			return;
+		}
 
-				func_append_focus_in_fragment_rect();
-			}
+		if(mouse_state.is_insensitive.first_one){
+			Doc.history_add(daisy.get_current_doc());
+			func_append_focus_in_fragment_rect();
+
+			mouse_state.is_insensitive.first_one = false;
 		}
 
 		let focus = Doc.get_focus(daisy.get_current_doc());
 		let elements = Focus.get_elements(focus);
 		let diagram = daisy.get_current_diagram();
-		const move = Point.sub(mouse_state.point, mouse_state.mousedown_point);
+
+		let move = Point.sub(mouse_state.point, mouse_state.mousedown_point);
+		if(mouse_state.is_insensitive.x){
+			move.x = 0;
+		}
+		if(mouse_state.is_insensitive.y){
+			move.y = 0;
+		}
 
 		if(1 === elements.length && 'message' === elements[0].kind){
 			const message_side = focus.focus_state.message_side;
@@ -720,16 +746,23 @@ function callback_mousemove_canvas(e)
 	};
 
 	const func_mousemove_move_height = function (mouse_state){
-		if(mouse_state.is_small_move){
-			const sensitive = 6;
-			if(sensitive > Math.abs(mouse_state.mousedown_point.x - point.x)
-				&& sensitive > Math.abs(mouse_state.mousedown_point.y - point.y)){
-				return;
-			}else{
-				mouse_state.is_small_move = false;
+		if(SENSITIVE.x < Math.abs(mouse_state.mousedown_point.x - mouse_state.point.x)){
+			mouse_state.is_insensitive.x = false;
+			mouse_state.is_insensitive.first_one = true;
+		}
+		if(SENSITIVE.y < Math.abs(mouse_state.mousedown_point.y - mouse_state.point.y)){
+			mouse_state.is_insensitive.y = false;
+			mouse_state.is_insensitive.first_one = true;
+		}
 
-				Doc.history_add(daisy.get_current_doc());
-			}
+		if(mouse_state.is_insensitive.x && mouse_state.is_insensitive.y){
+			return;
+		}
+
+		if(mouse_state.is_insensitive.first_one){
+			Doc.history_add(daisy.get_current_doc());
+
+			mouse_state.is_insensitive.first_one = false;
 		}
 
 		let focus = Doc.get_focus(daisy.get_current_doc());
@@ -738,7 +771,14 @@ function callback_mousemove_canvas(e)
 		let diagram = daisy.get_current_diagram();
 
 		let move = Point.sub(point, mouse_state.mousedown_point);
+		if(mouse_state.is_insensitive.x){
+			move.x = 0;
+		}
+		if(mouse_state.is_insensitive.y){
+			move.y = 0;
+		}
 		move.x = 0;
+
 		Element.move_elements_by_source_position(Focus.get_elements(focus), move);
 
 		{
