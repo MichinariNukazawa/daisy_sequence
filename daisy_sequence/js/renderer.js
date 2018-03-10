@@ -54,18 +54,20 @@ class RenderingHandle{
 class Renderer{
 	static rerendering(rendering_handle, doc, mouse_state)
 	{
-		let other_group = rendering_handle.get_other_group();
-		if(null === other_group){
-			return;
-		}
-
 		rendering_handle.clear();
-		Renderer.rendering(rendering_handle, doc, mouse_state);
+
+		if(null !== doc){
+			Renderer.rendering(rendering_handle, doc, mouse_state);
+		}
 	}
 
 	static rendering(rendering_handle, doc, mouse_state)
 	{
 		let other_group = rendering_handle.get_other_group();
+		if(null === other_group){
+			console.error('');
+			return;
+		}
 
 		Renderer.rendering_(rendering_handle, doc);
 
