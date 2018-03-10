@@ -644,6 +644,26 @@ class Diagram{
 		return opt.parent_element;
 	}
 
+	static get_elements_in_rect(diagram, rect)
+	{
+		const func = function(recurse_info, element, opt){
+			const rect = Element.get_rect(element);
+			if(null === rect){
+				return true;
+			}
+
+			if(Rect.is_inside(opt.area_rect, rect)){
+				opt.elements.push(element);
+			}
+
+			return true;
+		};
+		let opt = {'ignore_keys':['work'], 'elements': [], 'area_rect': rect};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		return opt.elements;
+	}
+
 	static pre_delete_element_(diagram, id)
 	{
 		const func = function(recurse_info, element, opt){
@@ -1110,17 +1130,21 @@ class Element{
 		return '';
 	}
 
-	static preservation_elements_source_position(elements)
+	static recursive_preservation_source_position(elements)
 	{
-		for(let i = 0; i < elements.length; i++){
-			let element = elements[i];
+		const func = function(recurse_info, element, opt){
 			object_make_member(element, 'work', {});
 			const position = Rect.deepcopy(element);
 			if(element.hasOwnProperty('relate_y')){
 				position.relate_y = element.relate_y;
 			}
 			element.work['source_position'] = position;
+
+			return true;
 		}
+
+		const opt = {'ignore_keys':['work'],};
+		Element.recursive(elements, func, opt);
 	}
 
 	static resize_element_by_source_position(element, move){

@@ -601,9 +601,10 @@ function callback_mousedown_canvas(e)
 		tool_info.callback_mousedown(mouse_state);
 	}
 
-	let focus = Doc.get_focus(daisy.get_current_doc());
-	Element.preservation_elements_source_position(Focus.get_elements(focus));
+	let diagram = daisy.get_current_diagram();
+	Element.recursive_preservation_source_position(diagram.diagram_elements);
 
+	let focus = Doc.get_focus(daisy.get_current_doc());
 	if(0 === Focus.get_elements(focus).length){
 		mouse_state.mode = 'focus_by_rect';
 	}else{
@@ -646,7 +647,7 @@ function callback_mousemove_canvas(e)
 		return;
 	}
 
-	let point = {
+	const point = {
 		'x': e.offsetX,
 		'y': e.offsetY,
 	};
@@ -656,6 +657,34 @@ function callback_mousemove_canvas(e)
 	mouse_state.point = point;
 
 	const func_mousemove_move = function (mouse_state){
+		const func_append_focus_in_fragment_rect = function(){
+			let focus = Doc.get_focus(daisy.get_current_doc());
+			let elements = Focus.get_elements(focus);
+			let diagram = daisy.get_current_diagram();
+
+			if(! (1 === elements.length && 'fragment' === elements[0].kind)){
+				return true;
+			}
+
+			if('' !== focus.focus_state.edge){
+				return true;
+			}
+
+			let element = elements[0];
+
+			const rect = Rect.abs(Element.get_rect(element));
+			if(null === rect){
+				console.error(element);
+			}else{
+				const elements_ = Diagram.get_elements_in_rect(diagram, rect);
+				for(let i = 0; i < elements_.length; i++){
+					Focus.append_element(focus, elements_[i]);
+				}
+			}
+
+			return true;
+		};
+
 		if(mouse_state.is_small_move){
 			const sensitive = 6;
 			if(sensitive > Math.abs(mouse_state.mousedown_point.x - point.x)
@@ -665,13 +694,15 @@ function callback_mousemove_canvas(e)
 				mouse_state.is_small_move = false;
 
 				Doc.history_add(daisy.get_current_doc());
+
+				func_append_focus_in_fragment_rect();
 			}
 		}
 
 		let focus = Doc.get_focus(daisy.get_current_doc());
 		let elements = Focus.get_elements(focus);
 		let diagram = daisy.get_current_diagram();
-		const move = Point.sub(point, mouse_state.mousedown_point);
+		const move = Point.sub(mouse_state.point, mouse_state.mousedown_point);
 
 		if(1 === elements.length && 'message' === elements[0].kind){
 			const message_side = focus.focus_state.message_side;
@@ -728,20 +759,10 @@ function callback_mousemove_canvas(e)
 		let drug_rect = MouseState.get_drug_rect(mouse_state);
 		drug_rect = Rect.abs(drug_rect);
 
-		const func = function(recurse_info, element, opt){
-			let rect = Element.get_rect(element);
-			if(null === rect){
-				return true;
-			}
-
-			if(Rect.is_inside(opt.drug_rect, rect)){
-				Focus.append_element(opt.focus, element);
-			}
-
-			return true;
-		};
-		let opt = {'ignore_keys':['work'], 'focus':focus, 'drug_rect': drug_rect};
-		Element.recursive(diagram.diagram_elements, func, opt);
+		const elements = Diagram.get_elements_in_rect(diagram, drug_rect);
+		for(let i = 0; i < elements.length; i++){
+				Focus.append_element(focus, elements[i]);
+		}
 	};
 
 	switch(mouse_state.mode){
