@@ -93,16 +93,16 @@ function initialize_drug_events()
 		if(1 !== e.dataTransfer.files.length){
 			console.debug(e.dataTransfer.files);
 			message_dialog(
-					'info', "Open",
-					"can drop file is single.");
+				'info', "Open",
+				"can drop file is single.");
 			return false;
 		}
 		{
 			const doc = daisy.get_current_doc();
 			if(null !== doc){
 				message_dialog(
-						'info', "Open",
-						"already opened document.");
+					'info', "Open",
+					"already opened document.");
 				return false;
 			}
 		}
@@ -156,30 +156,30 @@ window.onload = function(e){
 
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
 	add_event_listener_first_input_for_single_element_with_history(
-			edit_control__axis_x, callback_input_with_history_axis_x);
+		edit_control__axis_x, callback_input_with_history_axis_x);
 	let edit_control__axis_y = document.getElementById('edit-control__axis-y');
 	add_event_listener_first_input_for_single_element_with_history(
-			edit_control__axis_y, callback_input_with_history_axis_y);
+		edit_control__axis_y, callback_input_with_history_axis_y);
 	let edit_control__axis_width = document.getElementById('edit-control__axis-width');
 	add_event_listener_first_input_for_single_element_with_history(
-			edit_control__axis_width, callback_input_with_history_axis_width);
+		edit_control__axis_width, callback_input_with_history_axis_width);
 	let edit_control__axis_height = document.getElementById('edit-control__axis-height');
 	add_event_listener_first_input_for_single_element_with_history(
-			edit_control__axis_height, callback_input_with_history_axis_height);
+		edit_control__axis_height, callback_input_with_history_axis_height);
 
 	let editor__fragment_kind = document.getElementById('editor__fragment-kind');
 	add_event_listener_first_input_for_single_element_with_history(
-			editor__fragment_kind, callback_input_fragment_kind_with_history);
+		editor__fragment_kind, callback_input_fragment_kind_with_history);
 
 	let editor__background_transparent = document.getElementById('editor__background-transparent');
 	add_event_listener_first_input_for_single_element_with_history(
-			editor__background_transparent, callback_input_editor__background_transparent_with_history);
+		editor__background_transparent, callback_input_editor__background_transparent_with_history);
 
 	document.getElementById('editor__fragment-is_auto_size').addEventListener('change', callback_change_fragment_is_auto_size, false);
 
 	let editor__element_text = document.getElementById('editor__element-text');
 	add_event_listener_first_input_for_single_element_with_history(
-			editor__element_text, callback_input_with_history_text);
+		editor__element_text, callback_input_with_history_text);
 
 	document.getElementById('editor__message-spec').addEventListener('change', callback_change_message_spec, false);
 	document.getElementById('editor__message-reply').addEventListener('change', callback_change_message_reply, false);
@@ -187,10 +187,10 @@ window.onload = function(e){
 
 	let canvas__diagram_width = document.getElementById('canvas__diagram-width');
 	add_event_listener_first_input_with_history(
-			canvas__diagram_width, callback_input_with_history_diagram_width);
+		canvas__diagram_width, callback_input_with_history_diagram_width);
 	let canvas__diagram_height = document.getElementById('canvas__diagram-height');
 	add_event_listener_first_input_with_history(
-			canvas__diagram_height, callback_input_with_history_diagram_height);
+		canvas__diagram_height, callback_input_with_history_diagram_height);
 
 	canvas__diagram_width.min = Diagram.MIN_SIZE();
 	canvas__diagram_width.max = Diagram.MAX_SIZE();
@@ -252,7 +252,7 @@ function callback_tool_change(tool_kind)
 
 let is_focusin_first = false;
 function add_event_listener_first_input_for_single_element_with_history(
-		textarea_element, callback)
+	textarea_element, callback)
 {
 	let cb = function(e){
 		if(is_focusin_first){
@@ -279,7 +279,7 @@ function add_event_listener_first_input_for_single_element_with_history(
 }
 
 function add_event_listener_first_input_with_history(
-		textarea_element, callback)
+	textarea_element, callback)
 {
 	let cb = function(e){
 		if(is_focusin_first){
@@ -412,9 +412,9 @@ function callback_input_with_history_diagram_height()
 function callback_history_change_doc(doc, event_kind)
 {
 	let s = sprintf("history: %2d/%2d(%s)",
-			doc.diagram_history_index,
-			doc.diagram_historys.length - 1,
-			event_kind);
+		doc.diagram_history_index,
+		doc.diagram_historys.length - 1,
+		event_kind);
 	document.getElementById('history_info').textContent = s;
 
 	if('add' !== event_kind){
@@ -649,7 +649,7 @@ function callback_mousemove_canvas(e)
 		if(mouse_state.is_small_move){
 			const sensitive = 6;
 			if(sensitive > Math.abs(mouse_state.mousedown_point.x - point.x)
-					&& sensitive > Math.abs(mouse_state.mousedown_point.y - point.y)){
+				&& sensitive > Math.abs(mouse_state.mousedown_point.y - point.y)){
 				return;
 			}else{
 				mouse_state.is_small_move = false;

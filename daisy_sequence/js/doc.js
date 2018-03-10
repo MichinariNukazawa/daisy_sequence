@@ -71,134 +71,134 @@ class DocCollection{
 function get_default_doc()
 {
 	let diagram_elements = [
-	{
-		'kind': 'lifeline',
-		'id': 0,
-		'x': 150,
-		'y': 20,
-		'text': 'Object1'
-	},
-	{
-		'kind': 'lifeline',
-		'id': 1,
-		'x': 300,
-		'y': 20,
-		'text': 'Object2'
-	},
-	{
-		'kind':		'message',
-		'id':		2,
-		'y':		90,
-		'start':	{'position_x': 20},		// from found
-		'end':		{'lifeline_id': 0},
-		'end_kind':	'none',
-		'message_kind':	'sync',
-		'text':		'message\nfrom found',
-		'spec':		{
-			'kind':		'spec',
-			'id':		10,
-			'y_offset':	0,
-			'height':	300,
+		{
+			'kind': 'lifeline',
+			'id': 0,
+			'x': 150,
+			'y': 20,
+			'text': 'Object1'
 		},
-	},
-	{
-		'kind':		'message',
-		'id':		3,
-		'y':		110,
-		'start':	{'lifeline_id': 0},
-		'end':		{'lifeline_id': 1},
-		'end_kind':	'create',			// create lifeline
-		'message_kind':	'async',
-		'text':		'create lifeline',
-	},
-	{
-		'kind':		'message',
-		'id':		4,
-		'y':		160,
-		'start':	{'lifeline_id': 0},	// lifeline to lifeline
-		'end':		{'lifeline_id': 1},
-		'end_kind':	'none',
-		'message_kind':	'sync',
-		'text':		'lifeline to lifeline',
-		'spec':		{
-			'kind':		'spec',
-			'id':		11,
-			'y_offset':	0,
-			'height':	20,
+		{
+			'kind': 'lifeline',
+			'id': 1,
+			'x': 300,
+			'y': 20,
+			'text': 'Object2'
 		},
-		'reply_message':	{
+		{
 			'kind':		'message',
-			'id':		6,
-			'y':		220,
-			'message_kind':	'reply',	// reply
+			'id':		2,
+			'y':		90,
+			'start':	{'position_x': 20},		// from found
+			'end':		{'lifeline_id': 0},
 			'end_kind':	'none',
-			'text':		'message of reply',
+			'message_kind':	'sync',
+			'text':		'message\nfrom found',
+			'spec':		{
+				'kind':		'spec',
+				'id':		10,
+				'y_offset':	0,
+				'height':	300,
+			},
 		},
-	},
-	{
-		'kind':		'message',
-		'id':		5,
-		'y':		190,
-		'start':	{'lifeline_id': 1},	// turnback to lifeline
-		'end':		{'lifeline_id': 1},
-		'end_kind':	'none',
-		'message_kind':	'sync',
-		'text':		'turnback',
-	},
-	{
-		'kind':		'message',
-		'id':		7,
-		'y':		270,
-		'start':	{'lifeline_id': 0},
-		'end':		{'position_x': 420},				// lost
-		'end_kind':	'none',
-		'message_kind':	'sync',
-		'text':		'message to lost',
-	},
-	{
-		'kind':		'message',
-		'id':		8,
-		'y':		300,
-		'start':	{'lifeline_id': 0},
-		'end':		{'position_x': 420},				// lost
-		'end_kind':	'none',
-		'message_kind':	'async',					// async
-		'text':		'message async to lost',
-	},
-	{
-		'kind':		'message',
-		'id':		9,
-		'y':		350,
-		'start':	{'lifeline_id': 0},
-		'end':		{'lifeline_id': 1},
-		'end_kind':	'stop',						// stop to lifeline
-		'message_kind':	'sync',
-		'text':		'stop to lifeline',
-	},
-	{
-		'kind':			'fragment',
-		'id':			12,
-		'x':			350,
-		'y':			250,
-		'width':		120,
-		'height':		40,
-		'is_auto_size':		true,
-		'fragment_kind':	'alt',
-		'background_opacity':	'0.1',
-		'text':			'text\nmemo fragment',
-	},
-	{
-		'kind':			'fragment',
-		'id':			13,
-		'x':			350,
-		'y':			350,
-		'width':		120,
-		'height':		40,
-		'is_auto_size':		false,
-		'fragment_kind':	'',
-		'background_opacity':	'0.1',
-		'text':			'text\nmemo fragment',
-	},
+		{
+			'kind':		'message',
+			'id':		3,
+			'y':		110,
+			'start':	{'lifeline_id': 0},
+			'end':		{'lifeline_id': 1},
+			'end_kind':	'create',			// create lifeline
+			'message_kind':	'async',
+			'text':		'create lifeline',
+		},
+		{
+			'kind':		'message',
+			'id':		4,
+			'y':		160,
+			'start':	{'lifeline_id': 0},	// lifeline to lifeline
+			'end':		{'lifeline_id': 1},
+			'end_kind':	'none',
+			'message_kind':	'sync',
+			'text':		'lifeline to lifeline',
+			'spec':		{
+				'kind':		'spec',
+				'id':		11,
+				'y_offset':	0,
+				'height':	20,
+			},
+			'reply_message':	{
+				'kind':		'message',
+				'id':		6,
+				'y':		220,
+				'message_kind':	'reply',	// reply
+				'end_kind':	'none',
+				'text':		'message of reply',
+			},
+		},
+		{
+			'kind':		'message',
+			'id':		5,
+			'y':		190,
+			'start':	{'lifeline_id': 1},	// turnback to lifeline
+			'end':		{'lifeline_id': 1},
+			'end_kind':	'none',
+			'message_kind':	'sync',
+			'text':		'turnback',
+		},
+		{
+			'kind':		'message',
+			'id':		7,
+			'y':		270,
+			'start':	{'lifeline_id': 0},
+			'end':		{'position_x': 420},				// lost
+			'end_kind':	'none',
+			'message_kind':	'sync',
+			'text':		'message to lost',
+		},
+		{
+			'kind':		'message',
+			'id':		8,
+			'y':		300,
+			'start':	{'lifeline_id': 0},
+			'end':		{'position_x': 420},				// lost
+			'end_kind':	'none',
+			'message_kind':	'async',					// async
+			'text':		'message async to lost',
+		},
+		{
+			'kind':		'message',
+			'id':		9,
+			'y':		350,
+			'start':	{'lifeline_id': 0},
+			'end':		{'lifeline_id': 1},
+			'end_kind':	'stop',						// stop to lifeline
+			'message_kind':	'sync',
+			'text':		'stop to lifeline',
+		},
+		{
+			'kind':			'fragment',
+			'id':			12,
+			'x':			350,
+			'y':			250,
+			'width':		120,
+			'height':		40,
+			'is_auto_size':		true,
+			'fragment_kind':	'alt',
+			'background_opacity':	'0.1',
+			'text':			'text\nmemo fragment',
+		},
+		{
+			'kind':			'fragment',
+			'id':			13,
+			'x':			350,
+			'y':			350,
+			'width':		120,
+			'height':		40,
+			'is_auto_size':		false,
+			'fragment_kind':	'',
+			'background_opacity':	'0.1',
+			'text':			'text\nmemo fragment',
+		},
 	];
 
 	let diagram = {
@@ -296,8 +296,8 @@ class Doc{
 			doc.diagram_history_index--;
 		}else{
 			console.debug("no undo history: %d %d",
-					doc.diagram_history_index,
-					doc.diagram_historys.length);
+				doc.diagram_history_index,
+				doc.diagram_historys.length);
 			return;
 		}
 
@@ -315,8 +315,8 @@ class Doc{
 			doc.diagram_history_index++;
 		}else{
 			console.debug("no redo history: %d %d",
-					doc.diagram_history_index,
-					doc.diagram_historys.length);
+				doc.diagram_history_index,
+				doc.diagram_historys.length);
 			return;
 		}
 
@@ -331,7 +331,7 @@ class Doc{
 		}
 
 		let hist = DiagramHistory.deepcopy(
-				doc.diagram_historys[(doc.diagram_history_index)]);
+			doc.diagram_historys[(doc.diagram_history_index)]);
 		doc.diagram_historys[doc.diagram_history_index + 1] = hist;
 
 		doc.diagram_history_index++;
@@ -579,8 +579,8 @@ class Focus{
 
 		for(let i = 0; i < focus.work.event_listener_focus_changes.length; i++){
 			focus.work.event_listener_focus_changes[i].callback(
-					focus,
-					focus.work.event_listener_focus_changes[i].user_data);
+				focus,
+				focus.work.event_listener_focus_changes[i].user_data);
 		}
 	}
 
@@ -604,7 +604,7 @@ class Focus{
 			console.error(element);
 			continue;
 		}
-		*/
+		 */
 
 		let elements = focus.elements;
 		if(0 === focus.elements.length){
@@ -875,13 +875,13 @@ class Diagram{
 	static set_size(diagram, size)
 	{
 		if(! Number.isFinite(size.width)
-				|| Diagram.MIN_SIZE() > size.width
-				|| Diagram.MAX_SIZE() < size.width){
+			|| Diagram.MIN_SIZE() > size.width
+			|| Diagram.MAX_SIZE() < size.width){
 			return false;
 		}
 		if(! Number.isFinite(size.height)
-				|| Diagram.MIN_SIZE() > size.height
-				|| Diagram.MAX_SIZE() < size.height){
+			|| Diagram.MIN_SIZE() > size.height
+			|| Diagram.MAX_SIZE() < size.height){
 			return false;
 		}
 		diagram.width = Math.round(size.width);
@@ -1246,10 +1246,10 @@ class Element{
 	static debug_recursive(recurse_info, element, opt){
 		const parent_id = recurse_info.get_parent_id();
 		console.log("id:%d level:%d count:%d parent:%d",
-				element.id,
-				recurse_info.level,
-				recurse_info.count,
-				parent_id);
+			element.id,
+			recurse_info.level,
+			recurse_info.count,
+			parent_id);
 
 		return true;
 	}
@@ -1485,10 +1485,10 @@ class Fragment{
 	static get_infos()
 	{
 		const infos = [
-		{id: 0, name:'(comment)'},
-		// {id: 1, name:'alt'},
-		{id: 2, name:'loop'},
-		{id: 3, name:'break'},
+			{id: 0, name:'(comment)'},
+			// {id: 1, name:'alt'},
+			{id: 2, name:'loop'},
+			{id: 3, name:'break'},
 		];
 
 		return infos;
