@@ -75,11 +75,11 @@ class Renderer{
 
 		Renderer.draw_mouse_state_(rendering_handle, mouse_state);
 
-		Renderer.draw_tool_(rendering_handle, mouse_state, tool_kind);
+		const diagram = Doc.get_diagram(doc);
+		Renderer.draw_tool_(rendering_handle, diagram, mouse_state, tool_kind);
 
 		// ** frame
 		{
-			const diagram = Doc.get_diagram(doc);
 			let rect = other_group.rect(diagram.width, diagram.height).attr({
 				'stroke':		'#ddd',
 				'fill-opacity':		'0',
@@ -113,7 +113,7 @@ class Renderer{
 		}
 	}
 
-	static draw_tool_(rendering_handle, mouse_state, tool_kind)
+	static draw_tool_(rendering_handle, diagram, mouse_state, tool_kind)
 	{
 		let focus_group = rendering_handle.get_focus_group();
 
@@ -125,7 +125,6 @@ class Renderer{
 		switch(tool_kind){
 			case 'height-arrow':
 				{
-					const diagram = daisy.get_current_diagram();
 					const rect = {
 						'x': -10,
 						'y': mouse_state.point.y,
