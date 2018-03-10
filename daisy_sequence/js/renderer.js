@@ -52,16 +52,16 @@ class RenderingHandle{
 };
 
 class Renderer{
-	static rerendering(rendering_handle, doc, mouse_state)
+	static rerendering(rendering_handle, doc, mouse_state, tool_kind)
 	{
 		rendering_handle.clear();
 
 		if(null !== doc){
-			Renderer.rendering(rendering_handle, doc, mouse_state);
+			Renderer.rendering(rendering_handle, doc, mouse_state, tool_kind);
 		}
 	}
 
-	static rendering(rendering_handle, doc, mouse_state)
+	static rendering(rendering_handle, doc, mouse_state, tool_kind)
 	{
 		let other_group = rendering_handle.get_other_group();
 		if(null === other_group){
@@ -71,22 +71,11 @@ class Renderer{
 
 		Renderer.rendering_(rendering_handle, doc);
 
-		Renderer.draw_focus(rendering_handle, doc);
+		Renderer.draw_focus_(rendering_handle, doc);
 
-		if('focus_by_rect' === mouse_state.mode){
-			let focus_group = rendering_handle.get_focus_group();
+		Renderer.draw_mouse_state_(rendering_handle, mouse_state);
 
-			let drug_rect = MouseState.get_drug_rect(mouse_state);
-			drug_rect = Rect.abs(drug_rect);
-
-			focus_group.rect(drug_rect.width, drug_rect.height)
-				.move(drug_rect.x, drug_rect.y)
-				.attr({
-					'stroke':		'#4cf',
-					'fill-opacity':		'0',
-					'stroke-width':		'1.2',
-				});
-		}
+		Renderer.draw_tool_(rendering_handle, mouse_state, tool_kind);
 
 		// ** frame
 		{
@@ -96,6 +85,68 @@ class Renderer{
 				'fill-opacity':		'0',
 				'stroke-width':		'2',
 			});
+		}
+	}
+
+	static draw_mouse_state_(rendering_handle, mouse_state)
+	{
+		// ** mouse_state mode
+		switch(mouse_state.mode){
+			case 'focus_by_rect':
+				{
+					let focus_group = rendering_handle.get_focus_group();
+
+					let drug_rect = MouseState.get_drug_rect(mouse_state);
+					drug_rect = Rect.abs(drug_rect);
+
+					focus_group.rect(drug_rect.width, drug_rect.height)
+					.move(drug_rect.x, drug_rect.y)
+					.attr({
+						'stroke':		'#4cf',
+						'fill-opacity':		'0',
+						'stroke-width':		'1.2',
+					});
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	static draw_tool_(rendering_handle, mouse_state, tool_kind)
+	{
+		let focus_group = rendering_handle.get_focus_group();
+
+		switch(mouse_state.mode){
+			case 'none':
+				return;
+		}
+
+		switch(tool_kind){
+			case 'height-arrow':
+				{
+					const diagram = daisy.get_current_diagram();
+					const rect = {
+						'x': -10,
+						'y': mouse_state.point.y,
+						'width': diagram.width + 10,
+						'height': 200,
+					};
+					let gradient = rendering_handle.get_draw().gradient('linear', function(stop) {
+						stop.at({offset:0, color:'#4cf', opacity:0.4})
+						stop.at({offset:1, color:'#4cf', opacity:0})
+					});
+					gradient.from(0,0).to(0,1); // top to bottom
+					let rect_ = focus_group.rect(rect.width, rect.height)
+					.move(rect.x, rect.y)
+					.attr({
+						'fill':		gradient,
+					});
+					rect_.fill(gradient);
+				}
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -230,7 +281,7 @@ class Renderer{
 		}
 	}
 
-	static draw_focus(rendering_handle, doc)
+	static draw_focus_(rendering_handle, doc)
 	{
 		let focus_group = rendering_handle.get_focus_group();
 

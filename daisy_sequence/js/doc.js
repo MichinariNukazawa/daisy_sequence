@@ -518,6 +518,9 @@ class Focus{
 		}
 
 		focus.elements.push(element);
+		if(1 < focus.elements.length){
+			focus.focus_state.side = '';
+		}
 
 		Focus.call_event_listener_focus_change_(focus);
 	}

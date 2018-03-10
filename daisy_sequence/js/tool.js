@@ -11,6 +11,11 @@ class Tool{
 				'callback_mousedown':	Tool.callback_mousedown_arrow_,
 			},
 			{
+				'kind':			'height-arrow',
+				'element':		document.getElementById('tool__height-arrow'),
+				'callback_mousedown':	Tool.callback_mousedown_height_arrow_,
+			},
+			{
 				'kind':		'lifeline',
 				'element':	document.getElementById('tool__lifeline'),
 				'callback_mousedown':	Tool.callback_mousedown_lifeline_,
@@ -125,6 +130,42 @@ class Tool{
 
 			return;
 		}
+	}
+
+	static callback_mousedown_height_arrow_(mouse_state)
+	{
+		const diagram = daisy.get_current_diagram();
+		let focus = Doc.get_focus(daisy.get_current_doc());
+		Focus.clear(focus);
+
+		const func = function(recurse_info, element, opt){
+			let rect = Element.get_rect(element);
+			if(null == rect){
+				return true;
+			}
+
+			if('operand' === element.kind){
+				return true;
+			}
+
+			if(opt.y < rect.y){
+				Focus.append_element(opt.focus, element);
+				return true;
+			}
+
+			if('spec' === element.kind){
+				if(opt.y < rect.y + rect.height){
+					Focus.append_element(opt.focus, element);
+					return true;
+				}
+			}
+
+			return true;
+		};
+		let opt = {'ignore_keys':['work'], 'focus':focus, 'y': mouse_state.point.y};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		return;
 	}
 
 	static callback_mousedown_lifeline_(mouse_state)
