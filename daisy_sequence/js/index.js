@@ -602,7 +602,7 @@ function callback_mousedown_canvas(e)
 	}
 
 	let focus = Doc.get_focus(daisy.get_current_doc());
-	Focus.preservation_element_source_position(focus);
+	Element.preservation_elements_source_position(Focus.get_elements(focus));
 
 	if(0 === Focus.get_elements(focus).length){
 		mouse_state.mode = 'focus_by_rect';

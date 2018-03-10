@@ -586,19 +586,6 @@ class Focus{
 				focus.work.event_listener_focus_changes[i].user_data);
 		}
 	}
-
-	static preservation_element_source_position(focus)
-	{
-		for(let i = 0; i < focus.elements.length; i++){
-			let element = focus.elements[i];
-			object_make_member(element, 'work', {});
-			const position = Rect.deepcopy(element);
-			if(element.hasOwnProperty('relate_y')){
-				position.relate_y = element.relate_y;
-			}
-			element.work['source_position'] = position;
-		}
-	}
 };
 
 class Diagram{
@@ -1121,6 +1108,19 @@ class Element{
 		}
 
 		return '';
+	}
+
+	static preservation_elements_source_position(elements)
+	{
+		for(let i = 0; i < elements.length; i++){
+			let element = elements[i];
+			object_make_member(element, 'work', {});
+			const position = Rect.deepcopy(element);
+			if(element.hasOwnProperty('relate_y')){
+				position.relate_y = element.relate_y;
+			}
+			element.work['source_position'] = position;
+		}
 	}
 
 	static resize_element_by_source_position(element, move){
