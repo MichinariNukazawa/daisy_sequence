@@ -75,13 +75,6 @@ table th{
 	vertical-align: middle;
 }
 
-#canvas-container{
-	padding:	5px;
-	width:		90vh;
-	height:		85vh;
-	overflow:	auto;
-}
-
 #canvas{
 	background: white;
 	margin: 0px;
