@@ -432,6 +432,63 @@ var template = [
 	},
 	{type: 'separator'},
 	{
+		label: 'All',
+		// accelerator: 'CmdOrCtrl+A',
+		click: function () {
+			const diagram = daisy.get_current_diagram();
+			if(null === diagram){
+				return;
+			}
+
+			const elements = Element.get_child_elements(diagram.diagram_elements);
+			let focus = Doc.get_focus(daisy.get_current_doc());
+			Focus.append_elements(focus, elements);
+
+			daisy.change();
+		}
+	},
+	{
+		label: 'None',
+		accelerator: 'CmdOrCtrl+Shift+A',
+		click: function () {
+			const diagram = daisy.get_current_diagram();
+			if(null === diagram){
+				return;
+			}
+
+			let focus = Doc.get_focus(daisy.get_current_doc());
+			Focus.clear(focus);
+
+			daisy.change();
+		}
+	},
+	{
+		label: 'Invert',
+		accelerator: 'CmdOrCtrl+I',
+		click: function () {
+			const diagram = daisy.get_current_diagram();
+			if(null === diagram){
+				return;
+			}
+
+			const elements = Element.get_child_elements(diagram.diagram_elements);
+			let focus = Doc.get_focus(daisy.get_current_doc());
+			const focus_elements = Focus.get_elements(focus);
+
+			let dst = [];
+			for(let i = 0; i < elements.length; i++){
+				if(! focus_elements.includes(elements[i])){
+					dst.push(elements[i]);
+				}
+			}
+
+			Focus.clear(focus);
+			Focus.append_elements(focus, dst);
+			daisy.change();
+		}
+	},
+	{type: 'separator'},
+	{
 		label: 'Raise',
 		accelerator: 'CmdOrCtrl+Shift+PageUp',
 		click: function () {

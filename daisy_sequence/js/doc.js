@@ -511,6 +511,13 @@ class Focus{
 		Focus.call_event_listener_focus_change_(focus);
 	}
 
+	static append_elements(focus, elements)
+	{
+		for(let i = 0; i < elements.length; i++){
+			Focus.append_element(focus, elements[i]);
+		}
+	}
+
 	static append_element(focus, element)
 	{
 		if(null === element){
@@ -1151,6 +1158,18 @@ class Element{
 		}
 
 		return '';
+	}
+
+	static get_child_elements(obj)
+	{
+		const func = function(recurse_info, element, opt){
+			opt.elements.push(element);
+			return true;
+		};
+		let opt = {'elements': [], 'ignore_keys':['work'],};
+		Element.recursive(obj, func, opt);
+
+		return opt.elements;
 	}
 
 	static recursive_preservation_source_position(elements)
