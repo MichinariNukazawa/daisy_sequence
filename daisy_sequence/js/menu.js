@@ -588,6 +588,10 @@ var template = [
 		]
 	},
 	{
+		label: 'GitHub',
+		click: function () { require('electron').shell.openExternal('https://github.com/MichinariNukazawa/daisy_sequence') }
+	},
+	{
 		label: '&Help',
 		click: function () {
 			message_dialog(
