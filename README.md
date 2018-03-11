@@ -5,7 +5,7 @@ daisy sequence is (not) UML sequence diagram editor.
 # 概要
 daisy sequenceは、Win/Mac/Linuxで動作する、シーケンス図エディタです。  
 
-![daisy sequence](document/image/daisy_sequence_201803.10.png)  
+![daisy sequence](document/image/daisy_sequence_201803.11.png)  
 
 ## 特徴
 - Windows/Mac/Linuxで使える
