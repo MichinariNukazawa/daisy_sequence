@@ -298,6 +298,10 @@ class Renderer{
 	{
 		let lifeline_group = rendering_handle.get_lifeline_group();
 
+		if(null !== object_get_property_from_path(diagram, 'property.lifeline_align_axis_y')){
+			lifeline.y = diagram.property.lifeline_align_axis_y;
+		}
+
 		let message_of_create = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.id, 'create');
 		if(null !== message_of_create){
 			lifeline.y = message_of_create.y - (24 + 5);

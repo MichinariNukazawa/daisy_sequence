@@ -204,6 +204,9 @@ function get_default_doc()
 	let diagram = {
 		'width': 500,
 		'height': 450,
+		'property': {
+			'lifeline_align_axis_y': 30,
+		},
 		'diagram_elements': diagram_elements,
 	};
 
