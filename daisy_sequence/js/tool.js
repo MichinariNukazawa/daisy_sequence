@@ -11,6 +11,11 @@ class Tool{
 				'callback_mousedown':	Tool.callback_mousedown_arrow_,
 			},
 			{
+				'kind':			'element-arrow',
+				'element':		document.getElementById('tool__element-arrow'),
+				'callback_mousedown':	Tool.callback_mousedown_arrow_,
+			},
+			{
 				'kind':			'height-arrow',
 				'element':		document.getElementById('tool__height-arrow'),
 				'callback_mousedown':	Tool.callback_mousedown_height_arrow_,

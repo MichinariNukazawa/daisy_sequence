@@ -717,7 +717,7 @@ function callback_mousemove_canvas(e)
 	let s = sprintf('(%3d,%3d) %12s', point.x, point.y, mouse_state.mode);
 	document.getElementById('mouse_position').textContent = s;
 
-	const func_mousemove_move = function (mouse_state){
+	const func_mousemove_move = function (mouse_state, is_mousemove_extra){
 		const func_append_focus_in_fragment_rect = function(){
 			let focus = Doc.get_focus(daisy.get_current_doc());
 			let elements = Focus.get_elements(focus);
@@ -759,7 +759,9 @@ function callback_mousemove_canvas(e)
 
 		if(mouse_state.is_insensitive.first_one){
 			Doc.history_add(daisy.get_current_doc());
-			func_append_focus_in_fragment_rect();
+			if(is_mousemove_extra){
+				func_append_focus_in_fragment_rect();
+			}
 
 			mouse_state.is_insensitive.first_one = false;
 		}
@@ -854,7 +856,7 @@ function callback_mousemove_canvas(e)
 			return;
 			break;
 		case 'move':
-			func_mousemove_move(mouse_state);
+			func_mousemove_move(mouse_state, ('element-arrow' !== tool.get_tool_kind()));;
 			break;
 		case 'move_height':
 			func_mousemove_move_height(mouse_state);
