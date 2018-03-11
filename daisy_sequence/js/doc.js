@@ -1209,6 +1209,11 @@ class Element{
 			return true;
 		}
 
+		if(1 === elements.length && 'spec' === elements[0].kind){
+			Element.move_element_by_source_position_(elements[0], move);
+			return true;
+		}
+
 		for(let i = 0; i < elements.length; i++){
 			if('spec' === elements[i].kind){
 				// NOP
