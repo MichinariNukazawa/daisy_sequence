@@ -79,7 +79,16 @@ class Renderer{
 
 		// ** frame
 		{
-			let rect = other_group.rect(diagram.width, diagram.height).attr({
+			const margin = 2;
+			let rect = {
+				'x': margin,
+				'y': margin,
+				'width': diagram.width - (margin * 2),
+				'height': diagram.height - (margin * 2),
+			};
+			other_group.rect(rect.width, rect.height)
+				.move(rect.x, rect.y)
+				.attr({
 				'stroke':		'#ddd',
 				'fill-opacity':		'0',
 				'stroke-width':		'2',
