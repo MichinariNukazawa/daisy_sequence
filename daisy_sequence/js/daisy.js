@@ -22,11 +22,11 @@ class Daisy{
 
 			callback_history_change_doc(doc, '-');
 
-			Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
+			Renderer.rerendering(rendering_handle, this.get_current_diagram(), Doc.get_focus(this.get_current_doc()), mouse_state, tool.get_tool_kind());
 		}else{
 			this.set_current_doc_id_(doc_id);
 
-			Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
+			Renderer.rerendering(rendering_handle, this.get_current_diagram(), Doc.get_focus(this.get_current_doc()), mouse_state, tool.get_tool_kind());
 		}
 	}
 
@@ -34,13 +34,13 @@ class Daisy{
 	{
 		this.set_current_doc_id_(-1);
 		doc_collection.remove_doc(doc_id);
-		Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
+		Renderer.rerendering(rendering_handle, this.get_current_diagram(), Doc.get_focus(this.get_current_doc()), mouse_state, tool.get_tool_kind());
 	}
 
 	set_current_doc_id_(doc_id)
 	{
 		this.current_doc_id = doc_id;
-		Renderer.rerendering(rendering_handle, daisy.get_current_doc(), mouse_state);
+		Renderer.rerendering(rendering_handle, this.get_current_diagram(), Doc.get_focus(this.get_current_doc()), mouse_state, tool.get_tool_kind());
 		this.call_event_listener_current_doc_change_();
 	}
 
@@ -93,7 +93,7 @@ class Daisy{
 		rendering_handle.get_focus_group().remove();
 		let s = draw.svg();
 
-		Renderer.rerendering(rendering_handle, this.get_current_doc(), mouse_state);
+		Renderer.rerendering(rendering_handle, this.get_current_diagram(), Doc.get_focus(this.get_current_doc()), mouse_state, tool.get_tool_kind());
 
 		const h = sprintf("<!-- Generator: %s %s  -->", Version.get_name(), Version.get_version());
 		s = h + s;
@@ -105,7 +105,7 @@ class Daisy{
 	change()
 	{
 		this.call_event_listener_current_doc_change_();
-		Renderer.rerendering(rendering_handle, this.get_current_doc(), mouse_state);
+		Renderer.rerendering(rendering_handle, this.get_current_diagram(), Doc.get_focus(this.get_current_doc()), mouse_state, tool.get_tool_kind());
 	}
 
 	add_event_listener_current_doc_change(callback)

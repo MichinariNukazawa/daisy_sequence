@@ -52,16 +52,16 @@ class RenderingHandle{
 };
 
 class Renderer{
-	static rerendering(rendering_handle, doc, mouse_state, tool_kind)
+	static rerendering(rendering_handle, diagram, focus, mouse_state, tool_kind)
 	{
 		rendering_handle.clear();
 
-		if(null !== doc){
-			Renderer.rendering(rendering_handle, doc, mouse_state, tool_kind);
+		if(null !== diagram){
+			Renderer.rendering_diagram_(rendering_handle, diagram, focus, mouse_state, tool_kind);
 		}
 	}
 
-	static rendering(rendering_handle, doc, mouse_state, tool_kind)
+	static rendering_diagram_(rendering_handle, diagram, focus, mouse_state, tool_kind)
 	{
 		let other_group = rendering_handle.get_other_group();
 		if(null === other_group){
@@ -69,13 +69,12 @@ class Renderer{
 			return;
 		}
 
-		Renderer.rendering_(rendering_handle, doc);
+		Renderer.rendering_(rendering_handle, diagram);
 
-		Renderer.draw_focus_(rendering_handle, doc);
+		Renderer.draw_focus_(rendering_handle, focus);
 
 		Renderer.draw_mouse_state_(rendering_handle, mouse_state);
 
-		const diagram = Doc.get_diagram(doc);
 		Renderer.draw_tool_(rendering_handle, diagram, mouse_state, tool_kind);
 
 		// ** frame
@@ -149,16 +148,10 @@ class Renderer{
 		}
 	}
 
-	static rendering_(rendering_handle, doc)
+	static rendering_(rendering_handle, diagram)
 	{
 		let other_group = rendering_handle.get_other_group();
 
-		if(null === doc){
-			console.debug('Rendering:doc is null');
-			return;
-		}
-
-		const diagram = Doc.get_diagram(doc);
 		if(null === diagram){
 			console.debug('Rendering:diagram is null');
 			return;
@@ -280,12 +273,11 @@ class Renderer{
 		}
 	}
 
-	static draw_focus_(rendering_handle, doc)
+	static draw_focus_(rendering_handle, focus)
 	{
 		let focus_group = rendering_handle.get_focus_group();
 
 		// focusing
-		const focus = Doc.get_focus(doc);
 		const elements = Focus.get_elements(focus);
 		for(let i = 0; i < elements.length; i++){
 			let rect = Rect.abs(Element.get_rect(elements[i]));
