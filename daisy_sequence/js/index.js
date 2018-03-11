@@ -31,7 +31,7 @@ let mouse_state = {
 	'is_insensitive':{
 		'x': true,
 		'y': true,
-		'first_one': false,
+		'first_one': true,
 	},
 };
 class MouseState{
@@ -628,7 +628,7 @@ function callback_mousedown_canvas(e)
 	mouse_state.is_insensitive = {
 		'x': true,
 		'y': true,
-		'first_one': false,
+		'first_one': true,
 	};
 
 	const tool_kind = tool.get_tool_kind();
@@ -735,11 +735,9 @@ function callback_mousemove_canvas(e)
 
 		if(SENSITIVE.x < Math.abs(mouse_state.mousedown_point.x - mouse_state.point.x)){
 			mouse_state.is_insensitive.x = false;
-			mouse_state.is_insensitive.first_one = true;
 		}
 		if(SENSITIVE.y < Math.abs(mouse_state.mousedown_point.y - mouse_state.point.y)){
 			mouse_state.is_insensitive.y = false;
-			mouse_state.is_insensitive.first_one = true;
 		}
 
 		if(mouse_state.is_insensitive.x && mouse_state.is_insensitive.y){
@@ -783,11 +781,9 @@ function callback_mousemove_canvas(e)
 	const func_mousemove_move_height = function (mouse_state){
 		if(SENSITIVE.x < Math.abs(mouse_state.mousedown_point.x - mouse_state.point.x)){
 			mouse_state.is_insensitive.x = false;
-			mouse_state.is_insensitive.first_one = true;
 		}
 		if(SENSITIVE.y < Math.abs(mouse_state.mousedown_point.y - mouse_state.point.y)){
 			mouse_state.is_insensitive.y = false;
-			mouse_state.is_insensitive.first_one = true;
 		}
 
 		if(mouse_state.is_insensitive.x && mouse_state.is_insensitive.y){
