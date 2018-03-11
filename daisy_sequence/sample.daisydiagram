@@ -1,30 +1,30 @@
 {
 	"editor_info": {
 		"application_name": "daisy diagram",
-		"version": "201803.0.0"
+		"version": "201803.10.0"
 	},
 	"diagram": {
 		"width": 500,
-		"height": 600,
+		"height": 650,
 		"diagram_elements": [
 			{
 				"kind": "lifeline",
 				"id": 0,
 				"x": 148,
-				"y": 10,
+				"y": 30,
 				"text": "Object1"
 			},
 			{
 				"kind": "lifeline",
 				"id": 1,
 				"x": 300,
-				"y": 47,
+				"y": 87,
 				"text": "Object2"
 			},
 			{
 				"kind": "message",
 				"id": 2,
-				"y": 57,
+				"y": 97,
 				"start": {
 					"position_x": 20
 				},
@@ -45,7 +45,7 @@
 			{
 				"kind": "message",
 				"id": 3,
-				"y": 76,
+				"y": 116,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -60,7 +60,7 @@
 			{
 				"kind": "message",
 				"id": 4,
-				"y": 111,
+				"y": 151,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -74,12 +74,12 @@
 					"kind": "spec",
 					"id": 11,
 					"y_offset": 0,
-					"height": 54
+					"height": 297
 				},
 				"reply_message": {
 					"kind": "message",
 					"id": 6,
-					"y": 408,
+					"y": 448,
 					"message_kind": "reply",
 					"end_kind": "none",
 					"text": "message of reply",
@@ -94,7 +94,7 @@
 			{
 				"kind": "message",
 				"id": 5,
-				"y": 206,
+				"y": 246,
 				"start": {
 					"lifeline_id": 1,
 					"position_x": 313
@@ -115,7 +115,7 @@
 			{
 				"kind": "message",
 				"id": 8,
-				"y": 460,
+				"y": 500,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -129,7 +129,7 @@
 			{
 				"kind": "message",
 				"id": 9,
-				"y": 496,
+				"y": 536,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -145,7 +145,7 @@
 				"kind": "fragment",
 				"id": 12,
 				"x": 23,
-				"y": 134,
+				"y": 174,
 				"width": 450.890625,
 				"height": 245,
 				"is_auto_size": false,
@@ -171,9 +171,9 @@
 				"kind": "fragment",
 				"id": 13,
 				"x": 335,
-				"y": 391,
-				"width": 113.890625,
-				"height": 38.5625,
+				"y": 431,
+				"width": 113.734375,
+				"height": 35.390625,
 				"is_auto_size": true,
 				"fragment_kind": "",
 				"background_opacity": "0.1",
@@ -182,7 +182,7 @@
 			{
 				"kind": "message",
 				"id": 14,
-				"y": 170,
+				"y": 210,
 				"start": {
 					"position_x": 279,
 					"lifeline_id": 1
@@ -198,12 +198,12 @@
 					"kind": "spec",
 					"id": 15,
 					"y_offset": 0,
-					"height": 20
+					"height": 23
 				},
 				"reply_message": {
 					"kind": "message",
 					"id": 22,
-					"y": 193,
+					"y": 233,
 					"message_kind": "reply",
 					"end_kind": "none",
 					"text": "reply",
@@ -218,7 +218,7 @@
 			{
 				"kind": "message",
 				"id": 18,
-				"y": 254,
+				"y": 294,
 				"start": {
 					"position_x": 269,
 					"lifeline_id": 1
@@ -234,12 +234,12 @@
 					"kind": "spec",
 					"id": 21,
 					"y_offset": 0,
-					"height": 20
+					"height": 102
 				},
 				"reply_message": {
 					"kind": "message",
 					"id": 20,
-					"y": 356,
+					"y": 396,
 					"message_kind": "reply",
 					"end_kind": "none",
 					"text": "reply",
@@ -254,7 +254,7 @@
 			{
 				"kind": "message",
 				"id": 23,
-				"y": 288,
+				"y": 328,
 				"start": {
 					"position_x": 149,
 					"lifeline_id": 0
@@ -276,7 +276,7 @@
 			{
 				"kind": "message",
 				"id": 24,
-				"y": 323,
+				"y": 363,
 				"start": {
 					"position_x": 152,
 					"lifeline_id": 0
@@ -289,6 +289,9 @@
 				"message_kind": "sync",
 				"text": "in message to lost"
 			}
-		]
+		],
+		"property": {
+			"lifeline_align_axis_y": 30
+		}
 	}
 }
