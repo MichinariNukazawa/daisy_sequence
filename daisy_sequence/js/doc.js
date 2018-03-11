@@ -647,6 +647,26 @@ class Diagram{
 		return opt.parent_element;
 	}
 
+	static get_elements_in_range_y(diagram, range_y)
+	{
+		const func = function(recurse_info, element, opt){
+			const rect = Element.get_rect(element);
+			if(null === rect){
+				return true;
+			}
+
+			if(Range.y_is_inside(opt.range_y, rect)){
+				opt.elements.push(element);
+			}
+
+			return true;
+		};
+		let opt = {'ignore_keys':['work'], 'elements': [], 'range_y': range_y};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		return opt.elements;
+	}
+
 	static get_elements_in_rect(diagram, rect)
 	{
 		const func = function(recurse_info, element, opt){
@@ -1675,6 +1695,49 @@ class Rect{
 
 		return dst;
 	}
+};
+
+class Range{
+	static y_is_inside(area_range_y_, target_range_y_)
+	{
+		const area_range_y = Range.y_abs(area_range_y_);
+		const target_range_y = Range.y_abs(target_range_y_);
+
+		if(target_range_y.y < area_range_y.y){
+			return false;
+		}
+
+		if(! target_range_y.hasOwnProperty('height')){
+			target_range_y.height = 0;
+		}
+
+		if((area_range_y.y + area_range_y.height) < (target_range_y.y + target_range_y.height)){
+			return false;
+		}
+
+		return true;
+	}
+
+	static y_abs(src_range)
+	{
+		let range = {};
+		if(! src_range.hasOwnProperty('y')){
+			return null;
+		}
+
+		range.y = src_range.y;
+
+		if(src_range.hasOwnProperty('height')){
+			range.height = src_range.height;
+			if(range.height < 0){
+				range.y = range.y + range.height;
+				range.height = range.height * -1;
+			}
+		}
+
+		return range;
+	}
+
 };
 
 class Point{

@@ -746,6 +746,45 @@ function callback_mousemove_canvas(e)
 			return true;
 		};
 
+		const func_append_focus_in_message_range_y = function(){
+			let focus = Doc.get_focus(daisy.get_current_doc());
+			let elements = Focus.get_elements(focus);
+			let diagram = daisy.get_current_diagram();
+
+			if(! (1 === elements.length && 'message' === elements[0].kind)){
+				return true;
+			}
+
+			if('' !== focus.focus_state.edge){
+				return true;
+			}
+
+			let element = elements[0];
+			if(! element.hasOwnProperty('spec') || null === element.spec){
+				return true;
+			}
+
+			{
+				const range_y = {
+					'y': Math.min(element.y, element.y + element.spec.height),
+					'height': Math.abs(element.spec.height),
+				};
+
+				const elements_ = Diagram.get_elements_in_range_y(diagram, range_y);
+				for(let i = 0; i < elements_.length; i++){
+					Focus.append_element(focus, elements_[i]);
+				}
+			}
+
+			if(1 < Focus.get_elements(focus).length){
+				if(element.hasOwnProperty('reply_message') && null !== element.reply_message){
+					Focus.append_element(focus, element.reply_message);
+				}
+			}
+
+			return true;
+		};
+
 		if(SENSITIVE.x < Math.abs(mouse_state.mousedown_point.x - mouse_state.point.x)){
 			mouse_state.is_insensitive.x = false;
 		}
@@ -761,6 +800,7 @@ function callback_mousemove_canvas(e)
 			Doc.history_add(daisy.get_current_doc());
 			if(is_mousemove_extra){
 				func_append_focus_in_fragment_rect();
+				func_append_focus_in_message_range_y();
 			}
 
 			mouse_state.is_insensitive.first_one = false;
