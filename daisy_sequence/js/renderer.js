@@ -534,10 +534,10 @@ class Renderer{
 
 			// *** fragment_kind frame
 			let points = [
-				b.x - padding[0], b.y + b.height,
-				b.x + b.width, b.y + b.height,
-				b.x + b.width + 5 , b.y + b.height - 5,
-				b.x + b.width + 5 , b.y,
+				b.x - padding[0],	b.y + b.height,
+				b.x + b.width + 1,		b.y + b.height,
+				b.x + b.width + 7,	b.y + b.height - 5,
+				b.x + b.width + 7,	b.y - 1,
 			];
 			let fragment_kind_polyline = fg_group.polyline(points)
 				.stroke({ width: 1, linecap: 'round', }).fill('none');
@@ -568,7 +568,8 @@ class Renderer{
 
 		// ** get rect
 		let box = Rect.expand(Rect.abs(Rect.deepcopy(fragment)), padding);
-		box = Rect.add_size(box, [8, 2]);
+		box = Rect.expand(box, [2, 2]);
+		box.width += 6;
 
 		// ** frame
 		const attr = {
@@ -635,7 +636,7 @@ class Renderer{
 
 		if(! /^\s*$/.test(operand.text)){
 			let text = fragment_group.text(operand.text)
-				.move(position.x + 5, position.y);
+				.move(position.x + 5, position.y + 1);
 		}
 
 		// ** work.rect
