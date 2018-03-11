@@ -613,6 +613,14 @@ function callback_focus_change(focus, user_data)
 		editor__fragment__add_operand.disabled = true;
 	}
 
+	if(null !== focus_element && 'lifeline' === focus_element.kind){
+		const diagram = daisy.get_current_diagram();
+		if(null !== diagram){
+			if(null !== object_get_property_from_path(diagram, 'property.lifeline_align_axis_y')){
+				edit_control__axis_y.disabled = true;
+			}
+		}
+	}
 }
 
 function callback_mousedown_canvas(e)
@@ -951,6 +959,8 @@ function callback_change_document_align_axis_y()
 			object_make_member(diagram, 'property.lifeline_align_axis_y', 30);
 		}
 	}
+
+	callback_focus_change();
 
 	Renderer.rerendering(
 		rendering_handle,
