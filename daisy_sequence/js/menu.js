@@ -321,7 +321,7 @@ var template = [
 		}
 	},
 	{
-		label: 'Export PNG (x3 size)',
+		label: 'Export PNG (x4 size)',
 		click: function () {
 			const doc = daisy.get_current_doc();
 			if(null === doc){
@@ -341,7 +341,7 @@ var template = [
 				let draw = rendering_handle.get_draw();
 				let svg_elem = draw.node;
 				// saveSvgAsPng(svg_elem, filepath, {scale: 3});
-				svgAsPngUri(svg_elem, {scale: 3}, function(uri) {
+				svgAsPngUri(svg_elem, {scale: 4}, function(uri) {
 					const decoded = dataUriToBuffer(uri)
 					try{
 						fs.writeFileSync(filepath, decoded);
