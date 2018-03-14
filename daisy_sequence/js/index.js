@@ -470,6 +470,8 @@ function callback_on_save_doc(doc)
 
 function callback_current_doc_change(doc_id)
 {
+	document.getElementById('nodocument-message').style.display = ((-1 !== doc_id)? "none":"block");
+
 	let canvas__diagram_width = document.getElementById('canvas__diagram-width');
 	let canvas__diagram_height = document.getElementById('canvas__diagram-height');
 	let editor__document_align_axis_y = document.getElementById('editor__document-lifeline-align-axis-y');
