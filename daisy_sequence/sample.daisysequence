@@ -1,8 +1,9 @@
 {
 	"editor_info": {
 		"application_name": "daisy diagram",
-		"version": "201803.10.0"
+		"version": "201803.11.0"
 	},
+	"filetype": "daisy sequence",
 	"diagram": {
 		"width": 500,
 		"height": 650,

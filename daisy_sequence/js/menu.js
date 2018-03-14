@@ -45,7 +45,7 @@ function open_dialog(default_filepath)
 				title: 'Open',
 				defaultPath: default_filepath,
 				filters: [
-				{name: 'Documents', extensions: ['daisydiagram']},
+				{name: 'Documents', extensions: ['daisysequence']},
 				{name: 'All', extensions: ['*']},
 				],
 				properties: ['openFile'],
@@ -66,7 +66,7 @@ function save_dialog(title, default_filepath)
 
 	if('' == default_filepath){
 		// 拡張子のみのファイルパスを作っておくとdialogが勝手にoverwrite確認をしてくれる
-		default_filepath = path.join(app.getPath('home'), '.' + 'daisydiagram');
+		default_filepath = path.join(app.getPath('home'), '.' + 'daisysequence');
 	}
 	let filepath = dialog.showSaveDialog(
 			remote.getCurrentWindow(),
@@ -74,7 +74,7 @@ function save_dialog(title, default_filepath)
 				'title': title,
 				defaultPath: default_filepath,
 				filters: [
-				{name: 'Documents', extensions: ['daisydiagram']},
+				{name: 'Documents', extensions: ['daisysequence']},
 				{name: 'All', extensions: ['*']},
 				],
 			});

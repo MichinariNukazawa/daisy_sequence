@@ -418,6 +418,7 @@ class Doc{
 				'application_name':	Version.get_name(),
 				'version':		Version.get_version(),
 			},
+			'filetype': 'daisy sequence',
 			'diagram': diagram,
 		};
 		const strdata = JSON.stringify(native_doc, null, '\t');
