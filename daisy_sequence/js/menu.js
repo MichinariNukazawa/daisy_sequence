@@ -574,6 +574,7 @@ var template = [
 	},
 	]
 },
+/*
 {
 	label: 'View(debug)',
 	submenu: [
@@ -614,6 +615,7 @@ var template = [
 	}
 	]
 },
+*/
 {
 	label: '&Help',
 	role: 'help',
