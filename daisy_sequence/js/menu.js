@@ -426,6 +426,7 @@ var template = [
 			console.log("Close %d", doc_id);
 		}
 	},
+	{type: 'separator'},
 	{
 		label: '&Quit',
 		accelerator: 'CmdOrCtrl+Q',
@@ -655,10 +656,10 @@ var template = [
 	debug_menu,
 	{type: 'separator'},
 	{
-		label: '&Help',
+		label: '&About',
 		click: function () {
 			message_dialog(
-					'info', "Help",
+					'info', "About",
 					"daisy sequence\nby michinari.nukazawa/project daisy bell");
 		}
 	}
