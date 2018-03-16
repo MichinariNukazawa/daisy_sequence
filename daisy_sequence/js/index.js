@@ -193,6 +193,7 @@ window.onload = function(e){
 	add_event_listener_first_input_for_single_element_with_history(
 		editor__element_text, callback_input_with_history_text);
 
+	document.getElementById('editor__message-kind').addEventListener('change', callback_change_message_kind, false);
 	document.getElementById('editor__message-spec').addEventListener('change', callback_change_message_spec, false);
 	document.getElementById('editor__message-reply').addEventListener('change', callback_change_message_reply, false);
 	document.getElementById('editor__fragment__add-operand').addEventListener('click', callback_click_fragment_add_operand, false);
@@ -514,6 +515,7 @@ function callback_focus_change(focus, user_data)
 {
 	let element_text_elem = document.getElementById('editor__element-text');
 	let fragment_kind_elem = document.getElementById('editor__fragment-kind');
+	let message_kind_elem = document.getElementById('editor__message-kind');
 	let message_spec_elem = document.getElementById('editor__message-spec');
 	let message_reply_elem = document.getElementById('editor__message-reply');
 	let edit_control__axis_x = document.getElementById('edit-control__axis-x');
@@ -527,6 +529,7 @@ function callback_focus_change(focus, user_data)
 	if(null === focus_element){
 		element_text_elem.disabled = true;
 		fragment_kind_elem.disabled = true;
+		message_kind_elem.disabled = true;
 		message_spec_elem.disabled = true;
 		message_reply_elem.disabled = true;
 		edit_control__axis_x.disabled = true;
@@ -538,6 +541,7 @@ function callback_focus_change(focus, user_data)
 	}else{
 		element_text_elem.disabled = false;
 		fragment_kind_elem.disabled = false;
+		message_kind_elem.disabled = false;
 		message_spec_elem.disabled = false;
 		message_reply_elem.disabled = false;
 		edit_control__axis_x.disabled = false;
@@ -560,7 +564,12 @@ function callback_focus_change(focus, user_data)
 		message_spec_elem.checked = r;
 		r = (focus_element.hasOwnProperty('reply_message') && null !== focus_element.reply_message);
 		message_reply_elem.checked = r;
+		message_kind_elem.value = focus_element.message_kind;
+		if('sync' !== focus_element.message_kind){
+			message_reply_elem.disabled = true;
+		}
 	}else{
+		message_kind_elem.disabled = true;
 		message_spec_elem.disabled = true;
 		message_reply_elem.disabled = true;
 	}
@@ -940,6 +949,38 @@ function callback_change_fragment_is_auto_size()
 	element.is_auto_size = checked;
 
 	callback_focus_change(Doc.get_focus(daisy.get_current_doc()), null);
+	Renderer.rerendering(
+		rendering_handle,
+		daisy.get_current_diagram(),
+		Doc.get_focus(daisy.get_current_doc()),
+		mouse_state,
+		tool.get_tool_kind());
+}
+
+function callback_change_message_kind()
+{
+	{
+		let element = daisy.get_current_single_focus_element();
+		if(null === element){
+			return;
+		}
+		if('message' !== element.kind){
+			return;
+		}
+	}
+
+	let message_kind_elem = document.getElementById('editor__message-kind');
+	const value = message_kind_elem.value;
+
+	Doc.history_add(daisy.get_current_doc());
+	let element = daisy.get_current_single_focus_element();
+
+	message_kind_elem.value = value;
+	element.message_kind = value;
+	if('sync' !== element.message_kind){
+		delete element.reply_message;
+	}
+
 	Renderer.rerendering(
 		rendering_handle,
 		daisy.get_current_diagram(),

@@ -57,6 +57,16 @@
 					<textarea id="editor__element-text" rows="3" style='width:95%'></textarea>
 					<br>
 					<fieldset class='frame'>
+						<span id='editor__message-kind-span'>
+							Kind
+							<select id='editor__message-kind'>
+								<option value="sync" selected>sync</option>
+								<option value="async">async</option>
+								<option value="create">create</option>
+								<option value="stop">stop</option>
+							</select>
+						</span>
+						<br>
 						<legend>Message</legend>
 						<label for='editor__message-spec'>
 							<input id='editor__message-spec' type="checkbox"/>
