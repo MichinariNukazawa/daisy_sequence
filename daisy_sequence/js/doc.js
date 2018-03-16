@@ -264,7 +264,6 @@ class Doc{
 	static get_focus(doc)
 	{
 		if(null === doc){
-			console.error('');
 			return null;
 		}
 
