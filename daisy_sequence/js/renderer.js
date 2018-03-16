@@ -311,7 +311,7 @@ class Renderer{
 			lifeline.y = diagram.property.lifeline_align_axis_y;
 		}
 
-		let message_of_create = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.id, 'create');
+		let message_of_create = Diagram.get_end_side_message_from_kind_and_lifeline_id(diagram, lifeline.id, 'create');
 		if(null !== message_of_create){
 			lifeline.y = message_of_create.y - (24 + 5);
 		}
@@ -348,7 +348,7 @@ class Renderer{
 		lifeline.work.rect = Object.assign({}, box);
 
 		const height_offset = 10;
-		let stop_message = Diagram.get_end_side_message_from_lifeline_id(diagram, lifeline.id, 'stop');
+		let stop_message = Diagram.get_end_side_message_from_kind_and_lifeline_id(diagram, lifeline.id, 'stop');
 
 		let line_point = {
 			// 'x': box.x + (box.width / 2),
@@ -427,7 +427,7 @@ class Renderer{
 				});
 			}
 
-			if('stop' != message.end_kind){
+			if('stop' != message.message_kind){
 				Renderer.draw_message_array_of_foot(rendering_handle, position, message.message_kind);
 			}else{
 				Renderer.draw_message_stop_icon_of_foot(rendering_handle, position);

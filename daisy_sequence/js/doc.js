@@ -91,7 +91,6 @@ function get_default_doc()
 			'y':		90,
 			'start':	{'position_x': 20},		// from found
 			'end':		{'lifeline_id': 0},
-			'end_kind':	'none',
 			'message_kind':	'sync',
 			'text':		'message\nfrom found',
 			'spec':		{
@@ -107,8 +106,7 @@ function get_default_doc()
 			'y':		110,
 			'start':	{'lifeline_id': 0},
 			'end':		{'lifeline_id': 1},
-			'end_kind':	'create',			// create lifeline
-			'message_kind':	'async',
+			'message_kind':	'create',			// create lifeline
 			'text':		'create lifeline',
 		},
 		{
@@ -117,7 +115,6 @@ function get_default_doc()
 			'y':		160,
 			'start':	{'lifeline_id': 0},	// lifeline to lifeline
 			'end':		{'lifeline_id': 1},
-			'end_kind':	'none',
 			'message_kind':	'sync',
 			'text':		'lifeline to lifeline',
 			'spec':		{
@@ -131,7 +128,6 @@ function get_default_doc()
 				'id':		6,
 				'y':		220,
 				'message_kind':	'reply',	// reply
-				'end_kind':	'none',
 				'text':		'message of reply',
 			},
 		},
@@ -141,7 +137,6 @@ function get_default_doc()
 			'y':		190,
 			'start':	{'lifeline_id': 1},	// turnback to lifeline
 			'end':		{'lifeline_id': 1},
-			'end_kind':	'none',
 			'message_kind':	'sync',
 			'text':		'turnback',
 		},
@@ -151,7 +146,6 @@ function get_default_doc()
 			'y':		270,
 			'start':	{'lifeline_id': 0},
 			'end':		{'position_x': 420},				// lost
-			'end_kind':	'none',
 			'message_kind':	'sync',
 			'text':		'message to lost',
 		},
@@ -161,18 +155,7 @@ function get_default_doc()
 			'y':		300,
 			'start':	{'lifeline_id': 0},
 			'end':		{'position_x': 420},				// lost
-			'end_kind':	'none',
-			'message_kind':	'async',					// async
-			'text':		'message async to lost',
-		},
-		{
-			'kind':		'message',
-			'id':		9,
-			'y':		350,
-			'start':	{'lifeline_id': 0},
-			'end':		{'lifeline_id': 1},
-			'end_kind':	'stop',						// stop to lifeline
-			'message_kind':	'sync',
+			'message_kind':	'stop',						// stop to lifeline
 			'text':		'stop to lifeline',
 		},
 		{
@@ -951,14 +934,10 @@ class Diagram{
 		return true;
 	}
 
-	static get_end_side_message_from_lifeline_id(diagram, lifeline_id, end_kind)
+	static get_end_side_message_from_kind_and_lifeline_id(diagram, lifeline_id, message_kind)
 	{
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
 			const element = diagram.diagram_elements[i];
-			if(! element.hasOwnProperty('kind')){
-				console.error(element);
-				continue;
-			}
 			if('message' != element.kind){
 				continue;
 			}
@@ -968,7 +947,7 @@ class Diagram{
 			if(lifeline_id != element.end.lifeline_id){
 				continue;
 			}
-			if(end_kind == element.end_kind){
+			if(message_kind == element.message_kind){
 				return element;
 			}
 		}
@@ -1020,7 +999,6 @@ class Diagram{
 			'y':		10,
 			'start':	{'position_x': 0},
 			'end':		{'position_x': 10},
-			'end_kind':	'none',
 			'message_kind':	'sync',
 			'text':		'message',
 		};
@@ -1037,7 +1015,6 @@ class Diagram{
 			'id':			-1,
 			'y':			220,
 			'message_kind':		'reply',	// reply
-			'end_kind':		'none',
 			'text':			'message of reply',
 		};
 

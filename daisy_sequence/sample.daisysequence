@@ -33,7 +33,6 @@
 					"lifeline_id": 0,
 					"position_x": 124
 				},
-				"end_kind": "none",
 				"message_kind": "sync",
 				"text": "message\nfrom found",
 				"spec": {
@@ -54,8 +53,7 @@
 					"lifeline_id": 1,
 					"position_x": 276
 				},
-				"end_kind": "create",
-				"message_kind": "async",
+				"message_kind": "create",
 				"text": "create lifeline"
 			},
 			{
@@ -68,7 +66,6 @@
 				"end": {
 					"lifeline_id": 1
 				},
-				"end_kind": "none",
 				"message_kind": "sync",
 				"text": "lifeline to lifeline",
 				"spec": {
@@ -82,7 +79,6 @@
 					"id": 6,
 					"y": 448,
 					"message_kind": "reply",
-					"end_kind": "none",
 					"text": "message of reply",
 					"start": {
 						"lifeline_id": 1
@@ -103,7 +99,6 @@
 				"end": {
 					"lifeline_id": 1
 				},
-				"end_kind": "none",
 				"message_kind": "sync",
 				"text": "turnback",
 				"spec": {
@@ -123,7 +118,6 @@
 				"end": {
 					"position_x": 420
 				},
-				"end_kind": "none",
 				"message_kind": "async",
 				"text": "message async to lost"
 			},
@@ -138,8 +132,7 @@
 					"lifeline_id": 1,
 					"position_x": 279
 				},
-				"end_kind": "stop",
-				"message_kind": "sync",
+				"message_kind": "stop",
 				"text": "stop to lifeline"
 			},
 			{
@@ -192,7 +185,6 @@
 					"position_x": 149,
 					"lifeline_id": 0
 				},
-				"end_kind": "none",
 				"message_kind": "sync",
 				"text": "in message01",
 				"spec": {
@@ -206,7 +198,6 @@
 					"id": 22,
 					"y": 233,
 					"message_kind": "reply",
-					"end_kind": "none",
 					"text": "reply",
 					"start": {
 						"lifeline_id": 0
@@ -228,7 +219,6 @@
 					"position_x": 159,
 					"lifeline_id": 0
 				},
-				"end_kind": "none",
 				"message_kind": "sync",
 				"text": "in message02",
 				"spec": {
@@ -242,7 +232,6 @@
 					"id": 20,
 					"y": 396,
 					"message_kind": "reply",
-					"end_kind": "none",
 					"text": "reply",
 					"start": {
 						"lifeline_id": 0
@@ -264,7 +253,6 @@
 					"position_x": 162,
 					"lifeline_id": 0
 				},
-				"end_kind": "none",
 				"message_kind": "sync",
 				"text": "in turnback",
 				"spec": {
@@ -286,7 +274,6 @@
 					"position_x": 457,
 					"lifeline_id": -1
 				},
-				"end_kind": "none",
 				"message_kind": "sync",
 				"text": "in message to lost"
 			}
