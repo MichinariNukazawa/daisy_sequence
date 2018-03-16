@@ -54,7 +54,7 @@ let arg = {
 function process_argument()
 {
 	let argv = remote.process.argv;
-	if(argv[0].endsWith('electron') && argv[1] == '.'){
+	if(argv[0].endsWith('electron') && argv[1] === '.'){
 		argv.shift(), argv.shift();
 	}else{
 		argv.shift();
@@ -120,7 +120,7 @@ function initialize_drug_events()
 		let filepath = file.path;
 		console.debug(filepath);
 
-		if(-1 == DaisyIO.open_doc_from_path(filepath)){
+		if(-1 === DaisyIO.open_doc_from_path(filepath)){
 			console.error(filepath);
 			return;
 		}

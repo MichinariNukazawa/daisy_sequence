@@ -339,7 +339,7 @@ class Doc{
 		}
 
 		for(let i = 0; i < doc.work.event_listener_history_changes.length; i++){
-			if(callback == doc.work.event_listener_history_changes[i]){
+			if(callback === doc.work.event_listener_history_changes[i]){
 				console.error('duplicated callback');
 				return false;
 			}
@@ -552,7 +552,7 @@ class Focus{
 		}
 
 		for(let i = 0; i < focus.work.event_listener_focus_changes.length; i++){
-			if(callback == focus.work.event_listener_focus_changes[i].callback){
+			if(callback === focus.work.event_listener_focus_changes[i].callback){
 				console.error('duplicated callback');
 				return false;
 			}
@@ -859,7 +859,7 @@ class Diagram{
 			}
 
 			let rect = Element.get_rect(element);
-			if(null == rect){
+			if(null === rect){
 				return true;
 			}
 
@@ -937,16 +937,16 @@ class Diagram{
 	{
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
 			const element = diagram.diagram_elements[i];
-			if('message' != element.kind){
+			if('message' !== element.kind){
 				continue;
 			}
 			if(! element.end.hasOwnProperty('lifeline_id')){
 				continue;
 			}
-			if(lifeline_id != element.end.lifeline_id){
+			if(lifeline_id !== element.end.lifeline_id){
 				continue;
 			}
-			if(message_kind == element.message_kind){
+			if(message_kind === element.message_kind){
 				return element;
 			}
 		}
@@ -1213,7 +1213,7 @@ class Element{
 		for(let i = 0; i < elements.length; i++){
 			if('spec' === elements[i].kind){
 				// NOP
-			}else if('operand' == elements[i].kind){
+			}else if('operand' === elements[i].kind){
 				// NOP
 			}else{
 				Element.move_element_by_source_position_(elements[i], move);
@@ -1231,14 +1231,14 @@ class Element{
 			return false;
 		}
 
-		if('lifeline' == element.kind){
+		if('lifeline' === element.kind){
 			element.x = source_position.x + move.x;
 			element.y = source_position.y + move.y;
-		}else if('message' == element.kind){
+		}else if('message' === element.kind){
 			element.y = source_position.y + move.y;
-		}else if('spec' == element.kind){
+		}else if('spec' === element.kind){
 			element.height = source_position.height + move.y;
-		}else if('fragment' == element.kind){
+		}else if('fragment' === element.kind){
 			element.x = source_position.x + move.x;
 			element.y = source_position.y + move.y;
 		}
@@ -1463,7 +1463,7 @@ class Message{
 		if(message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id){
 
 			let lifeline = Diagram.get_element_from_id(diagram, message.start.lifeline_id);
-			if(null === lifeline || 'lifeline' != lifeline.kind){
+			if(null === lifeline || 'lifeline' !== lifeline.kind){
 				console.error(message.start);
 				// alert('bug');
 				return position;
@@ -1482,7 +1482,7 @@ class Message{
 		if(message.end.hasOwnProperty('lifeline_id') && 0 <= message.end.lifeline_id){
 
 			let lifeline = Diagram.get_element_from_id(diagram, message.end.lifeline_id);
-			if(null == lifeline || 'lifeline' != lifeline.kind){
+			if(null === lifeline || 'lifeline' !== lifeline.kind){
 				console.error(message.end);
 				// alert('bug');
 				return position;

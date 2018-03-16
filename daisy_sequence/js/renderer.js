@@ -170,11 +170,11 @@ class Renderer{
 		draw.size(diagram.width, diagram.height);
 
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
-			if('lifeline' == diagram.diagram_elements[i].kind){
+			if('lifeline' === diagram.diagram_elements[i].kind){
 				Renderer.draw_lifeline(rendering_handle, diagram, diagram.diagram_elements[i]);
-			}else if('message' == diagram.diagram_elements[i].kind){
+			}else if('message' === diagram.diagram_elements[i].kind){
 				// Renderer.draw_message(rendering_handle, diagram, diagram.diagram_elements[i], null);
-			}else if('fragment' == diagram.diagram_elements[i].kind){
+			}else if('fragment' === diagram.diagram_elements[i].kind){
 				Renderer.draw_fragment(rendering_handle, diagram.diagram_elements[i]);
 			}else{
 				console.error(i, diagram.diagram_elements[i]);
@@ -245,11 +245,11 @@ class Renderer{
 				}
 			}
 			ob.start_rank = rank_obj[start_lifeline_id].length;
-			if(-1 == start_lifeline_id){
+			if(-1 === start_lifeline_id){
 				ob.start_rank = 0;
 			}
 			ob.end_rank = rank_obj[end_lifeline_id].length;
-			if(-1 == end_lifeline_id){
+			if(-1 === end_lifeline_id){
 				ob.end_rank = 0;
 			}
 			rank_obj[end_lifeline_id].push(ob);
@@ -290,7 +290,7 @@ class Renderer{
 		const elements = Focus.get_elements(focus);
 		for(let i = 0; i < elements.length; i++){
 			let rect = Rect.abs(Element.get_rect(elements[i]));
-			if(null == rect){
+			if(null === rect){
 				alert('internal error');
 			}else{
 				rect = Rect.expand(rect, [3,3]);
@@ -404,7 +404,7 @@ class Renderer{
 		let is_turnback = false;
 		if(message.start.hasOwnProperty('lifeline_id')
 			&& message.end.hasOwnProperty('lifeline_id')
-			&& message.start.lifeline_id == message.end.lifeline_id
+			&& message.start.lifeline_id === message.end.lifeline_id
 			&& 0 <= message.start.lifeline_id){
 			const is_spec = (message.hasOwnProperty('spec') && null !== message.spec);
 			let svg_elem = Renderer.draw_message_turnback(rendering_handle, position, is_spec);
@@ -421,13 +421,13 @@ class Renderer{
 					'width': '2',
 				});
 
-			if('reply' == message.message_kind){
+			if('reply' === message.message_kind){
 				line.attr({
 					'stroke-dasharray':	'10',
 				});
 			}
 
-			if('stop' != message.message_kind){
+			if('stop' !== message.message_kind){
 				Renderer.draw_message_array_of_foot(rendering_handle, position, message.message_kind);
 			}else{
 				Renderer.draw_message_stop_icon_of_foot(rendering_handle, position);
@@ -679,7 +679,7 @@ class Renderer{
 			offset = [-8, -8];
 		}
 
-		let polyline = Renderer.draw_array_top(rendering_handle, point, offset, ('sync' == message_kind));
+		let polyline = Renderer.draw_array_top(rendering_handle, point, offset, ('sync' === message_kind));
 	}
 
 	static draw_array_top(rendering_handle, point, offset, is_fill)
