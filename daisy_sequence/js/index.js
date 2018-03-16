@@ -770,6 +770,11 @@ function callback_mousemove_canvas(e)
 				return true;
 			}
 
+			if(mouse_state.is_insensitive.y){
+				// is move edge of other lifeline
+				return true;
+			}
+
 			let element = elements[0];
 			if(! element.hasOwnProperty('spec') || null === element.spec){
 				return true;
