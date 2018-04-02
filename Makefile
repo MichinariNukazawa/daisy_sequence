@@ -1,5 +1,5 @@
 
-.PHONY: all run clean
+.PHONY: all run test clean
 
 all:
 	# NOP
@@ -12,7 +12,9 @@ simple-run:
 	cd daisy_sequence && npm run build
 
 test:
-	cd daisy_sequence && npm run test
+	#cd daisy_sequence && npm run test
+	cd daisy_sequence && node ./build_linux_x64.js
+	cd test && make
 
 clean:
 	rm -rf release/release

@@ -1,5 +1,6 @@
 'use strict';
 
+const {app} = require('electron').remote;
 let SVG = require('svg.js');
 // let saveSvgAsPng = require('save-svg-as-png').svgAsPngUri;
 let svgAsPngUri = require('save-svg-as-png').svgAsPngUri;
@@ -50,6 +51,8 @@ class MouseState{
 
 let arg = {
 	'open_filepath': null,
+	'export_filepath': null,
+	'is_cli_mode': false,
 };
 function process_argument()
 {
@@ -63,6 +66,16 @@ function process_argument()
 
 	if(typeof argv[0] === 'string'){
 		arg.open_filepath = argv[0];
+	}
+
+	if(typeof argv[1] === 'string' && argv[1] === '-o'){
+		if(typeof argv[2] !== 'string'){
+			process.stderr.write('option -o after string not exits.\n');
+			app.exit(1);
+		}
+
+		arg.export_filepath = argv[2];
+		arg.is_cli_mode = true;
 	}
 
 	// console.log(remote.getGlobal('sharedObject').osx_open_file);
@@ -120,8 +133,10 @@ function initialize_drug_events()
 		let filepath = file.path;
 		console.debug(filepath);
 
-		if(-1 === DaisyIO.open_doc_from_path(filepath)){
-			console.error(filepath);
+		let err = {};
+		if(-1 === DaisyIO.open_doc_from_path(filepath, err)){
+			console.error(filepath, err);
+			message_dialog(err.level, err.label, err.message);
 			return;
 		}
 
@@ -151,12 +166,36 @@ window.onload = function(e){
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
 
 	if(null !== arg.open_filepath){
-		let doc_id = DaisyIO.open_doc_from_path(arg.open_filepath);
+		let err = {};
+		let doc_id = DaisyIO.open_doc_from_path(arg.open_filepath, err);
 		if(-1 === doc_id){
-			console.error(arg.open_filepath);
+			console.error(arg.open_filepath, err);
+			if(! arg.is_cli_mode){
+				console.warning(err);
+				message_dialog(err.level, err.label, err.message);
+			}else{
+				process.stderr.write(sprintf("%s: %s `%s`.\n", err.level, err.label, err.message));
+			}
 		}
 	}else{
 		// NOP
+	}
+
+	if(null !== arg.export_filepath){
+		const doc = daisy.get_current_doc();
+		if(null === doc){
+			process.stderr.write(sprintf("can not open source file `%s`.\n", arg.open_filepath));
+			app.exit(1);
+		}
+
+		let err = {};
+		if(! DaisyIO.write_export_doc(arg.export_filepath, doc, err)){
+			process.stderr.write(sprintf("export error `%s`.\n", err.message));
+			app.exit(1);
+		}else{
+			process.stdout.write(sprintf("export `%s`.\n", arg.export_filepath));
+			app.quit();
+		}
 	}
 
 	// document.addEventListener('mousemove', callback);

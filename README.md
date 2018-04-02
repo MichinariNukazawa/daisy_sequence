@@ -8,8 +8,9 @@ daisy sequenceは、Win/Mac/Linuxで動作する、シーケンス図エディ�
 ![daisy sequence](document/image/daisy_sequence_201803.14.png)  
 
 ## 特徴
-- Windows/Mac/Linuxで使える
+- マルチプラットフォーム(Windows/Mac/Linux)
 - 印刷/HiDPIにも使えるSVG/PNG書き出し
+- CLIからの書き出し処理によるCI連携が可能
 - バージョン管理しやすいJSONテキストベースのネイティブファイルフォーマット
 
 # Download
@@ -24,6 +25,7 @@ daisy sequenceは、Win/Mac/Linuxで動作する、シーケンス図エディ�
 # Feature
 - Edit elements(Lifeline, Message, ExecutionSpecification (spec), Fragment, Operand)
 - Export for SVG/PNG
+- CLI export (notice: non headless)
 
 ## TODO
 - More usefull editor

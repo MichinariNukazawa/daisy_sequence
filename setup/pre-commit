@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+
+set -eu
+set -o pipefail
+
+trap 'echo "error:$0($LINENO) \"$BASH_COMMAND\" \"$@\""' ERR
+
+make test
+

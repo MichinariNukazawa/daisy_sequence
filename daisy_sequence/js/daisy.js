@@ -79,29 +79,6 @@ class Daisy{
 		}
 	}
 
-	get_current_doc_svg_format_string()
-	{
-		if(-1 === this.current_doc_id){
-			return null;
-		}
-
-		let draw = rendering_handle.get_draw();
-		if(null === draw){
-			return null;
-		}
-
-		rendering_handle.get_focus_group().remove();
-		let s = draw.svg();
-
-		Renderer.rerendering(rendering_handle, this.get_current_diagram(), Doc.get_focus(this.get_current_doc()), mouse_state, tool.get_tool_kind());
-
-		const h = sprintf("<!-- Generator: %s %s  -->", Version.get_name(), Version.get_version());
-		s = h + s;
-
-		let options = {indentation: '\t',};
-		return xml_formatter(s, options);
-	}
-
 	change()
 	{
 		this.call_event_listener_current_doc_change_();

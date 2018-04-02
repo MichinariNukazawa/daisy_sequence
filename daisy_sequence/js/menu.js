@@ -112,35 +112,6 @@ function export_dialog(default_filepath, format_name)
 	return filepath;
 }
 
-class DaisyIO{
-	static open_doc_from_path(filepath)
-	{
-		let strdata = '';
-		try{
-			strdata = fs.readFileSync(filepath, 'utf-8');
-		}catch(err){
-			console.error(err.message);
-			message_dialog('warning', "Open", err.message);
-			return -1;
-		}
-
-		let err = {};
-		const doc_id = doc_collection.create_doc_from_native_format_string(strdata, err);
-		if(-1 === doc_id){
-			message_dialog('warning', "Open", err.message);
-			return -1;
-		}
-
-		daisy.append_doc_id(doc_id);
-
-		let doc = doc_collection.get_doc_from_id(doc_id);
-		Doc.set_filepath(doc, filepath);
-		Doc.on_save(doc);
-
-		return doc_id;
-	}
-};
-
 const debug_menu = {
 	label: 'debug(develop)',
 	submenu: [
@@ -232,8 +203,10 @@ var template = [
 			}
 			console.debug(filepath);
 
-			if(-1 == DaisyIO.open_doc_from_path(filepath)){
-				console.error(filepath);
+			let err = {};
+			if(-1 == DaisyIO.open_doc_from_path(filepath, err)){
+				console.error(err);
+				message_dialog(err.level, err.label, err.message);
 				return;
 			}
 
@@ -338,25 +311,19 @@ var template = [
 				return;
 			}
 
-			const strdata = daisy.get_current_doc_svg_format_string();
-			if(null === strdata){
-				message_dialog(
-						'warning', "Export",
-						"internal error. (converter)");
-			}
-
 			let filepath = Doc.get_filepath(doc);
 			filepath = export_dialog(filepath, 'svg');
 			if('' == filepath){
 				return;
 			}
 
-			try{
-				fs.writeFileSync(filepath, strdata);
-			}catch(err){
+			let err = {};
+			let res = DaisyIO.write_export_doc(filepath, doc, err);
+
+			if(! res){
 				message_dialog(
 						'warning', "Export",
-						"internal error. (writeFile):\n`" + filepath + "`");
+						err.message);
 				return;
 			}
 
