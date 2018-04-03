@@ -13,6 +13,7 @@ OBJECT_DIR=work
 SOURCE_PATH=../daisy_sequence/sample.daisysequence
 
 mkdir -p ${OBJECT_DIR}
+rm -rf ${OBJECT_DIR}/*
 
 # svg
 DST_PATH=${OBJECT_DIR}/sample.svg
@@ -22,4 +23,10 @@ ${BIN} ${SOURCE_PATH} -o ${DST_PATH}
 rsvg-convert -o ${DST_PATH}.png ${DST_PATH} # check file type is svg.
 grep 'width="500"' ${DST_PATH} > /dev/null
 grep 'height="650"' ${DST_PATH} > /dev/null
+
+DST_PATH=${OBJECT_DIR}/sample.puml
+${BIN} ${SOURCE_PATH} -o ${DST_PATH}
+[ -s ${DST_PATH} ] # file is not zero size
+plantuml ${DST_PATH}
+[ -s "${DST_PATH%.puml}.png" ]
 

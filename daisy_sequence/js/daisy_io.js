@@ -64,6 +64,9 @@ class DaisyIO{
 			case '.svg':
 				res = DaisyIO.write_export_svg_doc_(filepath, doc, err_);
 				break;
+			case '.puml':
+				res = DaisyIO.write_export_plantuml_doc_(filepath, doc, err_);
+				break;
 			default:
 				DaisyIO.set_err_(err_,
 					"warning", "Export", sprintf("invalid file type. :`%s`", filepath));
@@ -78,6 +81,24 @@ class DaisyIO{
 		const strdata = DaisyIO.get_svg_string_from_doc_(doc, err_);
 		if(null === strdata){
 			DaisyIO.set_err_(err_, "warning", "Export", "svg convert error");
+			return false;
+		}
+
+		try{
+			fs.writeFileSync(filepath, strdata);
+		}catch(err){
+			DaisyIO.set_err_(err_, "warning", "Export", sprintf("writeFile error:`%s`", filepath));
+			return false;
+		}
+
+		return true;
+	}
+
+	static write_export_plantuml_doc_(filepath, doc, err_)
+	{
+		const strdata = Doc.get_plantuml_string(doc, err_);
+		if(null === strdata){
+			DaisyIO.set_err_(err_, "warning", "Export", err_.message);
 			return false;
 		}
 

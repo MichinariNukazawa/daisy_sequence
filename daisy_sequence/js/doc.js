@@ -407,6 +407,268 @@ class Doc{
 		return strdata;
 	}
 
+	static get_plantuml_string(doc)
+	{
+		if(null === doc){
+			return null;
+		}
+
+		const src_diagram = Doc.get_diagram(doc);
+		let diagram = object_deepcopy(src_diagram);
+
+		let lifelines = [];
+		let plantuml_elems = [];
+
+		const func = function(recurse_info, element, opt){
+			console.debug(element.id, element.kind);
+
+			switch(element.kind){
+				case 'lifeline':
+					opt.lifelines.push(element);
+					break;
+				case 'message':
+					opt.plantuml_elems.push(element);
+					break;
+				case 'fragment':
+					opt.plantuml_elems.push(element);
+					break;
+				default:
+					// not implement.
+			}
+
+			return true;
+		};
+		let opt = {'lifelines': lifelines, 'plantuml_elems': plantuml_elems, 'ignore_keys':['work'],};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		plantuml_elems.sort(function(a, b){
+			if(a.y < b.y) return -1;
+			if(a.y > b.y) return 1;
+			return 0;
+		});
+
+		const func_str = function(str)
+		{
+			return str.replace(/\n/, "\\n");
+		};
+		const func_lifeline_name = function(str)
+		{
+			str = str.replace(/\n/, "\\n");
+			return '"' + str + '"';
+		};
+		const func_operand_text_ = function(str)
+		{
+			str = str.replace(/^\[/, "");
+			return str.replace(/\]$/, "");
+		};
+
+		const func_plantuml_message_ = function(strdata, element, diagram, plantuml_opt)
+		{
+			const message = element;
+
+			const start_lifeline_id = Message.get_start_lifeline_id(message);
+			const end_lifeline_id = Message.get_end_lifeline_id(message);
+			const start_lifeline = Diagram.get_element_from_id(diagram, start_lifeline_id);
+			const end_lifeline = Diagram.get_element_from_id(diagram, end_lifeline_id);
+			const start_lifeline_name = ((null !== start_lifeline)? func_lifeline_name(start_lifeline.text) : "[");
+			const end_lifeline_name = ((null !== end_lifeline)? func_lifeline_name(end_lifeline.text) : "]");
+
+			if('create' === message.message_kind){
+				strdata += sprintf("create %s\n", end_lifeline_name);
+			}
+
+			let arrow = "->";
+			switch(message.message_kind){
+				case 'reply':
+				case 'stop':
+					arrow = "-->";
+					break;
+				case 'async':
+					arrow = "->>";
+					break;
+				default:
+					arrow = "->";
+			}
+			strdata += sprintf("%s%s%s: %s\n",
+				start_lifeline_name, arrow, end_lifeline_name,
+				func_str(message.text));
+
+			if(null !== end_lifeline){
+				switch(message.message_kind){
+					case 'sync':
+						strdata += sprintf("activate %s\n", end_lifeline_name);
+						break;
+					case 'reply':
+						strdata += sprintf("deactivate %s\n", start_lifeline_name);
+						break;
+					case 'stop':
+						strdata += sprintf("deactivate %s\n", end_lifeline_name);
+						break;
+					case 'async':
+					default:
+						// NOP
+				}
+			}
+
+			if('stop' === message.message_kind){
+				strdata += sprintf("destroy %s\n", end_lifeline_name);
+			}
+
+			// ** turnback message spec end
+			if(null !== start_lifeline_id && start_lifeline_id === end_lifeline_id){
+				const spec_height = ((end_lifeline.hasOwnProperty('spce'))? end_lifeline.spec.height : 30);
+				plantuml_opt.plantuml_ex_elems.push({
+					'plantuml_ex_elem_kind': "spec_end",
+					'y_end': (end_lifeline.y + spec_height),
+					'lifeline_name': end_lifeline_name,
+				});
+			}
+
+			return strdata;
+		};
+
+		const func_plantuml_fragment_ = function(strdata, element, diagram, plantuml_opt)
+		{
+			const func_fragment_text_ = function(str)
+			{
+				str = "\t" + str;
+				str = str.replace(/\n/, "\n\t");
+				str = str.replace(/\t$/, "");
+				return str;
+			};
+
+			const fragment = element;
+
+			switch(fragment.fragment_kind){
+				case 'alt':
+				case 'opt':
+				case 'loop':
+				case 'par':
+				case 'break':
+				case 'critical':
+					strdata += sprintf("\n%s %s\n", fragment.fragment_kind, func_fragment_text_(fragment.text));
+					plantuml_opt.plantuml_ex_elems.push({
+						'plantuml_ex_elem_kind': "fragment_end",
+						'y_end': (fragment.y + fragment.height),
+						'fragment': fragment,
+					});
+					for(let i = 0; i < fragment.operands.length; i++){
+						const operand = fragment.operands[i];
+						plantuml_opt.plantuml_ex_elems.push({
+							'plantuml_ex_elem_kind': "operand",
+							'y': (fragment.y + operand.relate_y),
+							'operand': operand,
+						});
+					}
+					break;
+				default:
+					// note
+					// strdata += sprintf("note right\n %s\n end note\n", func_fragment_text_(fragment.text));
+					strdata += sprintf("note right\n%s%s\nend note\n",
+						(('' !== fragment.fragment_kind)? sprintf("\t%s\n", fragment.fragment_kind): ""),
+						func_fragment_text_(fragment.text));
+			}
+
+			return strdata;
+		};
+
+		// console.debug(lifelines);
+		// console.debug(messages);
+		let strdata = "";
+		strdata += "@startuml\n";
+		strdata += sprintf("/' Generator: %s %s '/\n\n", Version.get_name(), Version.get_version());
+		for(let i = 0; i < lifelines.length; i++){
+			strdata += sprintf("participant %s\n", func_str(lifelines[i].text));
+		}
+		strdata += "\n";
+
+		let plantuml_opt = {
+			'spec_ends':[],
+			'plantuml_ex_elems': [],
+		};
+		for(let i = 0; i < plantuml_elems.length; i++){
+			let latest_y = 0;
+			switch(plantuml_elems[i].kind){
+				case 'message':
+				case 'fragment':
+				latest_y = plantuml_elems[i].y;
+			}
+
+			// ** turnback message spec end
+			for(let t = plantuml_opt.spec_ends.length - 1; 0 <= t; t--){
+			}
+			// ** fragment end(not memo ex.alt, loop...)
+			for(let t = plantuml_opt.plantuml_ex_elems.length - 1; 0 <= t; t--){
+				switch(plantuml_opt.plantuml_ex_elems[t].plantuml_ex_elem_kind){
+					case "spec_end":
+						if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
+							strdata += "' turnback end\n"
+							strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_name);
+							plantuml_opt.plantuml_ex_elems.splice(t, 1);
+						}
+						break;
+					case "fragment_end":
+						if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
+							strdata += "end\n";
+							strdata += sprintf("' fragment end %s\n\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
+							plantuml_opt.plantuml_ex_elems.splice(t, 1);
+						}
+						break;
+					case "operand":
+						if(plantuml_opt.plantuml_ex_elems[t].y < latest_y){
+							const operand_text = func_operand_text_(plantuml_opt.plantuml_ex_elems[t].operand.text);
+							strdata += sprintf("else %s\n", operand_text);
+							plantuml_opt.plantuml_ex_elems.splice(t, 1);
+						}
+						break;
+				}
+			}
+
+			switch(plantuml_elems[i].kind){
+				case 'message':
+					strdata = func_plantuml_message_(strdata, plantuml_elems[i], diagram, plantuml_opt);
+					break;
+				case 'fragment':
+					strdata = func_plantuml_fragment_(strdata, plantuml_elems[i], diagram, plantuml_opt);
+					break;
+				default:
+			}
+
+		}
+
+		plantuml_opt.plantuml_ex_elems.sort(function(a, b){
+			if(a.y_end < b.y_end) return -1;
+			if(a.y_end > b.y_end) return 1;
+			return 0;
+		});
+		for(let t = 0; t < plantuml_opt.plantuml_ex_elems.length; t++){
+			switch(plantuml_opt.plantuml_ex_elems[t].plantuml_ex_elem_kind){
+				case "spec_end":
+					{
+						strdata += "' turnback end\n"
+						strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_name);
+					}
+					break;
+				case "fragment_end":
+					{
+						strdata += "end\n";
+						strdata += sprintf("' fragment end %s\n\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
+					}
+					break;
+				case "operand":
+					{
+						const operand_text = func_operand_text_(plantuml_opt.plantuml_ex_elems[t].operand.text);
+						strdata += sprintf("else %s\n", operand_text);
+					}
+					break;
+			}
+		}
+
+		strdata += "\n@enduml";
+
+		return strdata;
+	}
+
 	static on_save(doc)
 	{
 		doc.on_save_diagram_history_index = doc.diagram_history_index;
@@ -1290,6 +1552,10 @@ class Element{
 		if(! is_top_order && Array.isArray(obj)){
 			for(let i = obj.length - 1; 0 <= i; i--){
 				let res = Element.recursive_inline_(recurse_info, obj[i], func, func_opt);
+				if("boolean" !== typeof res){
+					console.error("bug", res);
+					return false;
+				}
 				if(false === res){
 					return false;
 				}

@@ -331,6 +331,36 @@ var template = [
 		}
 	},
 	{
+		label: 'Export PlantUML(.puml)',
+		click: function () {
+			const doc = daisy.get_current_doc();
+			if(null === doc){
+				message_dialog(
+						'info', "Export",
+						"nothing opened document.");
+				return;
+			}
+
+			let filepath = Doc.get_filepath(doc);
+			filepath = export_dialog(filepath, 'puml');
+			if('' == filepath){
+				return;
+			}
+
+			let err = {};
+			let res = DaisyIO.write_export_doc(filepath, doc, err);
+
+			if(! res){
+				message_dialog(
+						'warning', "Export",
+						err.message);
+				return;
+			}
+
+			console.log("Export");
+		}
+	},
+	{
 		label: 'Export PNG (x4 size)',
 		click: function () {
 			const doc = daisy.get_current_doc();
