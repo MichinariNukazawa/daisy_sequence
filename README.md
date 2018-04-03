@@ -11,6 +11,7 @@ daisy sequenceは、Win/Mac/Linuxで動作する、シーケンス図エディ�
 - マルチプラットフォーム(Windows/Mac/Linux)
 - 印刷/HiDPIにも使えるSVG/PNG書き出し
 - CLIからの書き出し処理によるCI連携が可能
+- PlantUML書き出し
 - バージョン管理しやすいJSONテキストベースのネイティブファイルフォーマット
 
 # Download
@@ -19,12 +20,13 @@ daisy sequenceは、Win/Mac/Linuxで動作する、シーケンス図エディ�
 # License
 配布パッケージの利用と再配布は、個人/企業/商用/非商用に関わらず無償  
 ソースコードの改変利用は、個人は無償、企業は有償ライセンス  
+本アプリケーションは無保証にて提供されます  
 
 コントリビュートの際はライセンスに同意する必要があります  
 
 # Feature
 - Edit elements(Lifeline, Message, ExecutionSpecification (spec), Fragment, Operand)
-- Export for SVG/PNG
+- Export for SVG/PNG/PlantUML(.puml)
 - CLI export (notice: non headless)
 
 ## TODO
