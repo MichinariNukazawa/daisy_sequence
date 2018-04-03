@@ -1,6 +1,6 @@
 {
   "name": "daisy_sequence",
-  "version": "201803.16.0",
+  "version": "201804.04.0",
   "description": "UML sequence diagram editor",
   "main": "index.js",
   "scripts": {
