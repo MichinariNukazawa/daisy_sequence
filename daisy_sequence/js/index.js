@@ -195,9 +195,9 @@ window.onload = function(e){
 			app.exit(1);
 		}
 
-		let err = {};
-		if(! DaisyIO.write_export_doc(arg.export_filepath, doc, err)){
-			process.stderr.write(sprintf("export error `%s`.\n", err.message));
+		let err_ = {};
+		if(! DaisyIO.write_export_doc(arg.export_filepath, doc, err_)){
+			process.stderr.write(sprintf("export error `%s` `%s`.\n", arg.export_filepath, err_.message));
 			app.exit(1);
 		}else{
 			process.stdout.write(sprintf("export `%s`.\n", arg.export_filepath));

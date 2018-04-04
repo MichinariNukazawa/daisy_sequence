@@ -576,12 +576,9 @@ class Doc{
 						is_height = true;
 					}
 					break;
-				case 'ref':
-				case 'par':
+				case 'opt':
 				case 'break':
 				case 'critical':
-
-				case 'opt':
 					{
 						let ope = func_get_operand_from_fragment_(fragment);
 						strdata += sprintf("\n%s %s\n", fragment_keyword, func_fragment_text_(ope));
@@ -593,7 +590,33 @@ class Doc{
 						}
 					}
 					break;
+				case 'ref':
+					{
+						if(0 === lifelines.length){
+							// warning collection
+							break;
+						}
+
+						// refは被るLifelineを指定するが、ここでは仮にすべてに被る
+						let overs = '';
+						for(let i = 0; i < lifelines.length; i++){
+							overs += sprintf("%s %s", ((0 === i)? '' : ","), func_lifeline_name_(lifelines[i].text));
+						}
+
+						let ope = func_get_operand_from_fragment_(fragment);
+						strdata += sprintf("\n%s over %s\n", fragment_keyword, overs);
+
+						if(fragment.hasOwnProperty('operands')){
+							// warning collection
+						}
+
+						strdata += sprintf("%s\n", fragment.text);
+
+						strdata += "end ref\n";
+					}
+					break;
 				case 'alt':
+				case 'par':
 					{
 						let ope = func_get_operand_from_fragment_(fragment);
 						strdata += sprintf("\n%s %s\n", fragment_keyword, func_fragment_text_(ope));
@@ -614,9 +637,14 @@ class Doc{
 				default:
 					// note
 					// strdata += sprintf("note right\n %s\n end note\n", func_fragment_text_(fragment.text));
-					strdata += sprintf("note right\n%s%s\nend note\n",
-						(('' !== fragment.fragment_kind)? sprintf("\t%s\n", fragment.fragment_kind): ""),
-						func_fragment_text_(fragment.text));
+					if(0 !== fragment.fragment_kind.length){
+						strdata += sprintf("\ngroup %s\n", func_fragment_text_(fragment.fragment_kind));
+						is_height = true;
+					}else{
+						strdata += sprintf("note right\n%s%s\nend note\n",
+							(('' !== fragment.fragment_kind)? sprintf("\t%s\n", fragment.fragment_kind): ""),
+							func_fragment_text_(fragment.text));
+					}
 			}
 
 			if(is_height){
@@ -624,6 +652,7 @@ class Doc{
 					'plantuml_ex_elem_kind': "fragment_end",
 					'y_end': (fragment.y + fragment.height),
 					'fragment': fragment,
+					'fragment_keyword': fragment_keyword,
 				});
 			}
 

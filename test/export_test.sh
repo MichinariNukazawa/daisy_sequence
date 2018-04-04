@@ -46,3 +46,10 @@ ${BIN} ${SOURCE_PATH} -o ${DST_PATH}
 plantuml ${DST_PATH}
 [ -s "${DST_PATH%.puml}.png" ]
 
+SOURCE_PATH=./data/test_all_fragments.daisysequence
+DST_PATH=${OBJECT_DIR}/test_fragments.puml
+${BIN} ${SOURCE_PATH} -o ${DST_PATH}
+[ -s ${DST_PATH} ] # file is not zero size
+plantuml ${DST_PATH}
+[ -s "${DST_PATH%.puml}.png" ]
+
