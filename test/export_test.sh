@@ -24,9 +24,16 @@ rsvg-convert -o ${DST_PATH}.png ${DST_PATH} # check file type is svg.
 grep 'width="500"' ${DST_PATH} > /dev/null
 grep 'height="650"' ${DST_PATH} > /dev/null
 
+# png
+#SOURCE_PATH=./data/test01.daisysequence
+#DST_PATH=${OBJECT_DIR}/test01.png
+#${BIN} ${SOURCE_PATH} -o ${DST_PATH}
+#[ -s ${DST_PATH} ] # file is not zero size
+#STR=`file ${DST_PATH}` ; [[ "${STR}" =~ "PNG" ]] # file type
+
 # PlantUML(.puml)
 SOURCE_PATH=./data/test01.daisysequence
-DST_PATH=${OBJECT_DIR}/sample.puml
+DST_PATH=${OBJECT_DIR}/test01.puml
 ${BIN} ${SOURCE_PATH} -o ${DST_PATH}
 [ -s ${DST_PATH} ] # file is not zero size
 plantuml ${DST_PATH}

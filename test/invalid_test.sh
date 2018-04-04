@@ -32,3 +32,10 @@ RET=$?
 set -e
 [ 0 -ne $RET ]
 
+# png not support
+set +e
+${BIN} ../daisy_sequence/sample.daisysequence -o ${OBJECT_DIR}/a.png
+RET=$?
+set -e
+[ 0 -ne $RET ]
+

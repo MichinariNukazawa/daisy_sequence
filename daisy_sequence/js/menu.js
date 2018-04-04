@@ -377,21 +377,14 @@ var template = [
 				return;
 			}
 
-			{
-				let draw = rendering_handle.get_draw();
-				let svg_elem = draw.node;
-				// saveSvgAsPng(svg_elem, filepath, {scale: 3});
-				svgAsPngUri(svg_elem, {scale: 4}, function(uri) {
-					const decoded = dataUriToBuffer(uri)
-					try{
-						fs.writeFileSync(filepath, decoded);
-					}catch(err){
-						message_dialog(
-								'warning', "Export",
-								"internal error. (writeFile):\n`" + filepath + "`");
-						return;
-					}
-				});
+			let err = {};
+			let res = DaisyIO.write_export_doc(filepath, doc, err);
+
+			if(! res){
+				message_dialog(
+						'warning', "Export",
+						err.message);
+				return;
 			}
 
 			console.log("Export");

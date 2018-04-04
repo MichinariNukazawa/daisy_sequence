@@ -188,6 +188,13 @@ window.onload = function(e){
 			app.exit(1);
 		}
 
+		const ext = DaisyIO.get_ext_from_filepath(arg.export_filepath);
+		if('.png' === ext){
+			// png export not supported (npm library is async)
+			process.stderr.write(sprintf("export error png is not supported. `%s`.\n", arg.open_filepath));
+			app.exit(1);
+		}
+
 		let err = {};
 		if(! DaisyIO.write_export_doc(arg.export_filepath, doc, err)){
 			process.stderr.write(sprintf("export error `%s`.\n", err.message));

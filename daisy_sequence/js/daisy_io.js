@@ -34,18 +34,30 @@ class DaisyIO{
 		return doc_id;
 	}
 
-	static get_svg_string_from_doc_(doc, err_)
+	static get_dummy_draw_(doc, err_)
 	{
 		let dummy_elem = document.createElementNS('http://www.w3.org/2000/svg','svg');
 		let dummy_rhandle = new RenderingHandle(dummy_elem);
 		let draw = dummy_rhandle.get_draw();
 		if(null === draw){
+			DaisyIO.set_err_(err_, "warning", "Export", "internal dummy element can not generate");
 			return null;
 		}
 
 		Renderer.rendering_(dummy_rhandle, Doc.get_diagram(doc));
 
 		dummy_rhandle.get_focus_group().remove();
+
+		return draw;
+	}
+
+	static get_svg_string_from_doc_(doc, err_)
+	{
+		let draw = DaisyIO.get_dummy_draw_(doc, err_);
+		if(null === draw){
+			return null;
+		}
+
 		let s = draw.svg();
 
 		const h = sprintf("<!-- Generator: %s %s  -->", Version.get_name(), Version.get_version());
@@ -55,12 +67,20 @@ class DaisyIO{
 		return xml_formatter(s, options);
 	}
 
+	static get_ext_from_filepath(filepath)
+	{
+		return filepath.match(/\.[a-zA-Z0-9]*$/)[0];
+	}
+
 	static write_export_doc(filepath, doc, err_)
 	{
-		const ext = filepath.match(/\.[a-zA-Z0-9]*$/)[0];
+		const ext = DaisyIO.get_ext_from_filepath(filepath);
 
 		let res;
 		switch(ext){
+			case '.png':
+				res = DaisyIO.write_export_png_doc_(filepath, doc, err_);
+				break;
 			case '.svg':
 				res = DaisyIO.write_export_svg_doc_(filepath, doc, err_);
 				break;
@@ -74,6 +94,29 @@ class DaisyIO{
 		}
 
 		return res;
+	}
+
+	static write_export_png_doc_(filepath, doc, err_)
+	{
+		let draw = DaisyIO.get_dummy_draw_(doc, err_);
+		if(null === draw){
+			return false;
+		}
+
+		let svg_elem = draw.node;
+		// saveSvgAsPng(svg_elem, filepath, {scale: 3});
+		svgAsPngUri(svg_elem, {scale: 4}, function(uri) {
+			const decoded = dataUriToBuffer(uri)
+			try{
+				fs.writeFileSync(filepath, decoded);
+			}catch(err){
+				DaisyIO.set_err_(err_, "warning", "Export", err.message);
+				err.callback(err_);
+				return;
+			}
+		});
+
+		return true;
 	}
 
 	static write_export_svg_doc_(filepath, doc, err_)
