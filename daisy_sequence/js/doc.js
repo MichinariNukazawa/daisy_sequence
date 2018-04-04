@@ -539,7 +539,7 @@ class Doc{
 
 			const fragment = element;
 
-			switch(fragment.fragment_kind){
+			switch(fragment.fragment_kind.toLowerCase()){
 				case 'alt':
 				case 'opt':
 				case 'loop':
@@ -552,13 +552,15 @@ class Doc{
 						'y_end': (fragment.y + fragment.height),
 						'fragment': fragment,
 					});
-					for(let i = 0; i < fragment.operands.length; i++){
-						const operand = fragment.operands[i];
-						plantuml_opt.plantuml_ex_elems.push({
-							'plantuml_ex_elem_kind': "operand",
-							'y': (fragment.y + operand.relate_y),
-							'operand': operand,
-						});
+					if(fragment.hasOwnProperty('operands')){
+						for(let i = 0; i < fragment.operands.length; i++){
+							const operand = fragment.operands[i];
+							plantuml_opt.plantuml_ex_elems.push({
+								'plantuml_ex_elem_kind': "operand",
+								'y': (fragment.y + operand.relate_y),
+								'operand': operand,
+							});
+						}
 					}
 					break;
 				default:

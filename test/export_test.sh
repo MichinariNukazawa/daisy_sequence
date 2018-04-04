@@ -15,7 +15,7 @@ mkdir -p ${OBJECT_DIR}
 rm -rf ${OBJECT_DIR}/*
 
 # svg
-SOURCE_PATH=../daisy_sequence/sample.daisysequence
+SOURCE_PATH=./data/test01.daisysequence
 DST_PATH=${OBJECT_DIR}/sample.svg
 ${BIN} ${SOURCE_PATH} -o ${DST_PATH}
 [ -s ${DST_PATH} ] # file is not zero size
@@ -34,6 +34,13 @@ grep 'height="650"' ${DST_PATH} > /dev/null
 # PlantUML(.puml)
 SOURCE_PATH=./data/test01.daisysequence
 DST_PATH=${OBJECT_DIR}/test01.puml
+${BIN} ${SOURCE_PATH} -o ${DST_PATH}
+[ -s ${DST_PATH} ] # file is not zero size
+plantuml ${DST_PATH}
+[ -s "${DST_PATH%.puml}.png" ]
+
+SOURCE_PATH=./data/test02.daisysequence
+DST_PATH=${OBJECT_DIR}/test02.puml
 ${BIN} ${SOURCE_PATH} -o ${DST_PATH}
 [ -s ${DST_PATH} ] # file is not zero size
 plantuml ${DST_PATH}
