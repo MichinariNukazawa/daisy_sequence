@@ -105,7 +105,12 @@ class DaisyIO{
 
 		let svg_elem = draw.node;
 		// saveSvgAsPng(svg_elem, filepath, {scale: 3});
-		svgAsPngUri(svg_elem, {scale: 4}, function(uri) {
+		svgAsPngUri(svg_elem,
+			{
+				'scale': 4,
+				'backgroundColor': "#fff",
+			},
+			function(uri) {
 			const decoded = dataUriToBuffer(uri)
 			try{
 				fs.writeFileSync(filepath, decoded);
