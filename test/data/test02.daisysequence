@@ -297,7 +297,7 @@
 				"width": 410,
 				"height": 50,
 				"is_auto_size": false,
-				"fragment_kind": "Opt",
+				"fragment_kind": "Opt [condition X]",
 				"background_opacity": 0.1,
 				"text": ""
 			}

@@ -447,6 +447,11 @@ class Doc{
 			return 0;
 		});
 
+		const escape_linefeed_ = function(str)
+		{
+			return str.replace(/\n/, "\\n");
+		};
+
 		const func_message_text_ = function(str)
 		{
 			return str.replace(/\n/, "\\n");
@@ -537,29 +542,72 @@ class Doc{
 				return str;
 			};
 
+			const func_get_operand_from_fragment_ = function(fragment)
+			{
+				let found;
+
+				found = fragment.fragment_kind.match(/\[(.+)\]/);
+				if(null !== found){
+					return found[1];
+				}
+
+				found = fragment.text.match(/\[(.+)\]/);
+				if(null !== found){
+					return found[1];
+				}
+
+				return '';
+			};
+
 			const fragment = element;
 
-			switch(fragment.fragment_kind.toLowerCase()){
-				case 'alt':
-				case 'opt':
+			let fragment_keyword = '';
+			let found = fragment.fragment_kind.toLowerCase().match(/^\s*([a-z]+)/);
+			if(null !== found && 2 === found.length){
+				fragment_keyword = found[1];
+			}
+
+			let is_height = false;
+			switch(fragment_keyword){
 				case 'loop':
+					{
+						let ope = func_get_operand_from_fragment_(fragment);
+						strdata += sprintf("\n%s %s\n", fragment_keyword, func_fragment_text_(ope));
+						is_height = true;
+					}
+					break;
+				case 'ref':
 				case 'par':
 				case 'break':
 				case 'critical':
-					strdata += sprintf("\n%s %s\n", fragment.fragment_kind, func_fragment_text_(fragment.text));
-					plantuml_opt.plantuml_ex_elems.push({
-						'plantuml_ex_elem_kind': "fragment_end",
-						'y_end': (fragment.y + fragment.height),
-						'fragment': fragment,
-					});
-					if(fragment.hasOwnProperty('operands')){
-						for(let i = 0; i < fragment.operands.length; i++){
-							const operand = fragment.operands[i];
-							plantuml_opt.plantuml_ex_elems.push({
-								'plantuml_ex_elem_kind': "operand",
-								'y': (fragment.y + operand.relate_y),
-								'operand': operand,
-							});
+
+				case 'opt':
+					{
+						let ope = func_get_operand_from_fragment_(fragment);
+						strdata += sprintf("\n%s %s\n", fragment_keyword, func_fragment_text_(ope));
+						is_height = true;
+
+						// optはaltのoperandsを持たない版らしい
+						if(fragment.hasOwnProperty('operands')){
+							// warning collection
+						}
+					}
+					break;
+				case 'alt':
+					{
+						let ope = func_get_operand_from_fragment_(fragment);
+						strdata += sprintf("\n%s %s\n", fragment_keyword, func_fragment_text_(ope));
+						is_height = true;
+
+						if(fragment.hasOwnProperty('operands')){
+							for(let i = 0; i < fragment.operands.length; i++){
+								const operand = fragment.operands[i];
+								plantuml_opt.plantuml_ex_elems.push({
+									'plantuml_ex_elem_kind': "operand",
+									'y': (fragment.y + operand.relate_y),
+									'operand': operand,
+								});
+							}
 						}
 					}
 					break;
@@ -569,6 +617,14 @@ class Doc{
 					strdata += sprintf("note right\n%s%s\nend note\n",
 						(('' !== fragment.fragment_kind)? sprintf("\t%s\n", fragment.fragment_kind): ""),
 						func_fragment_text_(fragment.text));
+			}
+
+			if(is_height){
+				plantuml_opt.plantuml_ex_elems.push({
+					'plantuml_ex_elem_kind': "fragment_end",
+					'y_end': (fragment.y + fragment.height),
+					'fragment': fragment,
+				});
 			}
 
 			return strdata;
