@@ -447,11 +447,11 @@ class Doc{
 			return 0;
 		});
 
-		const func_str = function(str)
+		const func_message_text_ = function(str)
 		{
 			return str.replace(/\n/, "\\n");
 		};
-		const func_lifeline_name = function(str)
+		const func_lifeline_name_ = function(str)
 		{
 			str = str.replace(/\n/, "\\n");
 			return '"' + str + '"';
@@ -470,8 +470,8 @@ class Doc{
 			const end_lifeline_id = Message.get_end_lifeline_id(message);
 			const start_lifeline = Diagram.get_element_from_id(diagram, start_lifeline_id);
 			const end_lifeline = Diagram.get_element_from_id(diagram, end_lifeline_id);
-			const start_lifeline_name = ((null !== start_lifeline)? func_lifeline_name(start_lifeline.text) : "[");
-			const end_lifeline_name = ((null !== end_lifeline)? func_lifeline_name(end_lifeline.text) : "]");
+			const start_lifeline_name = ((null !== start_lifeline)? func_lifeline_name_(start_lifeline.text) : "[");
+			const end_lifeline_name = ((null !== end_lifeline)? func_lifeline_name_(end_lifeline.text) : "]");
 
 			if('create' === message.message_kind){
 				strdata += sprintf("create %s\n", end_lifeline_name);
@@ -491,7 +491,7 @@ class Doc{
 			}
 			strdata += sprintf("%s%s%s: %s\n",
 				start_lifeline_name, arrow, end_lifeline_name,
-				func_str(message.text));
+				func_message_text_(message.text));
 
 			if(null !== end_lifeline){
 				switch(message.message_kind){
@@ -578,7 +578,7 @@ class Doc{
 		strdata += "@startuml\n";
 		strdata += sprintf("/' Generator: %s %s '/\n\n", Version.get_name(), Version.get_version());
 		for(let i = 0; i < lifelines.length; i++){
-			strdata += sprintf("participant %s\n", func_str(lifelines[i].text));
+			strdata += sprintf("participant %s\n", func_lifeline_name_(lifelines[i].text));
 		}
 		strdata += "\n";
 
