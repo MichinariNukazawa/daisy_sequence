@@ -40,9 +40,15 @@ class RenderingHandle{
 		return this.groups.focus_group;
 	}
 
+	get_background_group()
+	{
+		return this.groups.background_group;
+	}
+
 	clear()
 	{
 		this.draw.clear();
+		this.groups.background_group = this.draw.group().addClass('dd__background-group');
 		this.groups.lifeline_group = this.draw.group().addClass('dd__lifeline-group');
 		this.groups.spec_group = this.draw.group().addClass('dd__spec-group');
 		this.groups.other_group = this.draw.group().addClass('dd__other-group');
@@ -63,12 +69,6 @@ class Renderer{
 
 	static rendering_diagram_(rendering_handle, diagram, focus, mouse_state, tool_kind)
 	{
-		let other_group = rendering_handle.get_other_group();
-		if(null === other_group){
-			console.error('');
-			return;
-		}
-
 		Renderer.rendering_(rendering_handle, diagram);
 
 		Renderer.draw_focus_(rendering_handle, focus);
@@ -79,6 +79,12 @@ class Renderer{
 
 		// ** frame
 		{
+			let background_group = rendering_handle.get_background_group();
+			if(null === background_group){
+				console.error('');
+				return;
+			}
+
 			const margin = 2;
 			let rect = {
 				'x': margin,
@@ -86,7 +92,7 @@ class Renderer{
 				'width': diagram.width - (margin * 2),
 				'height': diagram.height - (margin * 2),
 			};
-			other_group.rect(rect.width, rect.height)
+			background_group.rect(rect.width, rect.height)
 				.move(rect.x, rect.y)
 				.attr({
 				'stroke':		'#ddd',
