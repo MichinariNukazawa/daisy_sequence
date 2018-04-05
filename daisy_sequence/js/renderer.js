@@ -403,9 +403,21 @@ class Renderer{
 		if(! message.hasOwnProperty('work')){
 			message.work = {};
 		}
-		message.work.rect = Object.assign({}, position);
-		message.work.rect.y -= 8;
-		message.work.rect.height = 24;
+		{
+			let rect = Object.assign({}, position);
+			rect.y -= 8;
+			rect.height = 24;
+
+			const sign_weight = ((0 <= rect.width)? 1 : -2);
+			rect.x += 4 * sign_weight;
+			rect.width -= 8 * sign_weight;
+			if(8 > Math.abs(rect.width)){
+				rect.x -= 4 * sign_weight;
+				rect.width = 8 * sign_weight;
+			}
+
+			message.work.rect = rect;
+		}
 
 		let is_turnback = false;
 		if(message.start.hasOwnProperty('lifeline_id')
