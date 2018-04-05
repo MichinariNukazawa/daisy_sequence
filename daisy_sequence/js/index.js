@@ -751,6 +751,14 @@ function callback_mouseup_canvas(e)
 
 	callback_focus_change();
 
+	const tool_kind = tool.get_tool_kind();
+	const tool_info = tool.get_tool_info_from_kind(tool_kind);
+	if(null === tool_info){
+		console.error(tool_kind);
+	}else{
+		tool_info.callback_mouseup(mouse_state);
+	}
+
 	Renderer.rerendering(
 		rendering_handle,
 		daisy.get_current_diagram(),

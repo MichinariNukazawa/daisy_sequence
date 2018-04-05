@@ -9,31 +9,37 @@ class Tool{
 				'kind':			'arrow',
 				'element':		document.getElementById('tool__arrow'),
 				'callback_mousedown':	Tool.callback_mousedown_arrow_,
+				'callback_mouseup':	Tool.callback_mouseup_nop_,
 			},
 			{
 				'kind':			'element-arrow',
 				'element':		document.getElementById('tool__element-arrow'),
 				'callback_mousedown':	Tool.callback_mousedown_arrow_,
+				'callback_mouseup':	Tool.callback_mouseup_nop_,
 			},
 			{
 				'kind':			'height-arrow',
 				'element':		document.getElementById('tool__height-arrow'),
 				'callback_mousedown':	Tool.callback_mousedown_height_arrow_,
+				'callback_mouseup':	Tool.callback_mouseup_nop_,
 			},
 			{
 				'kind':		'lifeline',
 				'element':	document.getElementById('tool__lifeline'),
 				'callback_mousedown':	Tool.callback_mousedown_lifeline_,
+				'callback_mouseup':	Tool.callback_mouseup_create_element_tool_,
 			},
 			{
 				'kind':		'message',
 				'element':	document.getElementById('tool__message'),
 				'callback_mousedown':	Tool.callback_mousedown_message_,
+				'callback_mouseup':	Tool.callback_mouseup_create_element_tool_,
 			},
 			{
 				'kind':		'fragment',
 				'element':	document.getElementById('tool__fragment'),
 				'callback_mousedown':	Tool.callback_mousedown_fragment_,
+				'callback_mouseup':	Tool.callback_mouseup_create_element_tool_,
 			},
 		];
 
@@ -250,6 +256,18 @@ class Tool{
 
 		let focus = Doc.get_focus(daisy.get_current_doc());
 		Focus.set_element(focus, fragment);
+	}
+
+	static callback_mouseup_nop_(mouse_state)
+	{
+		// NOP
+	}
+
+	static callback_mouseup_create_element_tool_(mouse_state)
+	{
+		let elem = document.getElementById('editor__element-text');
+		elem.focus();
+		elem.select();
 	}
 };
 
