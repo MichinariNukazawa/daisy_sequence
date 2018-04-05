@@ -1444,19 +1444,19 @@ class Element{
 		const offset = [4, 4];
 		{
 			let side_rect = Object.assign({}, rect);
-			side_rect.width = 32;
-			side_rect = Rect.expand(side_rect, offset);
-			if(Rect.is_touch(side_rect, point, [0, 0])){
-				return 'left';
-			}
-		}
-		{
-			let side_rect = Object.assign({}, rect);
 			side_rect.x = side_rect.x + side_rect.width - 32;
 			side_rect.width = 32;
 			side_rect = Rect.expand(side_rect, offset);
 			if(Rect.is_touch(side_rect, point, [0, 0])){
 				return 'right';
+			}
+		}
+		{
+			let side_rect = Object.assign({}, rect);
+			side_rect.width = 32;
+			side_rect = Rect.expand(side_rect, offset);
+			if(Rect.is_touch(side_rect, point, [0, 0])){
+				return 'left';
 			}
 		}
 
