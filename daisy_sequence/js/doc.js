@@ -1377,7 +1377,7 @@ class Diagram{
 			'kind':			'spec',
 			'id':			-1,
 			'y_offset':		0,
-			'height':		20,
+			'height':		25,
 		};
 
 		spec = Object.assign(spec, src);
