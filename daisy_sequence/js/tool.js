@@ -1,5 +1,16 @@
 'use strict';
 
+Element.prototype.remove = function() {
+	this.parentElement.removeChild(this);
+}
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+	for(var i = this.length - 1; i >= 0; i--) {
+		if(this[i] && this[i].parentElement) {
+			this[i].parentElement.removeChild(this[i]);
+		}
+	}
+}
+
 class Tool{
 	constructor(){
 		this.tool_kind = 'arrow';
@@ -55,6 +66,10 @@ class Tool{
 		console.debug(this.tools.length);
 		for(let i = 0; i < this.tools.length; i++){
 			this.tools[i].element.addEventListener('click', this.callback_clicked_tool_.bind(this), false);
+		}
+
+		if("ja" !== navigator.language){
+			document.getElementsByClassName("hover_message").remove();
 		}
 	}
 

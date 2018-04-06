@@ -66,6 +66,24 @@ table th{
 	background-color: rgba(0, 128, 255, 0.3);
 }
 
+#tool button + .hover_message{
+	display: none;
+
+	position: absolute;
+	margin: 10px 0 1.5em 15px;
+	padding: 4px 5px;
+	min-width: 120px;
+	max-width: 100%;
+	font-size: 16px;
+	background: #a0d0ff;
+	border-radius: 4px;
+	z-index: 5;
+}
+
+#tool button:hover + .hover_message{
+	display: block;
+}
+
 #canvas-header{
 	padding: 6px;
 	font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
