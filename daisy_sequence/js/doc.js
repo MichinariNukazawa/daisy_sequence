@@ -478,6 +478,12 @@ class Doc{
 			const start_lifeline_name = ((null !== start_lifeline)? func_lifeline_name_(start_lifeline.text) : "[");
 			const end_lifeline_name = ((null !== end_lifeline)? func_lifeline_name_(end_lifeline.text) : "]");
 
+			if(null === start_lifeline && null === end_lifeline){
+				// warning collection
+				console.error("not implement."); // PlantUML start/end nothing lifeline message is nothing?
+				return strdata;
+			}
+
 			if('create' === message.message_kind){
 				strdata += sprintf("create %s\n", end_lifeline_name);
 			}
@@ -520,7 +526,7 @@ class Doc{
 			}
 
 			// ** turnback message spec end
-			if(null !== start_lifeline_id && start_lifeline_id === end_lifeline_id){
+			if(null !== end_lifeline && start_lifeline_id === end_lifeline_id){
 				const spec_height = ((end_lifeline.hasOwnProperty('spce'))? end_lifeline.spec.height : 30);
 				plantuml_opt.plantuml_ex_elems.push({
 					'plantuml_ex_elem_kind': "spec_end",
