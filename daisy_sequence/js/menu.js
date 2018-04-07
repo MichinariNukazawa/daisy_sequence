@@ -112,6 +112,42 @@ function export_dialog(default_filepath, format_name)
 	return filepath;
 }
 
+function menu_do_export_(format_name)
+{
+	const doc = daisy.get_current_doc();
+	if(null === doc){
+		message_dialog(
+				'info', "Export",
+				"nothing opened document.");
+		return;
+	}
+
+	let filepath = Doc.get_filepath(doc);
+	filepath = export_dialog(filepath, format_name);
+	if('' == filepath){
+		return;
+	}
+
+	let errs_ = [];
+	let res = DaisyIO.write_export_doc(filepath, doc, errs_);
+
+	let message_ = "";
+	for(let i = 0; i < errs_.length; i++){
+		message_ += sprintf("%s: %s\n", errs_[i].level, errs_[i].message);
+	}
+
+	if(! res){
+		message_dialog('warning', "Export", "Export error.\n" + message_);
+		return;
+	}else{
+		if(0 !== errs_.length){
+			message_dialog('info', "Export", "Export info.\n" + message_);
+		}
+	}
+
+	console.log("Export");
+}
+
 const debug_menu = {
 	label: 'debug(develop)',
 	submenu: [
@@ -303,91 +339,19 @@ var template = [
 		label: '&Export SVG',
 		accelerator: 'CmdOrCtrl+Shift+E',
 		click: function () {
-			const doc = daisy.get_current_doc();
-			if(null === doc){
-				message_dialog(
-						'info', "Export",
-						"nothing opened document.");
-				return;
-			}
-
-			let filepath = Doc.get_filepath(doc);
-			filepath = export_dialog(filepath, 'svg');
-			if('' == filepath){
-				return;
-			}
-
-			let err = {};
-			let res = DaisyIO.write_export_doc(filepath, doc, err);
-
-			if(! res){
-				message_dialog(
-						'warning', "Export",
-						err.message);
-				return;
-			}
-
-			console.log("Export");
+			menu_do_export_('svg');
 		}
 	},
 	{
 		label: 'Export PlantUML(.puml)',
 		click: function () {
-			const doc = daisy.get_current_doc();
-			if(null === doc){
-				message_dialog(
-						'info', "Export",
-						"nothing opened document.");
-				return;
-			}
-
-			let filepath = Doc.get_filepath(doc);
-			filepath = export_dialog(filepath, 'puml');
-			if('' == filepath){
-				return;
-			}
-
-			let err = {};
-			let res = DaisyIO.write_export_doc(filepath, doc, err);
-
-			if(! res){
-				message_dialog(
-						'warning', "Export",
-						err.message);
-				return;
-			}
-
-			console.log("Export");
+			menu_do_export_('puml');
 		}
 	},
 	{
 		label: 'Export PNG (x4 size)',
 		click: function () {
-			const doc = daisy.get_current_doc();
-			if(null === doc){
-				message_dialog(
-						'info', "Export",
-						"nothing opened document.");
-				return;
-			}
-
-			let filepath = Doc.get_filepath(doc);
-			filepath = export_dialog(filepath, 'png');
-			if('' == filepath){
-				return;
-			}
-
-			let err = {};
-			let res = DaisyIO.write_export_doc(filepath, doc, err);
-
-			if(! res){
-				message_dialog(
-						'warning', "Export",
-						err.message);
-				return;
-			}
-
-			console.log("Export");
+			menu_do_export_('png');
 		}
 	},
 	{

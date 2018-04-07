@@ -407,20 +407,31 @@ class Doc{
 		return strdata;
 	}
 
-	static get_plantuml_string(doc)
+	static get_plantuml_string(doc, errs_)
 	{
+		const add_errs_ = function(errs_, level, message)
+		{
+			const err_ = {
+				'level':	level,
+				'label':	"PlantUML convert",
+				'message':	message,
+			};
+			errs_.push(err_);
+			console.debug(err_);
+		};
+
 		if(null === doc){
+			add_errs_(errs_, "bug", "doc is empty.");
 			return null;
 		}
 
 		const src_diagram = Doc.get_diagram(doc);
-		let diagram = object_deepcopy(src_diagram);
+		const diagram = object_deepcopy(src_diagram);
 
 		let lifelines = [];
 		let plantuml_elems = [];
 
 		const func = function(recurse_info, element, opt){
-			console.debug(element.id, element.kind);
 
 			switch(element.kind){
 				case 'lifeline':
@@ -432,8 +443,12 @@ class Doc{
 				case 'fragment':
 					opt.plantuml_elems.push(element);
 					break;
+				case 'spec':
+				case 'operand':
+					// NOP
+					break;
 				default:
-					// not implement.
+					add_errs_(errs_, "warning", sprintf("invalid element kind: `%s`", element.kind));
 			}
 
 			return true;
@@ -479,8 +494,8 @@ class Doc{
 			const end_lifeline_name = ((null !== end_lifeline)? func_lifeline_name_(end_lifeline.text) : "]");
 
 			if(null === start_lifeline && null === end_lifeline){
-				// warning collection
-				console.error("not implement."); // PlantUML start/end nothing lifeline message is nothing?
+				// PlantUML start/end nothing lifeline message is nothing?
+				add_errs_(errs_, "warning", "not implement. floating message can't defined.");
 				return strdata;
 			}
 
@@ -591,15 +606,15 @@ class Doc{
 						is_height = true;
 
 						// optはaltのoperandsを持たない版らしい
-						if(fragment.hasOwnProperty('operands')){
-							// warning collection
+						if(fragment.hasOwnProperty('operands') && 0 !== fragment.operands.length){
+							add_errs_(errs_, "warning", "opt hasn't operands");
 						}
 					}
 					break;
 				case 'ref':
 					{
 						if(0 === lifelines.length){
-							// warning collection
+							add_errs_(errs_, "warning", "lifeline nothing.");
 							break;
 						}
 

@@ -8,6 +8,18 @@ class DaisyIO{
 		err_.message = message;
 	}
 
+	static add_errs_(errs_, level, label, message)
+	{
+		let err_ = {};
+		DaisyIO.set_err_(err_, level, label, message);
+
+		if(! Array.isArray(errs_)){
+			console.error(errs_);
+			errs_ = [];
+		}
+		errs_.push(err_);
+	}
+
 	static open_doc_from_path(filepath, err_)
 	{
 		let strdata = '';
@@ -40,7 +52,7 @@ class DaisyIO{
 		let dummy_rhandle = new RenderingHandle(dummy_elem);
 		let draw = dummy_rhandle.get_draw();
 		if(null === draw){
-			DaisyIO.set_err_(err_, "warning", "Export", "internal dummy element can not generate");
+			DaisyIO.set_err_(err_, "warning", "Export", "internal dummy element can not generate.");
 			return null;
 		}
 
@@ -72,34 +84,35 @@ class DaisyIO{
 		return filepath.match(/\.[a-zA-Z0-9]*$/)[0];
 	}
 
-	static write_export_doc(filepath, doc, err_)
+	static write_export_doc(filepath, doc, errs_)
 	{
 		const ext = DaisyIO.get_ext_from_filepath(filepath);
 
 		let res;
 		switch(ext){
 			case '.png':
-				res = DaisyIO.write_export_png_doc_(filepath, doc, err_);
+				res = DaisyIO.write_export_png_doc_(filepath, doc, errs_);
 				break;
 			case '.svg':
-				res = DaisyIO.write_export_svg_doc_(filepath, doc, err_);
+				res = DaisyIO.write_export_svg_doc_(filepath, doc, errs_);
 				break;
 			case '.puml':
-				res = DaisyIO.write_export_plantuml_doc_(filepath, doc, err_);
+				res = DaisyIO.write_export_plantuml_doc_(filepath, doc, errs_);
 				break;
 			default:
-				DaisyIO.set_err_(err_,
-					"warning", "Export", sprintf("invalid file type. :`%s`", filepath));
+				DaisyIO.add_errs_(errs_, "warning", "Export", sprintf("invalid file type. :`%s`", filepath));
 				return false;
 		}
 
 		return res;
 	}
 
-	static write_export_png_doc_(filepath, doc, err_)
+	static write_export_png_doc_(filepath, doc, errs_)
 	{
+		let err_ = {};
 		let draw = DaisyIO.get_dummy_draw_(doc, err_);
 		if(null === draw){
+			DaisyIO.add_errs_(errs_, err_.level, "Export", err_.message);
 			return false;
 		}
 
@@ -115,6 +128,7 @@ class DaisyIO{
 			try{
 				fs.writeFileSync(filepath, decoded);
 			}catch(err){
+				let err_ = {};
 				DaisyIO.set_err_(err_, "warning", "Export", err.message);
 				err.callback(err_);
 				return;
@@ -124,36 +138,38 @@ class DaisyIO{
 		return true;
 	}
 
-	static write_export_svg_doc_(filepath, doc, err_)
+	static write_export_svg_doc_(filepath, doc, errs_)
 	{
+		let err_ = {};
 		const strdata = DaisyIO.get_svg_string_from_doc_(doc, err_);
 		if(null === strdata){
-			DaisyIO.set_err_(err_, "warning", "Export", "svg convert error");
+			console.error(err_);
+			DaisyIO.add_errs_(errs_, err_.level, "Export", err_.message);
 			return false;
 		}
 
 		try{
 			fs.writeFileSync(filepath, strdata);
 		}catch(err){
-			DaisyIO.set_err_(err_, "warning", "Export", sprintf("writeFile error:`%s`", filepath));
+			DaisyIO.add_errs_(errs_, "warning", "Export", sprintf("writeFile error. :`%s`", filepath));
 			return false;
 		}
 
 		return true;
 	}
 
-	static write_export_plantuml_doc_(filepath, doc, err_)
+	static write_export_plantuml_doc_(filepath, doc, errs_)
 	{
-		const strdata = Doc.get_plantuml_string(doc, err_);
+		const strdata = Doc.get_plantuml_string(doc, errs_);
 		if(null === strdata){
-			DaisyIO.set_err_(err_, "warning", "Export", err_.message);
+			console.debug(errs_);
 			return false;
 		}
 
 		try{
 			fs.writeFileSync(filepath, strdata);
 		}catch(err){
-			DaisyIO.set_err_(err_, "warning", "Export", sprintf("writeFile error:`%s`", filepath));
+			DaisyIO.add_errs_(errs_, "warning", "Export", sprintf("writeFile error. :`%s`", filepath));
 			return false;
 		}
 

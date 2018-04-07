@@ -191,16 +191,25 @@ window.onload = function(e){
 		const ext = DaisyIO.get_ext_from_filepath(arg.export_filepath);
 		if('.png' === ext){
 			// png export not supported (npm library is async)
-			process.stderr.write(sprintf("export error png is not supported. `%s`.\n", arg.open_filepath));
+			process.stderr.write(sprintf("Export error.: png is not supported. `%s`.\n", arg.open_filepath));
 			app.exit(1);
 		}
 
-		let err_ = {};
-		if(! DaisyIO.write_export_doc(arg.export_filepath, doc, err_)){
-			process.stderr.write(sprintf("export error `%s` `%s`.\n", arg.export_filepath, err_.message));
+		let errs_ = [];
+		let res = DaisyIO.write_export_doc(arg.export_filepath, doc, errs_);
+		if(0 !== errs_.length){
+			process.stderr.write(sprintf("Export warnings. (%d)\n", errs_.length));
+			for(let i = 0; i < errs_.length; i++){
+				process.stderr.write(sprintf("(%2d/%2d)%s: %s\n",
+					i, errs_.length,
+					errs_[i].level, errs_[i].message));
+			}
+		}
+		if(! res){
+			process.stderr.write(sprintf("Export error. `%s`\n", arg.export_filepath));
 			app.exit(1);
 		}else{
-			process.stdout.write(sprintf("export `%s`.\n", arg.export_filepath));
+			process.stdout.write(sprintf("Export `%s`.\n", arg.export_filepath));
 			app.quit();
 		}
 	}
