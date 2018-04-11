@@ -433,9 +433,26 @@ class Doc{
 
 		const func = function(recurse_info, element, opt){
 
+			const func_set_lifeline_ident_name_ = function(element, lifelines)
+			{
+				let ident_name = element.text;
+				ident_name = ident_name.replace(/\n/, "_");
+				ident_name = ident_name.replace(/[\[\]\s-,.?<>]/, "_");
+				ident_name = ident_name.replace(/[^A-Za-z_]/, "_");
+				ident_name = ident_name.replace(/_+/, "_");
+
+				// console.debug(sprintf("n:`%s` `%s`", element.text, ident_name));
+				return sprintf("%s_%d", ident_name, element.id);
+			};
+
 			switch(element.kind){
 				case 'lifeline':
-					opt.lifelines.push(element);
+					{
+						opt.lifelines.push(element);
+						let ident_name = func_set_lifeline_ident_name_(element, lifelines);
+						object_make_member(element, 'work.ident_name', ident_name);
+						// console.debug(element.work.ident_name);
+					}
 					break;
 				case 'message':
 					opt.plantuml_elems.push(element);
@@ -471,6 +488,11 @@ class Doc{
 		{
 			return str.replace(/\n/, "\\n");
 		};
+		const func_get_lifeline_ident_name_ = function(element)
+		{
+			const ident_name = object_get_property_from_path(element, 'work.ident_name');
+			return ident_name;
+		};
 		const func_lifeline_name_ = function(str)
 		{
 			str = str.replace(/\n/, "\\n");
@@ -490,8 +512,8 @@ class Doc{
 			const end_lifeline_id = Message.get_end_lifeline_id(message);
 			const start_lifeline = Diagram.get_element_from_id(diagram, start_lifeline_id);
 			const end_lifeline = Diagram.get_element_from_id(diagram, end_lifeline_id);
-			const start_lifeline_name = ((null !== start_lifeline)? func_lifeline_name_(start_lifeline.text) : "[");
-			const end_lifeline_name = ((null !== end_lifeline)? func_lifeline_name_(end_lifeline.text) : "]");
+			const start_lifeline_ident_name = ((null !== start_lifeline)? func_get_lifeline_ident_name_(start_lifeline) : "[");
+			const end_lifeline_ident_name = ((null !== end_lifeline)? func_get_lifeline_ident_name_(end_lifeline) : "]");
 
 			if(null === start_lifeline && null === end_lifeline){
 				// PlantUML start/end nothing lifeline message is nothing?
@@ -500,7 +522,7 @@ class Doc{
 			}
 
 			if('create' === message.message_kind){
-				strdata += sprintf("create %s\n", end_lifeline_name);
+				strdata += sprintf("create %s\n", end_lifeline_ident_name);
 			}
 
 			let arrow = "->";
@@ -516,19 +538,19 @@ class Doc{
 					arrow = "->";
 			}
 			strdata += sprintf("%s%s%s: %s\n",
-				start_lifeline_name, arrow, end_lifeline_name,
+				start_lifeline_ident_name, arrow, end_lifeline_ident_name,
 				func_message_text_(message.text));
 
 			if(null !== end_lifeline){
 				switch(message.message_kind){
 					case 'sync':
-						strdata += sprintf("activate %s\n", end_lifeline_name);
+						strdata += sprintf("activate %s\n", end_lifeline_ident_name);
 						break;
 					case 'reply':
-						strdata += sprintf("deactivate %s\n", start_lifeline_name);
+						strdata += sprintf("deactivate %s\n", start_lifeline_ident_name);
 						break;
 					case 'stop':
-						strdata += sprintf("deactivate %s\n", end_lifeline_name);
+						strdata += sprintf("deactivate %s\n", end_lifeline_ident_name);
 						break;
 					case 'async':
 					default:
@@ -537,7 +559,7 @@ class Doc{
 			}
 
 			if('stop' === message.message_kind){
-				strdata += sprintf("destroy %s\n", end_lifeline_name);
+				strdata += sprintf("destroy %s\n", end_lifeline_ident_name);
 			}
 
 			// ** turnback message spec end
@@ -546,7 +568,7 @@ class Doc{
 				plantuml_opt.plantuml_ex_elems.push({
 					'plantuml_ex_elem_kind': "spec_end",
 					'y_end': (end_lifeline.y + spec_height),
-					'lifeline_name': end_lifeline_name,
+					'lifeline_ident_name': end_lifeline_ident_name,
 				});
 			}
 
@@ -621,7 +643,7 @@ class Doc{
 						// refは被るLifelineを指定するが、ここでは仮にすべてに被る
 						let overs = '';
 						for(let i = 0; i < lifelines.length; i++){
-							overs += sprintf("%s %s", ((0 === i)? '' : ","), func_lifeline_name_(lifelines[i].text));
+							overs += sprintf("%s %s", ((0 === i)? '' : ","), func_get_lifeline_ident_name_(lifelines[i]));
 						}
 
 						let ope = func_get_operand_from_fragment_(fragment);
@@ -686,7 +708,9 @@ class Doc{
 		strdata += "@startuml\n";
 		strdata += sprintf("/' Generator: %s %s '/\n\n", Version.get_name(), Version.get_version());
 		for(let i = 0; i < lifelines.length; i++){
-			strdata += sprintf("participant %s\n", func_lifeline_name_(lifelines[i].text));
+			strdata += sprintf("participant %s as %s\n",
+				func_lifeline_name_(lifelines[i].text),
+				func_get_lifeline_ident_name_(lifelines[i]));
 		}
 		strdata += "\n";
 
@@ -711,7 +735,7 @@ class Doc{
 					case "spec_end":
 						if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
 							strdata += "' turnback end\n"
-							strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_name);
+							strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_ident_name);
 							plantuml_opt.plantuml_ex_elems.splice(t, 1);
 						}
 						break;
@@ -754,7 +778,7 @@ class Doc{
 				case "spec_end":
 					{
 						strdata += "' turnback end\n"
-						strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_name);
+						strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_ident_name);
 					}
 					break;
 				case "fragment_end":
