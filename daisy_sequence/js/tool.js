@@ -13,46 +13,46 @@ NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
 
 class Tool{
 	constructor(){
-		this.tool_kind = 'arrow';
-
 		this.tools = [
 			{
-				'kind':			'arrow',
-				'element':		document.getElementById('tool__arrow'),
-				'callback_mousedown':	Tool.callback_mousedown_arrow_,
-				'callback_mouseup':	Tool.callback_mouseup_nop_,
-			},
-			{
-				'kind':			'element-arrow',
+				'kind':			'element_arrow',
 				'element':		document.getElementById('tool__element-arrow'),
-				'callback_mousedown':	Tool.callback_mousedown_arrow_,
+				'callback_mousedown':	Tool.callback_mousedown_element_arrow_,
 				'callback_mouseup':	Tool.callback_mouseup_nop_,
 			},
 			{
-				'kind':			'height-arrow',
-				'element':		document.getElementById('tool__height-arrow'),
-				'callback_mousedown':	Tool.callback_mousedown_height_arrow_,
+				'kind':			'simple_element_arrow',
+				'element':		document.getElementById('tool__simple-element-arrow'),
+				'callback_mousedown':	Tool.callback_mousedown_element_arrow_,
 				'callback_mouseup':	Tool.callback_mouseup_nop_,
 			},
 			{
-				'kind':		'lifeline',
-				'element':	document.getElementById('tool__lifeline'),
-				'callback_mousedown':	Tool.callback_mousedown_lifeline_,
+				'kind':			'move_height_arrow',
+				'element':		document.getElementById('tool__move-height-arrow'),
+				'callback_mousedown':	Tool.callback_mousedown_move_height_arrow_,
+				'callback_mouseup':	Tool.callback_mouseup_nop_,
+			},
+			{
+				'kind':			'add_lifeline',
+				'element':		document.getElementById('tool__add-lifeline'),
+				'callback_mousedown':	Tool.callback_mousedown_add_lifeline_,
 				'callback_mouseup':	Tool.callback_mouseup_create_element_tool_,
 			},
 			{
-				'kind':		'message',
-				'element':	document.getElementById('tool__message'),
-				'callback_mousedown':	Tool.callback_mousedown_message_,
+				'kind':			'add_message',
+				'element':		document.getElementById('tool__add-message'),
+				'callback_mousedown':	Tool.callback_mousedown_add_message_,
 				'callback_mouseup':	Tool.callback_mouseup_create_element_tool_,
 			},
 			{
-				'kind':		'fragment',
-				'element':	document.getElementById('tool__fragment'),
-				'callback_mousedown':	Tool.callback_mousedown_fragment_,
+				'kind':			'add_fragment',
+				'element':		document.getElementById('tool__add-fragment'),
+				'callback_mousedown':	Tool.callback_mousedown_add_fragment_,
 				'callback_mouseup':	Tool.callback_mouseup_create_element_tool_,
 			},
 		];
+
+		this.tool_kind = this.tools[0].kind;
 
 		this.callback_tool_changes = [];
 
@@ -128,7 +128,7 @@ class Tool{
 		return null;
 	}
 
-	static callback_mousedown_arrow_(mouse_state)
+	static callback_mousedown_element_arrow_(mouse_state)
 	{
 		let diagram = daisy.get_current_diagram();
 		let focus = Doc.get_focus(daisy.get_current_doc());
@@ -158,7 +158,7 @@ class Tool{
 		}
 	}
 
-	static callback_mousedown_height_arrow_(mouse_state)
+	static callback_mousedown_move_height_arrow_(mouse_state)
 	{
 		const diagram = daisy.get_current_diagram();
 		let focus = Doc.get_focus(daisy.get_current_doc());
@@ -194,7 +194,7 @@ class Tool{
 		return;
 	}
 
-	static callback_mousedown_lifeline_(mouse_state)
+	static callback_mousedown_add_lifeline_(mouse_state)
 	{
 		{
 			Doc.history_add(daisy.get_current_doc());
@@ -225,7 +225,7 @@ class Tool{
 		Focus.set_element(focus, lifeline);
 	}
 
-	static callback_mousedown_message_(mouse_state)
+	static callback_mousedown_add_message_(mouse_state)
 	{
 		{
 			Doc.history_add(daisy.get_current_doc());
@@ -251,7 +251,7 @@ class Tool{
 		focus.focus_state.message_side = 'end';
 	}
 
-	static callback_mousedown_fragment_(mouse_state)
+	static callback_mousedown_add_fragment_(mouse_state)
 	{
 		{
 			Doc.history_add(daisy.get_current_doc());

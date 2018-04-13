@@ -727,7 +727,7 @@ function callback_mousedown_canvas(e)
 	}else{
 		mouse_state.mode = 'move';
 	}
-	if('height-arrow' === tool_kind){
+	if('move_height_arrow' === tool_kind){
 		mouse_state.mode = 'move_height';
 
 		let diagram = daisy.get_current_diagram();
@@ -975,7 +975,7 @@ function callback_mousemove_canvas(e)
 			return;
 			break;
 		case 'move':
-			func_mousemove_move(mouse_state, ('element-arrow' !== tool.get_tool_kind()));;
+			func_mousemove_move(mouse_state, ('element_arrow' === tool.get_tool_kind()));;
 			break;
 		case 'move_height':
 			func_mousemove_move_height(mouse_state);
