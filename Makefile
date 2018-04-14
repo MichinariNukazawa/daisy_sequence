@@ -20,6 +20,9 @@ test:
 clean:
 	rm -rf release/release
 
+doc:
+	cd document/user_manual/ && bash ./build.sh
+
 .PHONY: package package_desktop
 package: package_desktop
 

@@ -1,0 +1,24 @@
+% brief : Manual build for RuneAMN_Pro series fonts.
+% usage : pdflatex book_of_RuneAMN_Pro_Fonts.tex
+%
+% author : MichinariNukazawa / "project daisy bell"
+% 	michinari.nukazawa@gmail.com
+% 	https://github.com/MichinariNukazawa/RuneAMN_Pro_Series_Fonts
+% license : 2-clause BSD license
+%
+% memo: force quit is "x" or "\stop"
+
+\documentclass[flegn]{article}
+\usepackage{pdfpages}
+
+\begin{document}
+\includepdf[pages=-]{./TitleCover.pdf}
+
+\includepdf[pages=-]{./user_manual_content.pdf}
+
+\includepdf[pages=-]{./PostScript.pdf}
+%\includepdf[pages=-]{./Colophon.pdf}
+\includepdf[pages=-]{./BackCover.pdf}
+\end{document}
+
+

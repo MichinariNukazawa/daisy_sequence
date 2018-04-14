@@ -57,3 +57,6 @@ daisy_sequence-*/
 release/release/
 daisy_sequence/package-lock.json
 
+*.log
+
+
