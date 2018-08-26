@@ -14,7 +14,7 @@
   "license": "Commercial",
   "dependencies": {
     "data-uri-to-buffer": "^2.0.0",
-    "electron": "^1.8.3",
+    "electron": "^2.0.8",
     "npm-check-updates": "^2.14.1",
     "save-svg-as-png": "^1.3.1",
     "sprintf-js": "^1.1.1",
@@ -23,6 +23,6 @@
   },
   "devDependencies": {
     "electron-installer-debian": "^0.8.1",
-    "electron-packager": "^11.1.0"
+    "electron-packager": "^12.1.1"
   }
 }
