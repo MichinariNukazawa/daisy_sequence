@@ -16,6 +16,7 @@ div{
 
 input{
 	font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
+	line-height: 130%;
 }
 
 input[type="number"]{
@@ -88,10 +89,6 @@ table th{
 	padding: 6px;
 	font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
 	font-size: 10px;
-}
-
-#editor input{
-	vertical-align: middle;
 }
 
 #editor__element-text{
