@@ -100,7 +100,7 @@ table th{
 
 #canvas-container{
 	background: white;
-	position:absolute; top:46px; bottom:2px; left:280px; right:0px;
+	position:absolute; top:46px; bottom:2px; left:290px; right:0px;
 	overflow:	auto;
 	cursor: default;
 }
