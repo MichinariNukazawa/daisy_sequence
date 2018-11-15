@@ -3,15 +3,22 @@
   "version": "201804.07.0",
   "description": "UML sequence diagram editor",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "build": "electron .",
     "run-open": "electron . sample.daisysequence",
     "debian_installer_debian": "electron-installer-debian --config ./installer_debian_amd64_config.json",
     "test": "mocha --require intelli-espower-loader"
   },
-  "repository": "<project_name>",
   "author": "michinari.nukazawa@gmail.com",
-  "license": "Commercial",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MichinariNukazawa/daisy_sequence.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MichinariNukazawa/daisy_sequence/issues"
+  },
+  "license": "MIT",
   "dependencies": {
     "data-uri-to-buffer": "^2.0.0",
     "save-svg-as-png": "^1.3.1",
