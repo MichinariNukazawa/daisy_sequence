@@ -1,9 +1,12 @@
 daisy sequence
 ====
+[![Build Status](https://travis-ci.org/MichinariNukazawa/daisy_sequence.svg?branch=master)](https://travis-ci.org/MichinariNukazawa/daisy_sequence)  
+
 daisy sequence is (not) UML sequence diagram editor.  
 
 # 概要
-daisy sequenceは、Win/Mac/Linuxで動作する、シーケンス図エディタです。  
+daisy sequenceは、フリーのシーケンス図エディタです。  
+Win/Mac/Linux対応。  
 
 ![daisy sequence](document/image/daisy_sequence_201803.14.png)  
 
