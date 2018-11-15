@@ -1,6 +1,6 @@
 'use strict';
 
-class Version{
+module.exports = class Version{
 	static get_name()
 	{
 		return 'daisy diagram';

@@ -1,5 +1,7 @@
 'use strict';
 
+const Version = require('./js/version');
+
 class DocCollection{
 	constructor()
 	{
