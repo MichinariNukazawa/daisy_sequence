@@ -26,11 +26,12 @@ cli-test:
 test:
 	bash ./release/version.sh
 	make unit-test
-	cd daisy_sequence && node ./build_linux_x64.js
+	cd daisy_sequence && npm run pack:linux
 	make cli-test # depend linux binary
 
 clean:
 	rm -rf release/release
+	rm -rf daisy_sequence/release
 
 doc:
 	cd document/user_manual/ && bash ./build.sh

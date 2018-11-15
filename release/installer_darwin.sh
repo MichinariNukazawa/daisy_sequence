@@ -19,8 +19,8 @@ SOURCE_DIR=${ROOT_DIR}/daisy_sequence
 
 APP_NAME=$(cat ${SOURCE_DIR}/package.json | grep '"name"' | sed -e 's/.\+:.*"\([-A-Za-z_0-9.]\+\)".\+/\1/g')
 
-BUILD_DIR=${ROOT_DIR}/release/release/${APP_NAME}-darwin-x64
-PACKAGE_DIR=${ROOT_DIR}/release/release/${APP_NAME}-darwin-x64
+BUILD_DIR=${SOURCE_DIR}/release/osx/${APP_NAME}-darwin-x64
+PACKAGE_DIR=${SOURCE_DIR}/release/osx/${APP_NAME}-darwin-x64
 RELEASE_DIR=${ROOT_DIR}/release/release
 
 PACKAGE_POSTFIX=
@@ -41,7 +41,7 @@ PACKAGE_NAME=${APP_NAME}-macosx-${SHOW_VERSION}${EX}-${GIT_HASH}${PACKAGE_POSTFI
 ## build
 rm -rf ${BUILD_DIR}
 pushd ${SOURCE_DIR}
-node build_darwin.js
+npm run pack:osx
 popd
 
 
@@ -54,6 +54,7 @@ cp ${ROOT_DIR}/README.md ${PACKAGE_DIR}/
 pushd ${PACKAGE_DIR}
 
 rm -f ${RELEASE_DIR}/${PACKAGE_NAME}.zip
+mkdir -p ${RELEASE_DIR}
 zip -r9 ${RELEASE_DIR}/${PACKAGE_NAME}.zip *
 
 popd
