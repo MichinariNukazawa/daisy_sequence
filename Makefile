@@ -11,11 +11,23 @@ run:
 simple-run:
 	cd daisy_sequence && npm run build
 
+.PHONY: test unit-test cli-test ci-test
+ci-test:
+	cd daisy_sequence && npm install
+	make test
+	#make package
+
+unit-test:
+	cd daisy_sequence && npm run test test/$(ARG)
+
+cli-test:
+	cd test && make
+
 test:
 	bash ./release/version.sh
-	#cd daisy_sequence && npm run test
+	make unit-test
+	make cli-test
 	cd daisy_sequence && node ./build_linux_x64.js
-	cd test && make
 
 clean:
 	rm -rf release/release

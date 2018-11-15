@@ -7,7 +7,7 @@
     "build": "electron .",
     "run-open": "electron . sample.daisysequence",
     "debian_installer_debian": "electron-installer-debian --config ./installer_debian_amd64_config.json",
-    "test": "npm test"
+    "test": "mocha --require intelli-espower-loader"
   },
   "repository": "<project_name>",
   "author": "michinari.nukazawa@gmail.com",
@@ -21,8 +21,12 @@
   },
   "devDependencies": {
     "electron": "^2.0.8",
-    "npm-check-updates": "^2.14.1",
     "electron-installer-debian": "^0.8.1",
-    "electron-packager": "^12.1.1"
+    "electron-packager": "^12.1.1",
+    "intelli-espower-loader": "^1.0.1",
+    "mocha": "^5.2.0",
+    "npm-check-updates": "^2.14.3",
+    "power-assert": "^1.6.1",
+    "spectron": "^5.0.0"
   }
 }
