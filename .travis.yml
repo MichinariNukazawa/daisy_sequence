@@ -9,6 +9,7 @@ addons:
   apt:
     packages:
     - make
+    - librsvg2-bin
     #- wine
 
 # need spectron test
