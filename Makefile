@@ -26,8 +26,8 @@ cli-test:
 test:
 	bash ./release/version.sh
 	make unit-test
-	make cli-test
 	cd daisy_sequence && node ./build_linux_x64.js
+	make cli-test # depend linux binary
 
 clean:
 	rm -rf release/release
