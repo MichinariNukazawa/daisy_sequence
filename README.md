@@ -18,10 +18,7 @@ daisy sequenceは、Win/Mac/Linuxで動作する、シーケンス図エディ�
 [Download for latest release](https://github.com/MichinariNukazawa/daisy_sequence/releases)  
 
 # License
-配布パッケージの利用と再配布は、個人/企業/商用/非商用に関わらず無償  
-ソースコードの改変利用は、個人は無償、企業は有償ライセンス  
-本アプリケーションは無保証にて提供されます  
-
+MIT  
 コントリビュートの際はライセンスに同意する必要があります  
 
 # Feature
