@@ -10,6 +10,7 @@ addons:
     packages:
     - make
     - librsvg2-bin
+    - plantuml
     #- wine
 
 # need spectron test

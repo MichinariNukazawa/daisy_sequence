@@ -5,5 +5,5 @@ test
 `make test`
 
 # depend
-`sudo apt install plantuml -y`
+`sudo apt install plantuml librsvg2-bin -y`
 
