@@ -12,16 +12,20 @@ simple-run:
 	cd daisy_sequence && npm run build
 
 .PHONY: test unit-test cli-test ci-test
-ci-test:
-	cd daisy_sequence && npm install
-	make test
-	#make package
 
 unit-test:
 	cd daisy_sequence && npm run test test/$(ARG)
 
 cli-test:
 	cd test && make
+
+ci-test:
+	cd daisy_sequence && npm install
+	bash ./release/version.sh
+	make unit-test
+	#make package
+	cd daisy_sequence && npm run pack:linux
+	cd test && make ci-test # depend linux binary
 
 test:
 	bash ./release/version.sh
@@ -30,6 +34,7 @@ test:
 	make cli-test # depend linux binary
 
 clean:
+	cd test && make clean
 	rm -rf release/release
 	rm -rf daisy_sequence/release
 
