@@ -16,7 +16,7 @@ div{
 
 input{
 	font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
-	line-height: 130%;
+	vertical-align: bottom;
 }
 
 input[type="number"]{
