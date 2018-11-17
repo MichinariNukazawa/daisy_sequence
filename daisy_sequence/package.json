@@ -36,6 +36,7 @@
     "xml-formatter": "^1.0.1"
   },
   "devDependencies": {
+    "about-window": "^1.12.1",
     "electron": "^2.0.8",
     "electron-installer-debian": "^0.8.1",
     "electron-packager": "^12.1.1",
