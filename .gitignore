@@ -19,6 +19,8 @@ temp/
 gabage/
 work/
 log/
+obj/
+object/
 
 # object files
 *.d
