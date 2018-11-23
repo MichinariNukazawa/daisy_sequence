@@ -9,7 +9,7 @@ trap 'echo "$0(${LINENO}) ${BASH_COMMAND}"' ERR
 [ 1 -eq $# ]
 BIN=$1
 
-OBJECT_DIR=obj/plantuml
+OBJECT_DIR=obj/$(basename $0)
 
 rm -rf ${OBJECT_DIR}/*
 mkdir -p ${OBJECT_DIR}
