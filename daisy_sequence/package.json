@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "electron .",
-    "run-open": "electron . sample.daisysequence",
+    "run-open": "electron . default_document.daisysequence",
     "debian_installer_debian": "electron-installer-debian --config ../release/installer_debian_amd64_config.json",
     "test": "mocha --require intelli-espower-loader",
     "clean": "rm -rf ./release",
