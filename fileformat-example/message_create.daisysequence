@@ -1,0 +1,128 @@
+{
+	"editor_info": {
+		"application_name": "daisy diagram",
+		"version": "201811.17.0"
+	},
+	"filetype": "daisy sequence",
+	"diagram": {
+		"width": 550,
+		"height": 350,
+		"diagram_elements": [
+			{
+				"kind": "lifeline",
+				"id": 0,
+				"x": 148,
+				"y": 30,
+				"text": "obj/Object 1"
+			},
+			{
+				"kind": "lifeline",
+				"id": 1,
+				"x": 387,
+				"y": 30,
+				"text": "obj/Object 2"
+			},
+			{
+				"kind": "message",
+				"id": 2,
+				"y": 97,
+				"start": {
+					"position_x": 20
+				},
+				"end": {
+					"lifeline_id": 0,
+					"position_x": 124
+				},
+				"message_kind": "sync",
+				"text": "message\nfrom found",
+				"spec": {
+					"kind": "spec",
+					"id": 23,
+					"y_offset": 0,
+					"height": 135
+				}
+			},
+			{
+				"kind": "message",
+				"id": 3,
+				"y": 157,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"lifeline_id": 1,
+					"position_x": 363
+				},
+				"message_kind": "sync",
+				"text": "message of synchronous",
+				"spec": {
+					"kind": "spec",
+					"id": 24,
+					"y_offset": 0,
+					"height": 50
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 25,
+					"y": 207,
+					"message_kind": "reply",
+					"text": "message of reply",
+					"start": {
+						"lifeline_id": 1
+					},
+					"end": {
+						"lifeline_id": 0
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 26,
+				"y": 187,
+				"start": {
+					"position_x": 355,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 514,
+					"lifeline_id": -1
+				},
+				"message_kind": "sync",
+				"text": "message\nto lost"
+			},
+			{
+				"kind": "message",
+				"id": 27,
+				"y": 260,
+				"start": {
+					"position_x": 248,
+					"lifeline_id": -1
+				},
+				"end": {
+					"position_x": 505,
+					"lifeline_id": -1
+				},
+				"message_kind": "sync",
+				"text": "message\nnot relation\n"
+			},
+			{
+				"kind": "message",
+				"id": 28,
+				"y": 120,
+				"start": {
+					"position_x": 149,
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 365,
+					"lifeline_id": 1
+				},
+				"message_kind": "sync",
+				"text": "message of asynchronous"
+			}
+		],
+		"property": {
+			"lifeline_align_axis_y": 30
+		}
+	}
+}

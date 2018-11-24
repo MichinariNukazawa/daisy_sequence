@@ -1,0 +1,185 @@
+{
+	"editor_info": {
+		"application_name": "daisy diagram",
+		"version": "201811.17.0"
+	},
+	"filetype": "daisy sequence",
+	"diagram": {
+		"width": 550,
+		"height": 500,
+		"diagram_elements": [
+			{
+				"kind": "lifeline",
+				"id": 0,
+				"x": 148,
+				"y": 30,
+				"text": "obj/Object 1"
+			},
+			{
+				"kind": "lifeline",
+				"id": 1,
+				"x": 387,
+				"y": 30,
+				"text": "obj/Object 2"
+			},
+			{
+				"kind": "message",
+				"id": 2,
+				"y": 97,
+				"start": {
+					"position_x": 20
+				},
+				"end": {
+					"lifeline_id": 0,
+					"position_x": 124
+				},
+				"message_kind": "sync",
+				"text": "message\nfrom found",
+				"spec": {
+					"kind": "spec",
+					"id": 23,
+					"y_offset": 0,
+					"height": 365
+				}
+			},
+			{
+				"kind": "message",
+				"id": 3,
+				"y": 138,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"lifeline_id": 1,
+					"position_x": 363
+				},
+				"message_kind": "sync",
+				"text": "message of synchronous",
+				"spec": {
+					"kind": "spec",
+					"id": 24,
+					"y_offset": 0,
+					"height": 302
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 25,
+					"y": 440,
+					"message_kind": "reply",
+					"text": "message of reply",
+					"start": {
+						"lifeline_id": 1
+					},
+					"end": {
+						"lifeline_id": 0
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 30,
+				"y": 177,
+				"start": {
+					"position_x": 388,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 122,
+					"lifeline_id": 0
+				},
+				"message_kind": "sync",
+				"text": "in message",
+				"spec": {
+					"kind": "spec",
+					"id": 31,
+					"y_offset": 0,
+					"height": 40
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 32,
+					"y": 217,
+					"message_kind": "reply",
+					"text": "message of reply",
+					"start": {
+						"lifeline_id": 0
+					},
+					"end": {
+						"lifeline_id": 1
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 33,
+				"y": 276,
+				"start": {
+					"position_x": 385,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 150,
+					"lifeline_id": 0
+				},
+				"message_kind": "sync",
+				"text": "in message02",
+				"spec": {
+					"kind": "spec",
+					"id": 34,
+					"y_offset": 0,
+					"height": 127
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 38,
+					"y": 403,
+					"message_kind": "reply",
+					"text": "message of reply",
+					"start": {
+						"lifeline_id": 0
+					},
+					"end": {
+						"lifeline_id": 1
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 35,
+				"y": 319,
+				"start": {
+					"position_x": 157,
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 384,
+					"lifeline_id": 1
+				},
+				"message_kind": "sync",
+				"text": "in message03",
+				"spec": {
+					"kind": "spec",
+					"id": 36,
+					"y_offset": 0,
+					"height": 45
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 37,
+					"y": 364,
+					"message_kind": "reply",
+					"text": "message of reply",
+					"start": {
+						"lifeline_id": 1
+					},
+					"end": {
+						"lifeline_id": 0
+					}
+				}
+			}
+		],
+		"property": {
+			"lifeline_align_axis_y": 30
+		}
+	}
+}
