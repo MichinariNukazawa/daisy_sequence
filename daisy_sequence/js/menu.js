@@ -39,13 +39,34 @@ function open_dialog(default_filepath)
 {
 	const {app} = require('electron').remote;
 	const {dialog} = require('electron').remote;
+	const fs = require('fs');
+	const isExistSync = function(file)
+	{
+		try{
+			fs.statSync(file);
+		}catch(err){
+			return false;
+		}
+		return true
+	};
 
-	default_filepath = ('' == default_filepath)? app.getPath('home'):default_filepath;
+	let open_filepath = app.getPath('home');
+	if('' != default_filepath){
+		default_filepath = path.resolve(default_filepath);
+		const dirpath = path.dirname(default_filepath);
+		if(isExistSync(default_filepath)){
+			open_filepath = default_filepath;
+		}else if(isExistSync(dirpath) && fs.statSync(dirpath).isDirectory()){
+			open_filepath = dirpath;
+		}
+	}
+	console.debug('open_filepath', open_filepath);
+
 	let filepath = dialog.showOpenDialog(
 			remote.getCurrentWindow(),
 			{
 				title: 'Open',
-				defaultPath: default_filepath,
+				defaultPath: open_filepath,
 				filters: [
 				{name: 'Documents', extensions: ['daisysequence']},
 				{name: 'All', extensions: ['*']},
@@ -235,7 +256,7 @@ var template = [
 				}
 			}
 
-			let filepath = open_dialog('');
+			let filepath = open_dialog(latest_saved_filepath);
 			if('' == filepath){
 				return;
 			}

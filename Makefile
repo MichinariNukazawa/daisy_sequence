@@ -6,6 +6,9 @@ all:
 	exit 1
 
 run:
+	cd daisy_sequence && npm run run
+
+run-open:
 	cd daisy_sequence && npm run run-open
 
 simple-run:

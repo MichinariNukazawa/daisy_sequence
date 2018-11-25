@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "build": "electron .",
+    "run": "electron .",
     "run-open": "electron . default_document.daisysequence",
     "debian_installer_debian": "electron-installer-debian --config ../release/installer_debian_amd64_config.json",
     "test": "mocha --require intelli-espower-loader",

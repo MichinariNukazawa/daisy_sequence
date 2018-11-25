@@ -519,8 +519,11 @@ function callback_history_change_doc(doc, event_kind)
 		tool.get_tool_kind());
 }
 
+let latest_saved_filepath = '';
 function callback_on_save_doc(doc)
 {
+	latest_saved_filepath = Doc.get_filepath(doc);
+
 	update_title_from_doc_id(daisy.get_current_doc_id());
 }
 
