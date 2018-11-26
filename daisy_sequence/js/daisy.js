@@ -1,10 +1,15 @@
 'use strict';
 
-class Daisy{
-	constructor()
+const Renderer = require('./renderer').Renderer;
+
+module.exports = class Daisy{
+	constructor(callback_focus_change, callback_history_change_doc)
 	{
 		this.current_doc_id = -1;
 		this.event_listener_current_doc_changes = [];
+
+		this.callback_focus_change = callback_focus_change;
+		this.callback_history_change_doc = callback_history_change_doc;
 	}
 
 	append_doc_id(doc_id)
@@ -13,14 +18,14 @@ class Daisy{
 			let doc = doc_collection.get_doc_from_id(doc_id);
 			let diagram = Doc.get_diagram(doc);
 
-			Doc.add_event_listener_history_change(doc, callback_history_change_doc);
+			Doc.add_event_listener_history_change(doc, this.callback_history_change_doc);
 			Doc.add_event_listener_on_save(doc, callback_on_save_doc);
 			let focus = Doc.get_focus(doc);
-			Focus.add_event_listener_focus_change(focus, callback_focus_change, doc);
+			Focus.add_event_listener_focus_change(focus, this.callback_focus_change, doc);
 
 			this.set_current_doc_id_(doc_id);
 
-			callback_history_change_doc(doc, '-');
+			this.callback_history_change_doc(doc, '-');
 
 			Renderer.rerendering(rendering_handle, this.get_current_diagram(), Doc.get_focus(this.get_current_doc()), mouse_state, tool.get_tool_kind());
 		}else{

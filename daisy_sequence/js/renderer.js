@@ -1,6 +1,6 @@
 'use strict';
 
-class RenderingHandle{
+module.exports.RenderingHandle = class RenderingHandle{
 	constructor(elemId)
 	{
 		this.draw = null;
@@ -57,7 +57,7 @@ class RenderingHandle{
 	}
 };
 
-class Renderer{
+module.exports.Renderer = class Renderer{
 	static rerendering(rendering_handle, diagram, focus, mouse_state, tool_kind)
 	{
 		rendering_handle.clear();

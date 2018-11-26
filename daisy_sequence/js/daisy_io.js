@@ -1,6 +1,9 @@
 'use strict';
 
-class DaisyIO{
+const RenderingHandle = require('./renderer').RenderingHandle;
+const Renderer = require('./renderer').Renderer;
+
+module.exports = class DaisyIO{
 	static set_err_(err_, level, label, message)
 	{
 		err_.level = level;

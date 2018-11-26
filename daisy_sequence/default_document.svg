@@ -1,0 +1,452 @@
+<!-- Generator: daisy diagram 201811.17.0  -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="550" height="1102">
+	<g id="SvgjsG1510" class="dd__background-group">
+	</g>
+	<g id="SvgjsG1511" class="dd__lifeline-group">
+		<text id="SvgjsText1516" font-family="Helvetica, Arial, sans-serif" x="148" y="23.203125" fill="#000000" font-size="24px" size="24px" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1517" dy="31.200000000000003" x="148" svgjs:data="{&quot;newLined&quot;:true}">
+				obj/Object 1
+			</tspan>
+		</text>
+		<rect id="SvgjsRect1526" width="154.71875" height="37" x="141" y="25.390625" stroke="#70c0c0" fill-opacity="0" stroke-width="3" rx="3" ry="3">
+		</rect>
+		<line id="SvgjsLine1527" x1="148" y1="62.390625" x2="148" y2="1092" stroke="#000000" stroke-width="2" stroke-opacity="0.6" stroke-dasharray="5">
+		</line>
+		<text id="SvgjsText1528" font-family="Helvetica, Arial, sans-serif" x="354" y="80.203125" fill="#000000" font-size="24px" size="24px" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1529" dy="31.200000000000003" x="354" svgjs:data="{&quot;newLined&quot;:true}">
+				obj/
+			</tspan>
+			<tspan id="SvgjsTspan1530" dy="31.200000000000003" x="354" svgjs:data="{&quot;newLined&quot;:true}">
+				Object 2
+			</tspan>
+		</text>
+		<rect id="SvgjsRect1543" width="116.03125" height="68.203125" x="347" y="82.390625" stroke="#70c0c0" fill-opacity="0" stroke-width="3" rx="3" ry="3">
+		</rect>
+		<line id="SvgjsLine1544" x1="354" y1="150.59375" x2="354" y2="1000" stroke="#000000" stroke-width="2" stroke-opacity="0.6" stroke-dasharray="5">
+		</line>
+	</g>
+	<g id="SvgjsG1512" class="dd__spec-group">
+		<rect id="SvgjsRect1729" width="5" height="743" x="147" y="97" stroke="#000000" fill="#ffffff" stroke-width="1.2">
+		</rect>
+		<rect id="SvgjsRect1750" width="5" height="715" x="353" y="185" stroke="#000000" fill="#ffffff" stroke-width="1.2">
+		</rect>
+		<rect id="SvgjsRect1767" width="5" height="23" x="152" y="244" stroke="#000000" fill="#ffffff" stroke-width="1.2">
+		</rect>
+		<rect id="SvgjsRect1784" width="5" height="20" x="358" y="327" stroke="#000000" fill="#ffffff" stroke-width="1.2">
+		</rect>
+		<rect id="SvgjsRect1795" width="5" height="385" x="152" y="396" stroke="#000000" fill="#ffffff" stroke-width="1.2">
+		</rect>
+	</g>
+	<g id="SvgjsG1513" class="dd__other-group">
+		<line id="SvgjsLine1730" x1="20" y1="97" x2="148" y2="97" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1731" points="140,89 148,97 140,105" stroke-linecap="round" stroke="#000000" stroke-width="3">
+		</polyline>
+		<circle id="SvgjsCircle1732" r="8" cx="28" cy="97">
+		</circle>
+		<text id="SvgjsText1733" font-family="Helvetica, Arial, sans-serif" x="38" y="92.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1734" dy="20.8" x="38" svgjs:data="{&quot;newLined&quot;:true}">
+				message
+			</tspan>
+			<tspan id="SvgjsTspan1735" dy="20.8" x="38" svgjs:data="{&quot;newLined&quot;:true}">
+				from found
+			</tspan>
+		</text>
+		<line id="SvgjsLine1742" x1="153" y1="116" x2="354" y2="116" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1743" points="346,108 354,116 346,124" stroke-linecap="round" stroke="#000000" stroke-width="3" fill="none">
+		</polyline>
+		<text id="SvgjsText1744" font-family="Helvetica, Arial, sans-serif" x="171" y="111.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1745" dy="20.8" x="171" svgjs:data="{&quot;newLined&quot;:true}">
+				create lifeline
+			</tspan>
+		</text>
+		<line id="SvgjsLine1751" x1="153" y1="185" x2="354" y2="185" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1752" points="346,177 354,185 346,193" stroke-linecap="round" stroke="#000000" stroke-width="3">
+		</polyline>
+		<text id="SvgjsText1753" font-family="Helvetica, Arial, sans-serif" x="171" y="180.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1754" dy="20.8" x="171" svgjs:data="{&quot;newLined&quot;:true}">
+				lifeline to lifeline
+			</tspan>
+		</text>
+		<line id="SvgjsLine1759" x1="354" y1="900" x2="148" y2="900" stroke="#000000" stroke-width="2" stroke-dasharray="10">
+		</line>
+		<polyline id="SvgjsPolyline1760" points="156,908 148,900 156,892" stroke-linecap="round" stroke="#000000" stroke-width="3" fill="none">
+		</polyline>
+		<text id="SvgjsText1761" font-family="Helvetica, Arial, sans-serif" x="166" y="895.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1762" dy="20.8" x="166" svgjs:data="{&quot;newLined&quot;:true}">
+				message of reply
+			</tspan>
+		</text>
+		<line id="SvgjsLine1768" x1="359" y1="244" x2="153" y2="244" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1769" points="161,252 153,244 161,236" stroke-linecap="round" stroke="#000000" stroke-width="3">
+		</polyline>
+		<text id="SvgjsText1770" font-family="Helvetica, Arial, sans-serif" x="171" y="239.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1771" dy="20.8" x="171" svgjs:data="{&quot;newLined&quot;:true}">
+				in message01
+			</tspan>
+		</text>
+		<line id="SvgjsLine1776" x1="153" y1="267" x2="354" y2="267" stroke="#000000" stroke-width="2" stroke-dasharray="10">
+		</line>
+		<polyline id="SvgjsPolyline1777" points="346,259 354,267 346,275" stroke-linecap="round" stroke="#000000" stroke-width="3" fill="none">
+		</polyline>
+		<text id="SvgjsText1778" font-family="Helvetica, Arial, sans-serif" x="171" y="262.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1779" dy="20.8" x="171" svgjs:data="{&quot;newLined&quot;:true}">
+				reply
+			</tspan>
+		</text>
+		<polyline id="SvgjsPolyline1785" points="359,327 459,327 459,337 364,337" stroke="#000000" stroke-width="2" fill="none">
+		</polyline>
+		<polyline id="SvgjsPolyline1786" points="370,343 364,337 370,331" stroke-linecap="round" stroke="#000000" stroke-width="3">
+		</polyline>
+		<text id="SvgjsText1789" font-family="Helvetica, Arial, sans-serif" x="377" y="332.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1790" dy="20.8" x="377" svgjs:data="{&quot;newLined&quot;:true}">
+				turnback
+			</tspan>
+		</text>
+		<line id="SvgjsLine1796" x1="359" y1="396" x2="153" y2="396" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1797" points="161,404 153,396 161,388" stroke-linecap="round" stroke="#000000" stroke-width="3">
+		</polyline>
+		<text id="SvgjsText1798" font-family="Helvetica, Arial, sans-serif" x="171" y="391.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1799" dy="20.8" x="171" svgjs:data="{&quot;newLined&quot;:true}">
+				in message02
+			</tspan>
+		</text>
+		<line id="SvgjsLine1804" x1="153" y1="781" x2="354" y2="781" stroke="#000000" stroke-width="2" stroke-dasharray="10">
+		</line>
+		<polyline id="SvgjsPolyline1805" points="346,773 354,781 346,789" stroke-linecap="round" stroke="#000000" stroke-width="3" fill="none">
+		</polyline>
+		<text id="SvgjsText1806" font-family="Helvetica, Arial, sans-serif" x="171" y="776.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1807" dy="20.8" x="171" svgjs:data="{&quot;newLined&quot;:true}">
+				reply
+			</tspan>
+		</text>
+		<line id="SvgjsLine1812" x1="158" y1="462" x2="428" y2="462" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1813" points="420,454 428,462 420,470" stroke-linecap="round" stroke="#000000" stroke-width="3" fill="none">
+		</polyline>
+		<circle id="SvgjsCircle1814" r="8" cx="436" cy="462" fill="none" stroke="#000000" stroke-width="2">
+		</circle>
+		<text id="SvgjsText1815" font-family="Helvetica, Arial, sans-serif" x="176" y="457.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1816" dy="20.8" x="176" svgjs:data="{&quot;newLined&quot;:true}">
+				message
+			</tspan>
+		</text>
+		<line id="SvgjsLine1821" x1="158" y1="549" x2="431" y2="549" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1822" points="423,541 431,549 423,557" stroke-linecap="round" stroke="#000000" stroke-width="3" fill="none">
+		</polyline>
+		<circle id="SvgjsCircle1823" r="8" cx="439" cy="549" fill="none" stroke="#000000" stroke-width="2">
+		</circle>
+		<text id="SvgjsText1824" font-family="Helvetica, Arial, sans-serif" x="176" y="544.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1825" dy="20.8" x="176" svgjs:data="{&quot;newLined&quot;:true}">
+				message
+			</tspan>
+		</text>
+		<line id="SvgjsLine1830" x1="158" y1="648" x2="457" y2="648" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1831" points="449,640 457,648 449,656" stroke-linecap="round" stroke="#000000" stroke-width="3">
+		</polyline>
+		<circle id="SvgjsCircle1832" r="8" cx="465" cy="648" fill="none" stroke="#000000" stroke-width="2">
+		</circle>
+		<text id="SvgjsText1833" font-family="Helvetica, Arial, sans-serif" x="176" y="643.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1834" dy="20.8" x="176" svgjs:data="{&quot;newLined&quot;:true}">
+				in message to lost
+			</tspan>
+		</text>
+		<line id="SvgjsLine1839" x1="158" y1="736" x2="461" y2="736" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1840" points="453,728 461,736 453,744" stroke-linecap="round" stroke="#000000" stroke-width="3">
+		</polyline>
+		<circle id="SvgjsCircle1841" r="8" cx="469" cy="736" fill="none" stroke="#000000" stroke-width="2">
+		</circle>
+		<text id="SvgjsText1842" font-family="Helvetica, Arial, sans-serif" x="176" y="731.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1843" dy="20.8" x="176" svgjs:data="{&quot;newLined&quot;:true}">
+				message
+			</tspan>
+		</text>
+		<line id="SvgjsLine1848" x1="148" y1="952" x2="420" y2="952" stroke="#000000" stroke-width="2">
+		</line>
+		<polyline id="SvgjsPolyline1849" points="412,944 420,952 412,960" stroke-linecap="round" stroke="#000000" stroke-width="3" fill="none">
+		</polyline>
+		<circle id="SvgjsCircle1850" r="8" cx="428" cy="952" fill="none" stroke="#000000" stroke-width="2">
+		</circle>
+		<text id="SvgjsText1851" font-family="Helvetica, Arial, sans-serif" x="166" y="947.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1852" dy="20.8" x="166" svgjs:data="{&quot;newLined&quot;:true}">
+				message async to lost
+			</tspan>
+		</text>
+		<line id="SvgjsLine1857" x1="148" y1="1000" x2="354" y2="1000" stroke="#000000" stroke-width="2">
+		</line>
+		<line id="SvgjsLine1858" x1="346" y1="992" x2="362" y2="1008" fill="none" stroke="#000000" stroke-width="2">
+		</line>
+		<line id="SvgjsLine1859" x1="362" y1="992" x2="346" y2="1008" fill="none" stroke="#000000" stroke-width="2">
+		</line>
+		<text id="SvgjsText1860" font-family="Helvetica, Arial, sans-serif" x="166" y="995.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1861" dy="20.8" x="166" svgjs:data="{&quot;newLined&quot;:true}">
+				stop to lifeline
+			</tspan>
+		</text>
+	</g>
+	<g id="SvgjsG1514" class="dd__fragment-group">
+		<g id="SvgjsG1545" class="dd__fragment-bg">
+			<rect id="SvgjsRect1558" width="518.890625" height="406" x="16" y="206" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.1" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1546" class="dd__fragment-fg">
+			<text id="SvgjsText1547" font-family="Helvetica, Arial, sans-serif" x="23" y="201.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1548" dy="20.8" x="23" svgjs:data="{&quot;newLined&quot;:true}">
+					alt
+				</tspan>
+			</text>
+			<polyline id="SvgjsPolyline1557" points="17,225 42.453125,225 48.453125,220 48.453125,207" stroke-linecap="round" stroke="#000000" stroke-width="1" fill="none">
+			</polyline>
+			<g id="SvgjsG1559" class="fragment__edge-icon" transform="matrix(0.5,0,0,0.5,510.890625,588)" opacity="0.3">
+				<!--?xml version="1.0" encoding="utf-8"?-->
+				
+
+
+				<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="2" x2="2" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="12" x2="12" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="22" x2="22" y2="30"></line>
+</svg>
+				
+
+			</g>
+		</g>
+		<line id="SvgjsLine1560" x1="16" y1="226" x2="534.890625" y2="226" stroke="#000000" stroke-width="1.2" stroke-opacity="0.6" stroke-dasharray="5">
+		</line>
+		<text id="SvgjsText1561" font-family="Helvetica, Arial, sans-serif" x="21" y="220.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1562" dy="20.8" x="21" svgjs:data="{&quot;newLined&quot;:true}">
+				[condition A]
+			</tspan>
+		</text>
+		<line id="SvgjsLine1567" x1="16" y1="377" x2="534.890625" y2="377" stroke="#000000" stroke-width="1.2" stroke-opacity="0.6" stroke-dasharray="5">
+		</line>
+		<text id="SvgjsText1568" font-family="Helvetica, Arial, sans-serif" x="21" y="371.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1569" dy="20.8" x="21" svgjs:data="{&quot;newLined&quot;:true}">
+				[else]
+			</tspan>
+		</text>
+		<g id="SvgjsG1574" class="dd__fragment-bg">
+			<rect id="SvgjsRect1591" width="134.59375" height="41.796875" x="328" y="1043" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.6" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1575" class="dd__fragment-fg">
+			<text id="SvgjsText1576" font-family="Helvetica, Arial, sans-serif" x="335" y="1038.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1577" dy="20.8" x="335" svgjs:data="{&quot;newLined&quot;:true}">
+					text
+				</tspan>
+				<tspan id="SvgjsTspan1578" dy="20.8" x="335" svgjs:data="{&quot;newLined&quot;:true}">
+					memo fragment
+				</tspan>
+			</text>
+		</g>
+		<g id="SvgjsG1592" class="dd__fragment-bg">
+			<rect id="SvgjsRect1605" width="301" height="54" x="167" y="309" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.1" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1593" class="dd__fragment-fg">
+			<text id="SvgjsText1594" font-family="Helvetica, Arial, sans-serif" x="174" y="304.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1595" dy="20.8" x="174" svgjs:data="{&quot;newLined&quot;:true}">
+					Loop [12]
+				</tspan>
+			</text>
+			<polyline id="SvgjsPolyline1604" points="169,328 242.28125,328 248.28125,323 248.28125,310" stroke-linecap="round" stroke="#000000" stroke-width="1" fill="none">
+			</polyline>
+			<g id="SvgjsG1606" class="fragment__edge-icon" transform="matrix(0.5,0,0,0.5,444,339)" opacity="0.3">
+				<!--?xml version="1.0" encoding="utf-8"?-->
+				
+
+
+				<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="2" x2="2" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="12" x2="12" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="22" x2="22" y2="30"></line>
+</svg>
+				
+
+			</g>
+		</g>
+		<g id="SvgjsG1607" class="dd__fragment-bg">
+			<rect id="SvgjsRect1620" width="430" height="54" x="47" y="622" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.1" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1608" class="dd__fragment-fg">
+			<text id="SvgjsText1609" font-family="Helvetica, Arial, sans-serif" x="54" y="617.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1610" dy="20.8" x="54" svgjs:data="{&quot;newLined&quot;:true}">
+					Opt [condition X]
+				</tspan>
+			</text>
+			<polyline id="SvgjsPolyline1619" points="48,641 173.84375,641 179.84375,636 179.84375,623" stroke-linecap="round" stroke="#000000" stroke-width="1" fill="none">
+			</polyline>
+			<g id="SvgjsG1621" class="fragment__edge-icon" transform="matrix(0.5,0,0,0.5,453,652)" opacity="0.3">
+				<!--?xml version="1.0" encoding="utf-8"?-->
+				
+
+
+				<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="2" x2="2" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="12" x2="12" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="22" x2="22" y2="30"></line>
+</svg>
+				
+
+			</g>
+		</g>
+		<g id="SvgjsG1622" class="dd__fragment-bg">
+			<rect id="SvgjsRect1650" width="334" height="57" x="104" y="813" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.1" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1623" class="dd__fragment-fg">
+			<text id="SvgjsText1624" font-family="Helvetica, Arial, sans-serif" x="111" y="808.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1625" dy="20.8" x="111" svgjs:data="{&quot;newLined&quot;:true}">
+					ref
+				</tspan>
+			</text>
+			<polyline id="SvgjsPolyline1634" points="106,832 132.21875,832 138.21875,827 138.21875,814" stroke-linecap="round" stroke="#000000" stroke-width="1" fill="none">
+			</polyline>
+			<text id="SvgjsText1635" font-family="Helvetica, Arial, sans-serif" x="111" y="825.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1636" dy="20.8" x="111" svgjs:data="{&quot;newLined&quot;:true}">
+					this is
+				</tspan>
+				<tspan id="SvgjsTspan1637" dy="20.8" x="111" svgjs:data="{&quot;newLined&quot;:true}">
+					 ref fragment.
+				</tspan>
+			</text>
+			<g id="SvgjsG1651" class="fragment__edge-icon" transform="matrix(0.5,0,0,0.5,414,846)" opacity="0.3">
+				<!--?xml version="1.0" encoding="utf-8"?-->
+				
+
+
+				<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="2" x2="2" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="12" x2="12" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="22" x2="22" y2="30"></line>
+</svg>
+				
+
+			</g>
+		</g>
+		<g id="SvgjsG1652" class="dd__fragment-bg">
+			<rect id="SvgjsRect1665" width="416.109375" height="55.6875" x="62" y="923" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.1" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1653" class="dd__fragment-fg">
+			<text id="SvgjsText1654" font-family="Helvetica, Arial, sans-serif" x="69" y="918.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1655" dy="20.8" x="69" svgjs:data="{&quot;newLined&quot;:true}">
+					任意の グループ
+				</tspan>
+			</text>
+			<polyline id="SvgjsPolyline1664" points="63,942 187.4375,942 193.4375,937 193.4375,924" stroke-linecap="round" stroke="#000000" stroke-width="1" fill="none">
+			</polyline>
+			<g id="SvgjsG1666" class="fragment__edge-icon" transform="matrix(0.5,0,0,0.5,454.109375,954.6875)" opacity="0.3">
+				<!--?xml version="1.0" encoding="utf-8"?-->
+				
+
+
+				<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="2" x2="2" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="12" x2="12" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="22" x2="22" y2="30"></line>
+</svg>
+				
+
+			</g>
+		</g>
+		<g id="SvgjsG1667" class="dd__fragment-bg">
+			<rect id="SvgjsRect1680" width="428" height="163" x="94" y="422" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.1" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1668" class="dd__fragment-fg">
+			<text id="SvgjsText1669" font-family="Helvetica, Arial, sans-serif" x="101" y="417.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1670" dy="20.8" x="101" svgjs:data="{&quot;newLined&quot;:true}">
+					par
+				</tspan>
+			</text>
+			<polyline id="SvgjsPolyline1679" points="96,441 126.796875,441 132.796875,436 132.796875,423" stroke-linecap="round" stroke="#000000" stroke-width="1" fill="none">
+			</polyline>
+			<g id="SvgjsG1681" class="fragment__edge-icon" transform="matrix(0.5,0,0,0.5,498,561)" opacity="0.3">
+				<!--?xml version="1.0" encoding="utf-8"?-->
+				
+
+
+				<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="2" x2="2" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="12" x2="12" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="22" x2="22" y2="30"></line>
+</svg>
+				
+
+			</g>
+		</g>
+		<line id="SvgjsLine1682" x1="94" y1="495" x2="522" y2="495" stroke="#000000" stroke-width="1.2" stroke-opacity="0.6" stroke-dasharray="5">
+		</line>
+		<text id="SvgjsText1683" font-family="Helvetica, Arial, sans-serif" x="99" y="489.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+			<tspan id="SvgjsTspan1684" dy="20.8" x="99" svgjs:data="{&quot;newLined&quot;:true}">
+				[0 == i%2]
+			</tspan>
+		</text>
+		<g id="SvgjsG1689" class="dd__fragment-bg">
+			<rect id="SvgjsRect1702" width="410" height="54" x="99" y="520" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.1" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1690" class="dd__fragment-fg">
+			<text id="SvgjsText1691" font-family="Helvetica, Arial, sans-serif" x="106" y="515.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1692" dy="20.8" x="106" svgjs:data="{&quot;newLined&quot;:true}">
+					critical
+				</tspan>
+			</text>
+			<polyline id="SvgjsPolyline1701" points="100,539 152.78125,539 158.78125,534 158.78125,521" stroke-linecap="round" stroke="#000000" stroke-width="1" fill="none">
+			</polyline>
+			<g id="SvgjsG1703" class="fragment__edge-icon" transform="matrix(0.5,0,0,0.5,485,550)" opacity="0.3">
+				<!--?xml version="1.0" encoding="utf-8"?-->
+				
+
+
+				<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="2" x2="2" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="12" x2="12" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="22" x2="22" y2="30"></line>
+</svg>
+				
+
+			</g>
+		</g>
+		<g id="SvgjsG1704" class="dd__fragment-bg">
+			<rect id="SvgjsRect1727" width="491" height="63" x="27" y="700" rx="1" ry="1" stroke="#000000" stroke-width="1" fill-opacity="0.1" fill="#1080ff">
+			</rect>
+		</g>
+		<g id="SvgjsG1705" class="dd__fragment-fg">
+			<text id="SvgjsText1706" font-family="Helvetica, Arial, sans-serif" x="34" y="695.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1707" dy="20.8" x="34" svgjs:data="{&quot;newLined&quot;:true}">
+					Opt
+				</tspan>
+			</text>
+			<polyline id="SvgjsPolyline1716" points="28,719 62.34375,719 68.34375,714 68.34375,701" stroke-linecap="round" stroke="#000000" stroke-width="1" fill="none">
+			</polyline>
+			<text id="SvgjsText1717" font-family="Helvetica, Arial, sans-serif" x="34" y="712.203125" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
+				<tspan id="SvgjsTspan1718" dy="20.8" x="34" svgjs:data="{&quot;newLined&quot;:true}">
+					[Condition Y]
+				</tspan>
+			</text>
+			<g id="SvgjsG1728" class="fragment__edge-icon" transform="matrix(0.5,0,0,0.5,494,739)" opacity="0.3">
+				<!--?xml version="1.0" encoding="utf-8"?-->
+				
+
+
+				<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="2" x2="2" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="12" x2="12" y2="30"></line>
+<line fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10" x1="30" y1="22" x2="22" y2="30"></line>
+</svg>
+				
+
+			</g>
+		</g>
+	</g>
+</svg>

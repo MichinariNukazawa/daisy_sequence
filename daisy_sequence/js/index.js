@@ -9,6 +9,10 @@ const sprintf = require('sprintf-js').sprintf;
 const fs = require("fs");
 const path = require('path');
 const xml_formatter = require('xml-formatter');
+const DaisyIO = require('./js/daisy_io');
+const Daisy = require('./js/daisy');
+const Renderer = require('./js/renderer').Renderer;
+const RenderingHandle = require('./js/renderer').RenderingHandle;
 let ad = new Ad();
 
 let doc_collection = new DocCollection();
@@ -162,7 +166,7 @@ window.onload = function(e){
 
 	rendering_handle = new RenderingHandle('canvas');
 
-	daisy = new Daisy();
+	daisy = new Daisy(callback_focus_change, callback_history_change_doc);
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
 
 	if(null !== arg.open_filepath){
