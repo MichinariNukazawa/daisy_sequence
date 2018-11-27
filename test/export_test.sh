@@ -28,9 +28,9 @@ for F in $FILES; do
 done
 
 ## svg size
-SOURCE_PATH=../fileformat-example/test01.daisysequence
+SOURCE_FILEPATH=../fileformat-example/test01.daisysequence
 DST_FILEPATH=${OBJECT_DIR}/sample.svg
-${BIN} ${SOURCE_PATH} -o ${DST_FILEPATH}
+${BIN} ${SOURCE_FILEPATH} -o ${DST_FILEPATH}
 [ -s ${DST_FILEPATH} ] # file is not zero size
 # STR=`file ${DST_FILEPATH}` ; [[ "${STR}" =~ "SVG" ]] # file type # `file` is now work(SGML).
 rsvg-convert -o ${DST_FILEPATH}.png ${DST_FILEPATH} # check file type is svg.
@@ -56,7 +56,7 @@ for F in $FILES; do
 	SOURCE_FILEPATH=$F
 	DST_FILEPATH=${OBJECT_DIR}/$(basename ${SOURCE_FILEPATH}).puml
 
-	${BIN} ${SOURCE_PATH} -o ${DST_FILEPATH}
+	${BIN} ${SOURCE_FILEPATH} -o ${DST_FILEPATH}
 	[ -s ${DST_FILEPATH} ] # file is not zero size
 done
 
