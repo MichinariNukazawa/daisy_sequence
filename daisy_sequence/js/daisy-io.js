@@ -23,7 +23,7 @@ module.exports = class DaisyIO{
 		errs_.push(err_);
 	}
 
-	static open_doc_from_path(filepath, err_)
+	static open_diagram_from_path(filepath, err_)
 	{
 		let strdata = '';
 		try{
@@ -31,18 +31,28 @@ module.exports = class DaisyIO{
 		}catch(err){
 			console.error(err.message);
 			DaisyIO.set_err_(err_, 'warning', "Open", err.message);
+			return null;
+		}
+
+		const doc = Doc.create_from_native_format_string(strdata, err_);
+		return doc;
+	}
+
+	static open_doc_from_path(filepath, err_)
+	{
+		let doc = DaisyIO.open_diagram_from_path(filepath, err_)
+		if(null === doc){
 			return -1;
 		}
 
-		const doc_id = doc_collection.create_doc_from_native_format_string(strdata, err_);
+		const doc_id = doc_collection.append_doc(doc);
 		if(-1 === doc_id){
-			DaisyIO.set_err_('warning', "Open", err.message);
+			DaisyIO.set_err_('warning', "Open", err_.message);
 			return -1;
 		}
 
 		daisy.append_doc_id(doc_id);
 
-		let doc = doc_collection.get_doc_from_id(doc_id);
 		Doc.set_filepath(doc, filepath);
 		Doc.on_save(doc);
 

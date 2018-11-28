@@ -29,13 +29,8 @@ class DocCollection{
 		this.docs[doc_id] = null;
 	}
 
-	create_doc_from_native_format_string(strdata, err)
+	append_doc(doc)
 	{
-		const doc = Doc.create_from_native_format_string(strdata, err);
-		if(null === doc){
-			return -1;
-		}
-
 		const doc_id = this.assign_doc_id_();
 		this.docs[doc_id] = doc;
 
