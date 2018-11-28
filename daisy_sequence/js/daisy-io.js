@@ -59,7 +59,7 @@ module.exports = class DaisyIO{
 		return doc_id;
 	}
 
-	static get_dummy_draw_(doc, err_)
+	static get_dummy_draw_from_diagram_(diagram, err_)
 	{
 		let dummy_elem = document.createElementNS('http://www.w3.org/2000/svg','svg');
 		let dummy_rhandle = new RenderingHandle(dummy_elem);
@@ -69,16 +69,16 @@ module.exports = class DaisyIO{
 			return null;
 		}
 
-		Renderer.rendering_(dummy_rhandle, Doc.get_diagram(doc));
+		Renderer.rendering_(dummy_rhandle, diagram);
 
 		dummy_rhandle.get_focus_group().remove();
 
 		return draw;
 	}
 
-	static get_svg_string_from_doc_(doc, err_)
+	static get_svg_string_from_diagram_(diagram, err_)
 	{
-		let draw = DaisyIO.get_dummy_draw_(doc, err_);
+		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, err_);
 		if(null === draw){
 			return null;
 		}
@@ -97,20 +97,20 @@ module.exports = class DaisyIO{
 		return filepath.match(/\.[a-zA-Z0-9]*$/)[0];
 	}
 
-	static write_export_doc(filepath, doc, errs_)
+	static write_export_diagram(filepath, diagram, errs_)
 	{
 		const ext = DaisyIO.get_ext_from_filepath(filepath);
 
 		let res;
 		switch(ext){
 			case '.png':
-				res = DaisyIO.write_export_png_doc_(filepath, doc, errs_);
+				res = DaisyIO.write_export_png_from_diagram_(filepath, diagram, errs_);
 				break;
 			case '.svg':
-				res = DaisyIO.write_export_svg_doc_(filepath, doc, errs_);
+				res = DaisyIO.write_export_svg_from_diagram_(filepath, diagram, errs_);
 				break;
 			case '.puml':
-				res = DaisyIO.write_export_plantuml_doc_(filepath, doc, errs_);
+				res = DaisyIO.write_export_plantuml_from_diagram_(filepath, diagram, errs_);
 				break;
 			default:
 				DaisyIO.add_errs_(errs_, "warning", "Export", sprintf("invalid file type. :`%s`", filepath));
@@ -120,10 +120,10 @@ module.exports = class DaisyIO{
 		return res;
 	}
 
-	static write_export_png_doc_(filepath, doc, errs_)
+	static write_export_png_from_diagram_(filepath, diagram, errs_)
 	{
 		let err_ = {};
-		let draw = DaisyIO.get_dummy_draw_(doc, err_);
+		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, err_);
 		if(null === draw){
 			DaisyIO.add_errs_(errs_, err_.level, "Export", err_.message);
 			return false;
@@ -151,10 +151,10 @@ module.exports = class DaisyIO{
 		return true;
 	}
 
-	static write_export_svg_doc_(filepath, doc, errs_)
+	static write_export_svg_from_diagram_(filepath, diagram, errs_)
 	{
 		let err_ = {};
-		const strdata = DaisyIO.get_svg_string_from_doc_(doc, err_);
+		const strdata = DaisyIO.get_svg_string_from_diagram_(diagram, err_);
 		if(null === strdata){
 			console.error(err_);
 			DaisyIO.add_errs_(errs_, err_.level, "Export", err_.message);
@@ -171,9 +171,9 @@ module.exports = class DaisyIO{
 		return true;
 	}
 
-	static write_export_plantuml_doc_(filepath, doc, errs_)
+	static write_export_plantuml_from_diagram_(filepath, diagram, errs_)
 	{
-		const strdata = Doc.get_plantuml_string(doc, errs_);
+		const strdata = Diagram.get_plantuml_string(diagram, errs_);
 		if(null === strdata){
 			console.debug(errs_);
 			return false;

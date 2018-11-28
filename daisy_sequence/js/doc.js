@@ -404,7 +404,277 @@ class Doc{
 		return strdata;
 	}
 
-	static get_plantuml_string(doc, errs_)
+	static on_save(doc)
+	{
+		doc.on_save_diagram_history_index = doc.diagram_history_index;
+
+		Doc.call_event_listener_on_save_(doc);
+	}
+
+	static is_on_save(doc)
+	{
+		if(-1 === doc.on_save_diagram_history_index){
+			return false;
+		}
+
+		return (doc.on_save_diagram_history_index === doc.diagram_history_index);
+	}
+
+	static add_event_listener_on_save(doc, callback)
+	{
+		object_make_member(doc, 'work.event_listener_on_saves', []);
+
+		if(doc.work.event_listener_on_saves.includes(callback)){
+			return false;
+		}
+
+		doc.work.event_listener_on_saves.push(callback);
+
+		return true;
+	}
+
+	static call_event_listener_on_save_(doc)
+	{
+		if(! doc.hasOwnProperty('work')){
+			return;
+		}
+		if(! doc.work.hasOwnProperty('event_listener_on_saves')){
+			return;
+		}
+
+		for(let i = 0; i < doc.work.event_listener_on_saves.length; i++){
+			doc.work.event_listener_on_saves[i](doc);
+		}
+	}
+};
+
+class DiagramHistory{
+	static deepcopy(src_history){
+		// ** copy diagram document tree
+		const diagram = object_deepcopy(src_history.diagram);
+
+		// ** copy focus
+		//! @notice focus.* is direct copy excluded focus.elements because this is reference
+		let focus = {};
+		focus.work = src_history.focus.work;
+		focus.focus_state = object_deepcopy(src_history.focus.focus_state);
+
+		focus.elements = [];
+		for(let i = 0; i < src_history.focus.elements.length; i++){
+			const src_element = src_history.focus.elements[i];
+
+			const element = Diagram.get_element_from_id(diagram, src_element.id);
+			if(null === element){
+				console.error(src_element);
+			}else{
+				focus.elements.push(element);
+			}
+		}
+
+		let dst_history = {
+			'diagram': diagram,
+			'focus': focus,
+		};
+
+		return dst_history;
+	}
+};
+
+class Focus{
+	static set_element(focus, element)
+	{
+		focus.elements.length = 0;
+		if(null !== element){
+			focus.elements.push(element);
+		}
+
+		Focus.call_event_listener_focus_change_(focus);
+	}
+
+	static append_elements(focus, elements)
+	{
+		for(let i = 0; i < elements.length; i++){
+			Focus.append_element(focus, elements[i]);
+		}
+	}
+
+	static append_element(focus, element)
+	{
+		if(null === element){
+			return;
+		}
+		if(focus.elements.includes(element)){
+			return;
+		}
+
+		focus.elements.push(element);
+		if(1 < focus.elements.length){
+			focus.focus_state.side = '';
+		}
+
+		Focus.call_event_listener_focus_change_(focus);
+	}
+
+	static clear(focus)
+	{
+		focus.elements.length = 0;
+	}
+
+	static set_side(focus, side){
+		focus.focus_state.side = side;
+	}
+
+	static is_focusing(focus)
+	{
+		return (0 !== focus.elements.length);
+	}
+
+	static get_elements(focus)
+	{
+		return focus.elements;
+	}
+
+	static get_focus_state(focus)
+	{
+		return focus.focus_state;
+	}
+
+	static add_event_listener_focus_change(focus, callback, user_data)
+	{
+		if(! focus.hasOwnProperty('work')){
+			focus.work = {};
+		}
+		if(! focus.work.hasOwnProperty('event_listener_focus_changes')){
+			focus.work.event_listener_focus_changes = [];
+		}
+
+		for(let i = 0; i < focus.work.event_listener_focus_changes.length; i++){
+			if(callback === focus.work.event_listener_focus_changes[i].callback){
+				console.error('duplicated callback');
+				return false;
+			}
+		}
+
+		let cb = {'callback': callback, 'user_data': user_data};
+		focus.work.event_listener_focus_changes.push(cb);
+
+		return true;
+	}
+
+	static call_event_listener_focus_change_(focus)
+	{
+		if(! focus.hasOwnProperty('work')){
+			return;
+		}
+		if(! focus.work.hasOwnProperty('event_listener_focus_changes')){
+			return;
+		}
+
+		for(let i = 0; i < focus.work.event_listener_focus_changes.length; i++){
+			focus.work.event_listener_focus_changes[i].callback(
+				focus,
+				focus.work.event_listener_focus_changes[i].user_data);
+		}
+	}
+};
+
+class Diagram{
+	static create_element(diagram, kind, data)
+	{
+		let element = null;
+		if('lifeline' === kind){
+			element = Diagram.create_lifeline_(data);
+		}else if('message' === kind){
+			element = Diagram.create_message_(data);
+		}else if('spec' === kind){
+			element = Diagram.create_spec_(data);
+		}else if('reply_message' === kind){
+			element = Diagram.create_reply_message_(data);
+		}else if('fragment' === kind){
+			element = Diagram.create_fragment_(data);
+		}else if('operand' === kind){
+			element = Diagram.create_operand_(data);
+		}else{
+			return null;
+		}
+
+		element.id = Diagram.create_id_(diagram);
+		return element;
+	}
+
+	static create_append_element(diagram, kind, data)
+	{
+		let element = Diagram.create_element(diagram, kind, data);
+		if(! Diagram.append_element_(diagram, element)){
+			return null;
+		}else{
+			return element;
+		}
+	}
+
+	static delete_elements(diagram, elements)
+	{
+		for(let i = 0; i < elements.length; i++){
+			Diagram.delete_element_from_id_(diagram, elements[i].id);
+		}
+	}
+
+	static get_parent_element_from_id(diagram, id)
+	{
+		let func = function(recurse_info, element, opt){
+			if(opt.id === element.id){
+				opt.parent_element = recurse_info.get_parent_element();
+				return false;
+			}
+			return true;
+		};
+		let opt = {'id': id, 'parent_element': null, 'ignore_keys':['work'],};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		return opt.parent_element;
+	}
+
+	static get_elements_in_range_y(diagram, range_y)
+	{
+		const func = function(recurse_info, element, opt){
+			const rect = Element.get_rect(element);
+			if(null === rect){
+				return true;
+			}
+
+			if(Range.y_is_inside(opt.range_y, rect)){
+				opt.elements.push(element);
+			}
+
+			return true;
+		};
+		let opt = {'ignore_keys':['work'], 'elements': [], 'range_y': range_y};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		return opt.elements;
+	}
+
+	static get_elements_in_rect(diagram, rect)
+	{
+		const func = function(recurse_info, element, opt){
+			const rect = Element.get_rect(element);
+			if(null === rect){
+				return true;
+			}
+
+			if(Rect.is_inside(opt.area_rect, rect)){
+				opt.elements.push(element);
+			}
+
+			return true;
+		};
+		let opt = {'ignore_keys':['work'], 'elements': [], 'area_rect': rect};
+		Element.recursive(diagram.diagram_elements, func, opt);
+
+		return opt.elements;
+	}
+
+	static get_plantuml_string(src_diagram, errs_)
 	{
 		const add_errs_ = function(errs_, level, message)
 		{
@@ -417,12 +687,11 @@ class Doc{
 			console.debug(err_);
 		};
 
-		if(null === doc){
-			add_errs_(errs_, "bug", "doc is empty.");
+		if(null === src_diagram){
+			add_errs_(errs_, "bug", "diagram is empty.");
 			return null;
 		}
 
-		const src_diagram = Doc.get_diagram(doc);
 		const diagram = object_deepcopy(src_diagram);
 
 		let lifelines = [];
@@ -796,276 +1065,6 @@ class Doc{
 		strdata += "\n@enduml";
 
 		return strdata;
-	}
-
-	static on_save(doc)
-	{
-		doc.on_save_diagram_history_index = doc.diagram_history_index;
-
-		Doc.call_event_listener_on_save_(doc);
-	}
-
-	static is_on_save(doc)
-	{
-		if(-1 === doc.on_save_diagram_history_index){
-			return false;
-		}
-
-		return (doc.on_save_diagram_history_index === doc.diagram_history_index);
-	}
-
-	static add_event_listener_on_save(doc, callback)
-	{
-		object_make_member(doc, 'work.event_listener_on_saves', []);
-
-		if(doc.work.event_listener_on_saves.includes(callback)){
-			return false;
-		}
-
-		doc.work.event_listener_on_saves.push(callback);
-
-		return true;
-	}
-
-	static call_event_listener_on_save_(doc)
-	{
-		if(! doc.hasOwnProperty('work')){
-			return;
-		}
-		if(! doc.work.hasOwnProperty('event_listener_on_saves')){
-			return;
-		}
-
-		for(let i = 0; i < doc.work.event_listener_on_saves.length; i++){
-			doc.work.event_listener_on_saves[i](doc);
-		}
-	}
-};
-
-class DiagramHistory{
-	static deepcopy(src_history){
-		// ** copy diagram document tree
-		const diagram = object_deepcopy(src_history.diagram);
-
-		// ** copy focus
-		//! @notice focus.* is direct copy excluded focus.elements because this is reference
-		let focus = {};
-		focus.work = src_history.focus.work;
-		focus.focus_state = object_deepcopy(src_history.focus.focus_state);
-
-		focus.elements = [];
-		for(let i = 0; i < src_history.focus.elements.length; i++){
-			const src_element = src_history.focus.elements[i];
-
-			const element = Diagram.get_element_from_id(diagram, src_element.id);
-			if(null === element){
-				console.error(src_element);
-			}else{
-				focus.elements.push(element);
-			}
-		}
-
-		let dst_history = {
-			'diagram': diagram,
-			'focus': focus,
-		};
-
-		return dst_history;
-	}
-};
-
-class Focus{
-	static set_element(focus, element)
-	{
-		focus.elements.length = 0;
-		if(null !== element){
-			focus.elements.push(element);
-		}
-
-		Focus.call_event_listener_focus_change_(focus);
-	}
-
-	static append_elements(focus, elements)
-	{
-		for(let i = 0; i < elements.length; i++){
-			Focus.append_element(focus, elements[i]);
-		}
-	}
-
-	static append_element(focus, element)
-	{
-		if(null === element){
-			return;
-		}
-		if(focus.elements.includes(element)){
-			return;
-		}
-
-		focus.elements.push(element);
-		if(1 < focus.elements.length){
-			focus.focus_state.side = '';
-		}
-
-		Focus.call_event_listener_focus_change_(focus);
-	}
-
-	static clear(focus)
-	{
-		focus.elements.length = 0;
-	}
-
-	static set_side(focus, side){
-		focus.focus_state.side = side;
-	}
-
-	static is_focusing(focus)
-	{
-		return (0 !== focus.elements.length);
-	}
-
-	static get_elements(focus)
-	{
-		return focus.elements;
-	}
-
-	static get_focus_state(focus)
-	{
-		return focus.focus_state;
-	}
-
-	static add_event_listener_focus_change(focus, callback, user_data)
-	{
-		if(! focus.hasOwnProperty('work')){
-			focus.work = {};
-		}
-		if(! focus.work.hasOwnProperty('event_listener_focus_changes')){
-			focus.work.event_listener_focus_changes = [];
-		}
-
-		for(let i = 0; i < focus.work.event_listener_focus_changes.length; i++){
-			if(callback === focus.work.event_listener_focus_changes[i].callback){
-				console.error('duplicated callback');
-				return false;
-			}
-		}
-
-		let cb = {'callback': callback, 'user_data': user_data};
-		focus.work.event_listener_focus_changes.push(cb);
-
-		return true;
-	}
-
-	static call_event_listener_focus_change_(focus)
-	{
-		if(! focus.hasOwnProperty('work')){
-			return;
-		}
-		if(! focus.work.hasOwnProperty('event_listener_focus_changes')){
-			return;
-		}
-
-		for(let i = 0; i < focus.work.event_listener_focus_changes.length; i++){
-			focus.work.event_listener_focus_changes[i].callback(
-				focus,
-				focus.work.event_listener_focus_changes[i].user_data);
-		}
-	}
-};
-
-class Diagram{
-	static create_element(diagram, kind, data)
-	{
-		let element = null;
-		if('lifeline' === kind){
-			element = Diagram.create_lifeline_(data);
-		}else if('message' === kind){
-			element = Diagram.create_message_(data);
-		}else if('spec' === kind){
-			element = Diagram.create_spec_(data);
-		}else if('reply_message' === kind){
-			element = Diagram.create_reply_message_(data);
-		}else if('fragment' === kind){
-			element = Diagram.create_fragment_(data);
-		}else if('operand' === kind){
-			element = Diagram.create_operand_(data);
-		}else{
-			return null;
-		}
-
-		element.id = Diagram.create_id_(diagram);
-		return element;
-	}
-
-	static create_append_element(diagram, kind, data)
-	{
-		let element = Diagram.create_element(diagram, kind, data);
-		if(! Diagram.append_element_(diagram, element)){
-			return null;
-		}else{
-			return element;
-		}
-	}
-
-	static delete_elements(diagram, elements)
-	{
-		for(let i = 0; i < elements.length; i++){
-			Diagram.delete_element_from_id_(diagram, elements[i].id);
-		}
-	}
-
-	static get_parent_element_from_id(diagram, id)
-	{
-		let func = function(recurse_info, element, opt){
-			if(opt.id === element.id){
-				opt.parent_element = recurse_info.get_parent_element();
-				return false;
-			}
-			return true;
-		};
-		let opt = {'id': id, 'parent_element': null, 'ignore_keys':['work'],};
-		Element.recursive(diagram.diagram_elements, func, opt);
-
-		return opt.parent_element;
-	}
-
-	static get_elements_in_range_y(diagram, range_y)
-	{
-		const func = function(recurse_info, element, opt){
-			const rect = Element.get_rect(element);
-			if(null === rect){
-				return true;
-			}
-
-			if(Range.y_is_inside(opt.range_y, rect)){
-				opt.elements.push(element);
-			}
-
-			return true;
-		};
-		let opt = {'ignore_keys':['work'], 'elements': [], 'range_y': range_y};
-		Element.recursive(diagram.diagram_elements, func, opt);
-
-		return opt.elements;
-	}
-
-	static get_elements_in_rect(diagram, rect)
-	{
-		const func = function(recurse_info, element, opt){
-			const rect = Element.get_rect(element);
-			if(null === rect){
-				return true;
-			}
-
-			if(Rect.is_inside(opt.area_rect, rect)){
-				opt.elements.push(element);
-			}
-
-			return true;
-		};
-		let opt = {'ignore_keys':['work'], 'elements': [], 'area_rect': rect};
-		Element.recursive(diagram.diagram_elements, func, opt);
-
-		return opt.elements;
 	}
 
 	static pre_delete_element_(diagram, id)

@@ -200,7 +200,7 @@ window.onload = function(e){
 		}
 
 		let errs_ = [];
-		let res = DaisyIO.write_export_doc(arg.export_filepath, doc, errs_);
+		let res = DaisyIO.write_export_diagram(arg.export_filepath, Doc.get_diagram(doc), errs_);
 		if(0 !== errs_.length){
 			process.stderr.write(sprintf("Export warnings. (%d)\n", errs_.length));
 			for(let i = 0; i < errs_.length; i++){

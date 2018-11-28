@@ -152,7 +152,7 @@ function menu_do_export_(format_name)
 	}
 
 	let errs_ = [];
-	let res = DaisyIO.write_export_doc(filepath, doc, errs_);
+	let res = DaisyIO.write_export_diagram(filepath, Doc.get_diagram(doc), errs_);
 
 	let message_ = "";
 	for(let i = 0; i < errs_.length; i++){
