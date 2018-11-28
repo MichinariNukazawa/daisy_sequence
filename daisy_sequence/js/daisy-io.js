@@ -34,13 +34,18 @@ module.exports = class DaisyIO{
 			return null;
 		}
 
-		const doc = Doc.create_from_native_format_string(strdata, err_);
-		return doc;
+		const diagram = Diagram.create_from_native_format_string(strdata, err_);
+		return diagram;
 	}
 
 	static open_doc_from_path(filepath, err_)
 	{
-		let doc = DaisyIO.open_diagram_from_path(filepath, err_)
+		const diagram = DaisyIO.open_diagram_from_path(filepath, err_);
+		if(null === diagram){
+			return -1;
+		}
+
+		let doc = Doc.create_from_diagram(diagram);
 		if(null === doc){
 			return -1;
 		}

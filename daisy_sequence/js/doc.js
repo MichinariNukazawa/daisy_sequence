@@ -190,40 +190,14 @@ function get_default_doc()
 		'diagram_elements': diagram_elements,
 	};
 
-	const doc = Doc.create_from_diagram_(diagram);
+	const doc = Doc.create_from_diagram(diagram);
 
 	return doc;
 }
 
 /** doc を操作するstatic methodの集合 */
 class Doc{
-	static create_from_native_format_string(strdata, err_)
-	{
-		let native_doc = {};
-		try{
-			native_doc = JSON.parse(strdata);
-		}catch(err){
-			console.debug(err);
-			err_.message = err.message;
-			return null;
-		}
-
-		if(! native_doc.hasOwnProperty('diagram')){
-			err_.message = 'nothing property "diagram"';
-			return null;
-		}
-
-		const sanitized_diagram = Diagram.sanitize(native_doc.diagram, err_);
-		if(null === sanitized_diagram){
-			return null;
-		}
-
-		const doc = Doc.create_from_diagram_(sanitized_diagram);
-
-		return doc;
-	}
-
-	static create_from_diagram_(diagram)
+	static create_from_diagram(diagram)
 	{
 		let focus = {
 			'focus_state':{
@@ -672,6 +646,30 @@ class Diagram{
 		Element.recursive(diagram.diagram_elements, func, opt);
 
 		return opt.elements;
+	}
+
+	static create_from_native_format_string(strdata, err_)
+	{
+		let native_doc = {};
+		try{
+			native_doc = JSON.parse(strdata);
+		}catch(err){
+			console.debug(err);
+			err_.message = err.message;
+			return null;
+		}
+
+		if(! native_doc.hasOwnProperty('diagram')){
+			err_.message = 'nothing property "diagram"';
+			return null;
+		}
+
+		const sanitized_diagram = Diagram.sanitize(native_doc.diagram, err_);
+		if(null === sanitized_diagram){
+			return null;
+		}
+
+		return sanitized_diagram;
 	}
 
 	static get_plantuml_string(src_diagram, errs_)
