@@ -6,8 +6,6 @@ const MenuItem = remote.MenuItem;
 const join = require('path').join;
 const openAboutWindow = require('about-window').default;
 
-var menu = new Menu();
-
 function message_dialog(strtype, strtitle, strmessage) {
 	const {dialog} = require('electron').remote;
 	dialog.showMessageBox(
