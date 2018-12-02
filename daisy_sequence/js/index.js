@@ -53,33 +53,19 @@ class MouseState{
 };
 
 
-let arg = {
-	'open_filepath': null,
-	'export_filepath': null,
-	'is_cli_mode': false,
-};
-function process_argument()
+function process_argument(argv)
 {
-	let argv = remote.process.argv;
 	if(argv[0].endsWith('electron') && argv[1] === '.'){
-		argv.shift(), argv.shift();
-	}else{
 		argv.shift();
 	}
 	// console.log(argv);
 
-	if(typeof argv[0] === 'string'){
-		arg.open_filepath = argv[0];
-	}
+	const Cli = require('./js/cli');
+	let arg = Cli.parse(argv);
 
-	if(typeof argv[1] === 'string' && argv[1] === '-o'){
-		if(typeof argv[2] !== 'string'){
-			process.stderr.write('option -o after string not exits.\n');
-			app.exit(1);
-		}
-
-		arg.export_filepath = argv[2];
-		arg.is_cli_mode = true;
+	if(null != arg.err){
+		process.stderr.write(arg.err.message + '\n');
+		app.exit(1);
 	}
 
 	// console.log(remote.getGlobal('sharedObject').osx_open_file);
@@ -89,8 +75,9 @@ function process_argument()
 		}
 	}
 
-	console.log(arg);
+	return arg;
 }
+const arg = process_argument(remote.process.argv);
 
 {
 	/** documentにドラッグされた場合 / ドロップされた場合 */
@@ -152,7 +139,7 @@ function initialize_drug_events()
 window.onload = function(e){
 	default_title = document.title;
 
-	process_argument();
+	console.log("#arg", arg);
 
 	try{
 		const filepath = path.join(__dirname, 'image/edge.svg');
