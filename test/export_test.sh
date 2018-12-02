@@ -17,7 +17,7 @@ mkdir -p ${OBJECT_DIR}
 # svg
 FILES=`find ../fileformat-example -name "*.daisysequence" -type f`
 for F in $FILES; do
-	# PlantUML(.puml)
+	# svg
 	SOURCE_FILEPATH=$F
 	DST_FILEPATH=${OBJECT_DIR}/$(basename ${SOURCE_FILEPATH}).svg
 
@@ -38,16 +38,16 @@ grep 'width="500"' ${DST_FILEPATH} > /dev/null
 grep 'height="650"' ${DST_FILEPATH} > /dev/null
 
 # png
-#FILES=`find ../fileformat-example -name "*.daisysequence" -type f`
-#for F in $FILES; do
-#	# PlantUML(.puml)
-#	SOURCE_FILEPATH=$F
-#	DST_FILEPATH=${OBJECT_DIR}/$(basename ${SOURCE_FILEPATH}).png
-#
-#	${BIN} ${SOURCE_FILEPATH} -o ${DST_FILEPATH}
-#	[ -s ${DST_FILEPATH} ] # file is not zero size
-#	STR=`file ${DST_FILEPATH}` ; [[ "${STR}" =~ "PNG" ]] # file type
-#done
+FILES=`find ../fileformat-example -name "*.daisysequence" -type f`
+for F in $FILES; do
+	# PlantUML(.puml)
+	SOURCE_FILEPATH=$F
+	DST_FILEPATH=${OBJECT_DIR}/$(basename ${SOURCE_FILEPATH}).png
+
+	${BIN} ${SOURCE_FILEPATH} -o ${DST_FILEPATH}
+	[ -s ${DST_FILEPATH} ] # file is not zero size
+	STR=`file ${DST_FILEPATH}` ; [[ "${STR}" =~ "PNG" ]] # file type
+done
 
 # PlantUML(.puml) // full testing is depend plantuml command.
 FILES=`find ../fileformat-example -name "*.daisysequence" -type f`

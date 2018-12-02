@@ -2,13 +2,11 @@
 
 const {app} = require('electron').remote;
 let SVG = require('svg.js');
-// let saveSvgAsPng = require('save-svg-as-png').svgAsPngUri;
-let svgAsPngUri = require('save-svg-as-png').svgAsPngUri;
-let dataUriToBuffer = require('data-uri-to-buffer');
 const sprintf = require('sprintf-js').sprintf;
 const fs = require("fs");
 const path = require('path');
-const xml_formatter = require('xml-formatter');
+
+const ObjectUtil = require('./js/object-util');
 const DaisyIO = require('./js/daisy-io');
 const Daisy = require('./js/daisy');
 const Renderer = require('./js/renderer').Renderer;
@@ -141,13 +139,6 @@ window.onload = function(e){
 
 	console.log("#arg", arg);
 
-	try{
-		const filepath = path.join(__dirname, 'image/edge.svg');
-		edge_icon_svg = fs.readFileSync(filepath, 'utf8');
-	}catch(err){
-		console.error(err);
-	}
-
 	tool = new Tool();
 	tool.add_callback_tool_change(callback_tool_change);
 
@@ -180,11 +171,6 @@ window.onload = function(e){
 		}
 
 		const ext = DaisyIO.get_ext_from_filepath(arg.export_filepath);
-		if('.png' === ext){
-			// png export not supported (npm library is async)
-			process.stderr.write(sprintf("Export error.: png is not supported. `%s`.\n", arg.open_filepath));
-			app.exit(1);
-		}
 
 		let errs_ = [];
 		let res = DaisyIO.write_export_diagram(arg.export_filepath, Doc.get_diagram(doc), errs_);
@@ -542,7 +528,7 @@ function callback_current_doc_change(doc_id)
 		const size = Diagram.get_size(diagram);
 		canvas__diagram_width.value = size.width;
 		canvas__diagram_height.value = size.height;
-		editor__document_align_axis_y.checked = (null !== object_get_property_from_path(diagram, 'property.lifeline_align_axis_y'));
+		editor__document_align_axis_y.checked = (null !== ObjectUtil.get_property_from_path(diagram, 'property.lifeline_align_axis_y'));
 
 		update_title_from_doc_id(doc_id);
 	}
@@ -676,7 +662,7 @@ function callback_focus_change(focus, user_data)
 	if(null !== focus_element && 'lifeline' === focus_element.kind){
 		const diagram = daisy.get_current_diagram();
 		if(null !== diagram){
-			if(null !== object_get_property_from_path(diagram, 'property.lifeline_align_axis_y')){
+			if(null !== ObjectUtil.get_property_from_path(diagram, 'property.lifeline_align_axis_y')){
 				edit_control__axis_y.disabled = true;
 			}
 		}
@@ -685,6 +671,8 @@ function callback_focus_change(focus, user_data)
 
 function callback_mousedown_canvas(e)
 {
+	const {Element} = require('./js/element');
+
 	// console.log('mousedown');
 	if(null === daisy.get_current_doc()){
 		return;
@@ -725,7 +713,7 @@ function callback_mousedown_canvas(e)
 		mouse_state.mode = 'move_height';
 
 		let diagram = daisy.get_current_diagram();
-		object_make_member(diagram, 'work.source_position', {});
+		ObjectUtil.make_member(diagram, 'work.source_position', {});
 		diagram.work.source_position = {
 			'width': diagram.width,
 			'height': diagram.height,
@@ -742,6 +730,8 @@ function callback_mousedown_canvas(e)
 
 function callback_mouseup_canvas(e)
 {
+	const {Element} = require('./js/element');
+
 	// console.log('mouseup');
 	if(null === daisy.get_current_doc()){
 		return;
@@ -772,6 +762,8 @@ function callback_mouseup_canvas(e)
 
 function callback_mousemove_canvas(e)
 {
+	const {Element, Message, Spec, Rect, Point} = require('./js/element');
+
 	if(null === daisy.get_current_doc()){
 		return;
 	}
@@ -1103,7 +1095,7 @@ function callback_change_document_align_axis_y()
 		if(! document.getElementById('editor__document-lifeline-align-axis-y').checked){
 			delete diagram.property.lifeline_align_axis_y;
 		}else{
-			object_make_member(diagram, 'property.lifeline_align_axis_y', 30);
+			ObjectUtil.make_member(diagram, 'property.lifeline_align_axis_y', 30);
 		}
 	}
 

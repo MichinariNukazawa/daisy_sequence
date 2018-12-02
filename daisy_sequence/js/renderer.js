@@ -1,5 +1,9 @@
 'use strict';
 
+const ObjectUtil = require('./object-util');
+//const {Element, Message, Rect, Spec, Point} = require('./element');
+const Diagram = require('./diagram');
+
 module.exports.RenderingHandle = class RenderingHandle{
 	constructor(elemId)
 	{
@@ -8,6 +12,24 @@ module.exports.RenderingHandle = class RenderingHandle{
 
 		this.draw = SVG(elemId).size(0, 0);
 		this.clear();
+
+		this.resource = RenderingHandle.generate_resource();
+	}
+
+	static generate_resource()
+	{
+		let resource = {};
+
+		try{
+			const fs = require("fs");
+			const path = require('path');
+			const filepath = path.join(__dirname, '../image/edge.svg');
+			resource.edge_icon_svg = fs.readFileSync(filepath, 'utf8');
+		}catch(err){
+			console.error(err);
+		}
+
+		return resource;
 	}
 
 	get_draw()
@@ -20,6 +42,10 @@ module.exports.RenderingHandle = class RenderingHandle{
 		return this.groups.other_group;
 	}
 
+	get_root_group()
+	{
+		return this.groups.root_group;
+	}
 	get_lifeline_group()
 	{
 		return this.groups.lifeline_group;
@@ -48,12 +74,13 @@ module.exports.RenderingHandle = class RenderingHandle{
 	clear()
 	{
 		this.draw.clear();
-		this.groups.background_group = this.draw.group().addClass('dd__background-group');
-		this.groups.lifeline_group = this.draw.group().addClass('dd__lifeline-group');
-		this.groups.spec_group = this.draw.group().addClass('dd__spec-group');
-		this.groups.other_group = this.draw.group().addClass('dd__other-group');
-		this.groups.fragment_group = this.draw.group().addClass('dd__fragment-group');
-		this.groups.focus_group = this.draw.group().addClass('dd__focus-group');
+		this.groups.root_group			= this.draw.group().addClass('dd__root-group');
+		this.groups.background_group		= this.get_root_group().group().addClass('dd__background-group');
+		this.groups.lifeline_group		= this.get_root_group().group().addClass('dd__lifeline-group');
+		this.groups.spec_group			= this.get_root_group().group().addClass('dd__spec-group');
+		this.groups.other_group			= this.get_root_group().group().addClass('dd__other-group');
+		this.groups.fragment_group		= this.get_root_group().group().addClass('dd__fragment-group');
+		this.groups.focus_group			= this.get_root_group().group().addClass('dd__focus-group');
 	}
 };
 
@@ -198,6 +225,8 @@ module.exports.Renderer = class Renderer{
 
 	static process_spec_(rendering_handle, diagram)
 	{
+		const {Message, Spec} = require('./element');
+
 		let specs = [];
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
 			const element = diagram.diagram_elements[i];
@@ -290,6 +319,8 @@ module.exports.Renderer = class Renderer{
 
 	static draw_focus_(rendering_handle, focus)
 	{
+		const {Element, Rect} = require('./element');
+
 		let focus_group = rendering_handle.get_focus_group();
 
 		// focusing
@@ -313,7 +344,7 @@ module.exports.Renderer = class Renderer{
 	{
 		let lifeline_group = rendering_handle.get_lifeline_group();
 
-		if(null !== object_get_property_from_path(diagram, 'property.lifeline_align_axis_y')){
+		if(null !== ObjectUtil.get_property_from_path(diagram, 'property.lifeline_align_axis_y')){
 			lifeline.y = diagram.property.lifeline_align_axis_y;
 		}
 
@@ -385,11 +416,13 @@ module.exports.Renderer = class Renderer{
 
 	static draw_message(rendering_handle, diagram, message, parent_message, start_rank, end_rank)
 	{
+		const {Message, Spec, Rect} = require('./element');
+
 		let other_group = rendering_handle.get_other_group();
 
 		if('reply' === message.message_kind){
-			message.start = object_deepcopy(parent_message.end);
-			message.end = object_deepcopy(parent_message.start);
+			message.start = ObjectUtil.deepcopy(parent_message.end);
+			message.end = ObjectUtil.deepcopy(parent_message.start);
 			delete message.start.position_x;
 			delete message.end.position_x;
 		}
@@ -497,6 +530,8 @@ module.exports.Renderer = class Renderer{
 
 	static draw_spec(rendering_handle, diagram, message, rank)
 	{
+		const {Message, Spec, Rect} = require('./element');
+
 		let spec_group = rendering_handle.get_spec_group();
 
 		if(! (message.hasOwnProperty('spec') && null !== message.spec)){
@@ -532,6 +567,8 @@ module.exports.Renderer = class Renderer{
 
 	static draw_fragment(rendering_handle, fragment)
 	{
+		const {Rect} = require('./element');
+
 		let fragment_group = rendering_handle.get_fragment_group();
 		let bg_group = fragment_group.group().addClass('dd__fragment-bg');
 		let fg_group = fragment_group.group().addClass('dd__fragment-fg');
@@ -603,10 +640,14 @@ module.exports.Renderer = class Renderer{
 		// ** frame resize icon
 		if(! fragment.is_auto_size){
 			let group_edge_icon = fg_group.group().addClass('fragment__edge-icon');
-			group_edge_icon.svg(edge_icon_svg)
-				.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8).scale(0.5, 0.5).attr({
-					'opacity':	0.3,
-				});
+			if(! rendering_handle.resource.edge_icon_svg){
+				console.error("nothing rendering_handle.resource.edge_icon_svg");
+			}else{
+				group_edge_icon.svg(rendering_handle.resource.edge_icon_svg)
+					.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8).scale(0.5, 0.5).attr({
+						'opacity':	0.3,
+					});
+			}
 		}
 
 		// ** operands
@@ -667,6 +708,8 @@ module.exports.Renderer = class Renderer{
 
 	static draw_message_turnback(rendering_handle, position, is_spec)
 	{
+		const {Message, Spec, Rect} = require('./element');
+
 		let other_group = rendering_handle.get_other_group();
 
 		const height = 10;
@@ -720,6 +763,8 @@ module.exports.Renderer = class Renderer{
 
 	static draw_message_stop_icon_of_foot(rendering_handle, position)
 	{
+		const {Message, Spec, Rect} = require('./element');
+
 		let other_group = rendering_handle.get_other_group();
 
 		const size = 16;

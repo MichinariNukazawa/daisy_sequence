@@ -130,6 +130,8 @@ class Tool{
 
 	static callback_mousedown_element_arrow_(mouse_state)
 	{
+		const {Element, Message, Spec, Fragment, Rect, Range} = require('./js/element');
+
 		let diagram = daisy.get_current_diagram();
 		let focus = Doc.get_focus(daisy.get_current_doc());
 
@@ -160,6 +162,8 @@ class Tool{
 
 	static callback_mousedown_move_height_arrow_(mouse_state)
 	{
+		const {Element, Message, Spec, Fragment, Rect, Range} = require('./js/element');
+
 		const diagram = daisy.get_current_diagram();
 		let focus = Doc.get_focus(daisy.get_current_doc());
 		Focus.clear(focus);
@@ -227,6 +231,8 @@ class Tool{
 
 	static callback_mousedown_add_message_(mouse_state)
 	{
+		const {Message} = require('./js/element');
+
 		{
 			Doc.history_add(daisy.get_current_doc());
 		}

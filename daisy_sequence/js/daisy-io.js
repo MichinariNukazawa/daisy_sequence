@@ -1,5 +1,12 @@
 'use strict';
 
+const fs = require("fs");
+const sprintf = require('sprintf-js').sprintf;
+const xml_formatter = require('xml-formatter');
+
+const Version = require('./version');
+const Element = require('./element');
+const Diagram = require('./diagram');
 const RenderingHandle = require('./renderer').RenderingHandle;
 const Renderer = require('./renderer').Renderer;
 
@@ -64,7 +71,7 @@ module.exports = class DaisyIO{
 		return doc_id;
 	}
 
-	static get_dummy_draw_from_diagram_(diagram, err_)
+	static get_dummy_draw_from_diagram_(diagram, opt, err_)
 	{
 		let dummy_elem = document.createElementNS('http://www.w3.org/2000/svg','svg');
 		let dummy_rhandle = new RenderingHandle(dummy_elem);
@@ -78,12 +85,22 @@ module.exports = class DaisyIO{
 
 		dummy_rhandle.get_focus_group().remove();
 
+		if(opt.hasOwnProperty('background_color')){
+			dummy_rhandle.get_background_group().rect('100%','100%')
+					.attr({
+						'fill':		opt.background_color,
+					});
+		}
+
+		dummy_rhandle.get_draw().size(diagram.width * opt.scale, diagram.height * opt.scale);
+		dummy_rhandle.get_root_group().scale(opt.scale, opt.scale);
+
 		return draw;
 	}
 
-	static get_svg_string_from_diagram_(diagram, err_)
+	static get_svg_string_from_diagram_(diagram, opt, err_)
 	{
-		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, err_);
+		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, opt, err_);
 		if(null === draw){
 			return null;
 		}
@@ -128,30 +145,26 @@ module.exports = class DaisyIO{
 	static write_export_png_from_diagram_(filepath, diagram, errs_)
 	{
 		let err_ = {};
-		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, err_);
-		if(null === draw){
+		const opt = {
+			'scale': 4,
+			'background_color': "#fff",
+		};
+		const strdata = DaisyIO.get_svg_string_from_diagram_(diagram, opt, err_);
+		if(null === strdata){
+			console.error(err_);
 			DaisyIO.add_errs_(errs_, err_.level, "Export", err_.message);
 			return false;
 		}
 
-		let svg_elem = draw.node;
-		// saveSvgAsPng(svg_elem, filepath, {scale: 3});
-		svgAsPngUri(svg_elem,
-			{
-				'scale': 4,
-				'backgroundColor': "#fff",
-			},
-			function(uri) {
-			const decoded = dataUriToBuffer(uri)
-			try{
-				fs.writeFileSync(filepath, decoded);
-			}catch(err){
-				let err_ = {};
-				DaisyIO.set_err_(err_, "warning", "Export", err.message);
-				err.callback(err_);
-				return;
-			}
-		});
+		const svg2png = require("svg2png");
+		const output = svg2png.sync(strdata, {});
+
+		try{
+			fs.writeFileSync(filepath, output);
+		}catch(err){
+			DaisyIO.add_errs_(errs_, "warning", "Export", sprintf("writeFile error. :`%s`", filepath));
+			return false;
+		}
 
 		return true;
 	}
@@ -159,7 +172,10 @@ module.exports = class DaisyIO{
 	static write_export_svg_from_diagram_(filepath, diagram, errs_)
 	{
 		let err_ = {};
-		const strdata = DaisyIO.get_svg_string_from_diagram_(diagram, err_);
+		const opt = {
+			'scale': 1,
+		};
+		const strdata = DaisyIO.get_svg_string_from_diagram_(diagram, opt, err_);
 		if(null === strdata){
 			console.error(err_);
 			DaisyIO.add_errs_(errs_, err_.level, "Export", err_.message);

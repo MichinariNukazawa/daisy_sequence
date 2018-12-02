@@ -61,5 +61,6 @@ daisy_sequence/package-lock.json
 !.travis.yml
 
 *.log
-
+daisy_sequence/default_document.*
+!daisy_sequence/*.daisysequence
 

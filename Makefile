@@ -19,22 +19,19 @@ simple-run:
 unit-test:
 	cd daisy_sequence && npm run test test/$(ARG)
 
-cli-test:
-	cd test && make
-
 ci-test:
 	cd daisy_sequence && npm install
 	bash ./release/version.sh
 	make unit-test
 	#make package
 	cd daisy_sequence && npm run pack:linux
-	cd test && make ci-test # depend linux binary
+	cd test && make ci-test # cd test && make ci-test # depend linux binary
 
 test:
 	bash ./release/version.sh
 	make unit-test
 	cd daisy_sequence && npm run pack:linux
-	make cli-test # depend linux binary
+	cd test && make test # depend linux binary
 
 clean:
 	cd test && make clean
