@@ -156,12 +156,20 @@ module.exports = class DaisyIO{
 			return false;
 		}
 
+		let output;
 		const svg2png = require("svg2png");
-		const output = svg2png.sync(strdata, {});
+		try{
+			output = svg2png.sync(strdata);
+		}catch(err){
+			console.debug(err);
+			DaisyIO.add_errs_(errs_, "error", "Export", sprintf("internal svg2png error. :`%s`", err.message));
+			return false;
+		}
 
 		try{
 			fs.writeFileSync(filepath, output);
 		}catch(err){
+			console.debug(err);
 			DaisyIO.add_errs_(errs_, "warning", "Export", sprintf("writeFile error. :`%s`", filepath));
 			return false;
 		}
