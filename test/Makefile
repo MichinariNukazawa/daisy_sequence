@@ -23,5 +23,5 @@ gui-cli-test:
 	bash ./gui_cli_test.sh $(BIN_GUI)
 
 clean:
-	rm -rf work
+	rm -rf obj/
 
