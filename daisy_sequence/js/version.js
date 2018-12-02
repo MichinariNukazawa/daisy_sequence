@@ -3,13 +3,15 @@
 module.exports = class Version{
 	static get_name()
 	{
-		return 'daisy diagram';
+		const Package = require('../package.json');
+		return Package.name;
 	}
 
 	static get_version()
 	{
+		const Package = require('../package.json');
 		const v = {
-			"version": "201811.17.0",
+			"version": Package.version,
 		};
 		return v.version;
 	}

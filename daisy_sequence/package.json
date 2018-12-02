@@ -17,9 +17,9 @@
     "clean:win": "rm -rf ./release/win",
     "clean:linux": "rm -rf ./release/linux",
     "pack": "npm run pack:osx && npm run pack:win && npm run pack:linux",
-    "pack:win": "npm run clean:win && electron-packager . --out=./release/win --platform=win32 --arch=x64 --icon='./image/icon.ico' --ignore='release' --ignore='object' --ignore='work' --ignore='test'",
-    "pack:osx": "npm run clean:osx && electron-packager . --out=./release/osx --platform=darwin --arch=x64 --icon='./image/icon.icns' --ignore='release/' --ignore='object/' --ignore='work/' --ignore='test/'",
-    "pack:linux": "npm run clean:linux && electron-packager . --out=./release/linux --platform=linux --arch=x64 --icon='./image/icon.png' --ignore='release/' --ignore='object/' --ignore='work/' --ignore='test/'",
+    "pack:win": "npm run clean:win && electron-packager . --out=./release/win --platform=win32 --arch=x64 --icon='./image/icon.ico' --ignore='release' --ignore='object/' --ignore='obj/' --ignore='work/' --ignore='test/'",
+    "pack:osx": "npm run clean:osx && electron-packager . --out=./release/osx --platform=darwin --arch=x64 --icon='./image/icon.icns' --ignore='release/' --ignore='object/' --ignore='obj/' --ignore='work/' --ignore='test/'",
+    "pack:linux": "npm run clean:linux && electron-packager . --out=./release/linux --platform=linux --arch=x64 --icon='./image/icon.png' --ignore='release/' --ignore='object/' --ignore='obj/' --ignore='work/' --ignore='test/'",
     "testtotest": "mocha test/mocha.js"
   },
   "keywords": [

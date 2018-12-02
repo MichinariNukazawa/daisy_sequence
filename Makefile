@@ -21,14 +21,12 @@ unit-test:
 
 ci-test:
 	cd daisy_sequence && npm install
-	bash ./release/version.sh
 	make unit-test
 	#make package
 	cd daisy_sequence && npm run pack:linux
 	cd test && make ci-test # cd test && make ci-test # depend linux binary
 
 test:
-	bash ./release/version.sh
 	make unit-test
 	cd daisy_sequence && npm run pack:linux
 	cd test && make test # depend linux binary
@@ -45,7 +43,6 @@ doc:
 package: package_desktop
 
 package_desktop:
-	bash ./release/version.sh
 	bash ./release/installer_win32_x64.sh
 	bash ./release/installer_darwin.sh
 	bash ./release/installer_debian.sh
