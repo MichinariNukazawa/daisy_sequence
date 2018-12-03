@@ -73,6 +73,11 @@ module.exports = class DaisyIO{
 
 	static get_dummy_draw_from_diagram_(diagram, opt, err_)
 	{
+		if(!opt.hasOwnProperty('scale')){
+			DaisyIO.set_err_(err_, "warning", "Export", "internal nothing opt.scale.");
+			return null;
+		}
+
 		let dummy_elem = document.createElementNS('http://www.w3.org/2000/svg','svg');
 		let dummy_rhandle = new RenderingHandle(dummy_elem);
 		let draw = dummy_rhandle.get_draw();
@@ -145,6 +150,43 @@ module.exports = class DaisyIO{
 	static write_export_png_from_diagram_(filepath, diagram, errs_)
 	{
 		let err_ = {};
+
+if(process.platform === 'win32'){
+	/**
+	for windows only issue dirty fix.
+	png export is not synced.
+	https://github.com/domenic/svg2png/issues/113
+	*/
+let svgAsPngUri = require('save-svg-as-png').svgAsPngUri;
+let dataUriToBuffer = require('data-uri-to-buffer');
+
+		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, {'scale':1}, err_);
+		if(null === draw){
+			DaisyIO.add_errs_(errs_, err_.level, "Export", err_.message);
+			return false;
+		}
+
+		let svg_elem = draw.node;
+		// saveSvgAsPng(svg_elem, filepath, {scale: 3});
+		svgAsPngUri(svg_elem,
+			{
+				'scale': 4,
+				'backgroundColor': "#fff",
+			},
+			function(uri) {
+			const decoded = dataUriToBuffer(uri)
+			try{
+				fs.writeFileSync(filepath, decoded);
+			}catch(err){
+				let err_ = {};
+				DaisyIO.set_err_(err_, "warning", "Export", err.message);
+				alart(err_);
+				return;
+			}
+		});
+
+		return true;
+}else{
 		const opt = {
 			'scale': 4,
 			'background_color': "#fff",
@@ -175,6 +217,7 @@ module.exports = class DaisyIO{
 		}
 
 		return true;
+}
 	}
 
 	static write_export_svg_from_diagram_(filepath, diagram, errs_)
