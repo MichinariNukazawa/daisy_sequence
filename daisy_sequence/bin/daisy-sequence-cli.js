@@ -19,10 +19,10 @@ const DaisyIO = require('../index').DaisyIO;
 
 function process_argument(argv)
 {
-	if(argv[0].endsWith('electron') && argv[1] === '.'){
+	// コマンドライン引数を[1]からに調整(node実行の場合に必要)
+	if(argv[0].endsWith('node')){
 		argv.shift();
 	}
-	// console.log(argv);
 
 	const Cli = require('../js/cli');
 	let arg = Cli.parse(argv);
@@ -32,12 +32,7 @@ function process_argument(argv)
 
 function main()
 {
-	// コマンドライン引数を[1]からに調整(node実行の場合に必要)
 	let argv = process.argv;
-	if(argv[0].endsWith('node')){
-		argv.shift();
-	}
-
 	const arg = process_argument(argv);
 
 	if(null != arg.err){
@@ -60,7 +55,6 @@ function main()
 	for(let i = 0; i < errs.length; i++){
 		process.stderr.write(sprintf("export warning[%2d/%2d]:%8s:%s\n", i, errs.length, errs[i].level, errs[i].message));
 	}
-
 }
 
 main();

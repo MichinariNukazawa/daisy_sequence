@@ -46,6 +46,7 @@ module.exports.RenderingHandle = class RenderingHandle{
 	{
 		return this.groups.root_group;
 	}
+
 	get_lifeline_group()
 	{
 		return this.groups.lifeline_group;
