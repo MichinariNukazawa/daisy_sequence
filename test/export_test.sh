@@ -10,9 +10,9 @@ trap 'echo "$0(${LINENO}) ${BASH_COMMAND}"' ERR
 BIN=$1
 
 OBJECT_DIR=obj/$(basename $0)
-
 rm -rf ${OBJECT_DIR}/*
 mkdir -p ${OBJECT_DIR}
+
 
 # svg
 FILES=`find ../fileformat-example -name "*.daisysequence" -type f`
