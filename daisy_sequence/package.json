@@ -42,7 +42,6 @@
   "dependencies": {
     "about-window": "^1.12.1",
     "data-uri-to-buffer": "^2.0.0",
-    "jsdom": "^13.0.0",
     "save-svg-as-png": "^1.3.1",
     "sprintf-js": "^1.1.1",
     "svg.js": "^2.7.0",

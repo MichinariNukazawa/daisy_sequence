@@ -8,12 +8,7 @@ const window   = require('svgdom')
 const SVG      = require('svg.js')(window)
 const document = window.document
 
-var jsdom = require('jsdom');
-// Create a fake DOM for testing with $.ajax
-global.window = new jsdom.JSDOM().window;
-global.document = window.document;
-global.HTMLElement = window.HTMLElement;
-
+global.document = document;
 
 const DaisyIO = require('../index').DaisyIO;
 
