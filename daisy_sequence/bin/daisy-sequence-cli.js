@@ -38,17 +38,18 @@ function main()
 	let err = {};
 	let diagram = DaisyIO.open_diagram_from_path(arg.open_filepath, err);
 	if(! diagram){
-		process.stderr.write(sprintf("can not open file `%s``%s`.\n", err.message, arg.open_filepath));
+		process.stderr.write(sprintf("error: can not open file `%s``%s`.\n", err.message, arg.open_filepath));
 		process.exit(-1);
 	}
 
 	let errs = [];
-	if(! DaisyIO.write_export_diagram(arg.export_filepath, diagram, errs)){
-		process.stderr.write(sprintf("can not export file `%s``%s`.\n", err.message, arg.export_filepath));
-		process.exit(-1);
-	}
+	const res = DaisyIO.write_export_diagram(arg.export_filepath, diagram, errs);
 	for(let i = 0; i < errs.length; i++){
-		process.stderr.write(sprintf("export warning[%2d/%2d]:%8s:%s\n", i, errs.length, errs[i].level, errs[i].message));
+		process.stderr.write(sprintf("warning: export [%2d/%2d]:%8s:%s\n", i, errs.length, errs[i].level, errs[i].message));
+	}
+	if(! res){
+		process.stderr.write(sprintf("error: can not export file `%s``%s`.\n", err.message, arg.export_filepath));
+		process.exit(-1);
 	}
 }
 
