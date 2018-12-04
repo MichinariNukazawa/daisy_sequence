@@ -21,6 +21,13 @@ ${BIN} ../daisy_sequence/default_document.daisysequence -o ${OBJECT_DIR}/a.svg
 
 
 # invalid test
+## nothing option
+set +e
+${BIN} ../daisy_sequence/default_document.daisysequence
+RET=$?
+set -e
+[ 0 -ne $RET ]
+
 ## output path nothing
 set +e
 ${BIN} ../daisy_sequence/default_document.daisysequence -o
