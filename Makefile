@@ -24,15 +24,15 @@ ci-test:
 	make unit-test
 	#make package
 	cd daisy_sequence && npm run pack:linux
-	cd test && make ci-test # cd test && make ci-test # depend linux binary
+	cd command-line-test && make ci-test # cd test && make ci-test # depend linux binary
 
 test:
 	make unit-test
 	cd daisy_sequence && npm run pack:linux
-	cd test && make test # depend linux binary
+	cd command-line-test && make test # depend linux binary
 
 clean:
-	cd test && make clean
+	cd command-line-test && make clean
 	rm -rf release/release
 	rm -rf daisy_sequence/release
 
