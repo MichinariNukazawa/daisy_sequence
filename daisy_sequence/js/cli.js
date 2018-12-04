@@ -41,6 +41,13 @@ module.exports = class Cli{
 			arg.is_cli_mode = true;
 		}
 
+		if(4 < argv.length){
+			arg.err = {
+				'message': sprintf('invalid args num. %d', argv.length)
+			};
+			return arg;
+		}
+
 		return arg;
 	}
 };
