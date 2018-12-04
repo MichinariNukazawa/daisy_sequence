@@ -5,7 +5,6 @@ const sprintf = require('sprintf-js').sprintf;
 const xml_formatter = require('xml-formatter');
 
 const Version = require('./version');
-const Element = require('./element');
 const Diagram = require('./diagram');
 const RenderingHandle = require('./renderer').RenderingHandle;
 const Renderer = require('./renderer').Renderer;
