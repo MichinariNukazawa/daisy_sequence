@@ -40,32 +40,6 @@ module.exports = class DaisyIO{
 		return diagram;
 	}
 
-	static open_doc_from_path(filepath, err_)
-	{
-		const diagram = DaisyIO.open_diagram_from_path(filepath, err_);
-		if(null === diagram){
-			return -1;
-		}
-
-		let doc = Doc.create_from_diagram(diagram);
-		if(null === doc){
-			return -1;
-		}
-
-		const doc_id = doc_collection.append_doc(doc);
-		if(-1 === doc_id){
-			DaisyIO.set_err_('warning', "Open", err_.message);
-			return -1;
-		}
-
-		daisy.append_doc_id(doc_id);
-
-		Doc.set_filepath(doc, filepath);
-		Doc.on_save(doc);
-
-		return doc_id;
-	}
-
 	static get_svg_string_from_diagram_(diagram, opt, err_)
 	{
 		const xml_formatter = require('xml-formatter');

@@ -261,7 +261,7 @@ var template = [
 			console.debug(filepath);
 
 			let err = {};
-			if(-1 == DaisyIO.open_doc_from_path(filepath, err)){
+			if(-1 == daisy.open_doc_from_path(filepath, err)){
 				console.error(err);
 				message_dialog(err.level, err.label, err.message);
 				return;

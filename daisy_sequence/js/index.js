@@ -123,7 +123,7 @@ function initialize_drug_events()
 		console.debug(filepath);
 
 		let err = {};
-		if(-1 === DaisyIO.open_doc_from_path(filepath, err)){
+		if(-1 === daisy.open_doc_from_path(filepath, err)){
 			console.error(filepath, err);
 			message_dialog(err.level, err.label, err.message);
 			return;
@@ -149,7 +149,7 @@ window.onload = function(e){
 
 	if(null !== arg.open_filepath){
 		let err = {};
-		let doc_id = DaisyIO.open_doc_from_path(arg.open_filepath, err);
+		let doc_id = daisy.open_doc_from_path(arg.open_filepath, err);
 		if(-1 === doc_id){
 			console.error(arg.open_filepath, err);
 			if(! arg.is_cli_mode){
