@@ -1,13 +1,7 @@
 'use strict';
 
-const fs = require("fs");
 const sprintf = require('sprintf-js').sprintf;
-const xml_formatter = require('xml-formatter');
-
-const Version = require('./version');
-const Diagram = require('./diagram');
-const RenderingHandle = require('./renderer').RenderingHandle;
-const Renderer = require('./renderer').Renderer;
+const fs = require("fs");
 
 module.exports = class DaisyIO{
 	static set_err_(err_, level, label, message)
@@ -31,6 +25,8 @@ module.exports = class DaisyIO{
 
 	static open_diagram_from_path(filepath, err_)
 	{
+		const Diagram = require('./diagram');
+
 		let strdata = '';
 		try{
 			strdata = fs.readFileSync(filepath, 'utf-8');
@@ -70,40 +66,11 @@ module.exports = class DaisyIO{
 		return doc_id;
 	}
 
-	static get_dummy_draw_from_diagram_(diagram, opt, err_)
-	{
-		if(!opt.hasOwnProperty('scale')){
-			DaisyIO.set_err_(err_, "warning", "Export", "internal nothing opt.scale.");
-			return null;
-		}
-
-		let dummy_elem = document.createElementNS('http://www.w3.org/2000/svg','svg');
-		let dummy_rhandle = new RenderingHandle(dummy_elem);
-		let draw = dummy_rhandle.get_draw();
-		if(null === draw){
-			DaisyIO.set_err_(err_, "warning", "Export", "internal dummy element can not generate.");
-			return null;
-		}
-
-		Renderer.rendering_(dummy_rhandle, diagram);
-
-		dummy_rhandle.get_focus_group().remove();
-
-		if(opt.hasOwnProperty('background_color')){
-			dummy_rhandle.get_background_group().rect('100%','100%')
-					.attr({
-						'fill':		opt.background_color,
-					});
-		}
-
-		dummy_rhandle.get_draw().size(diagram.width * opt.scale, diagram.height * opt.scale);
-		dummy_rhandle.get_root_group().scale(opt.scale, opt.scale);
-
-		return draw;
-	}
-
 	static get_svg_string_from_diagram_(diagram, opt, err_)
 	{
+		const xml_formatter = require('xml-formatter');
+		const Version = require('./version');
+
 		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, opt, err_);
 		if(null === draw){
 			return null;
@@ -144,6 +111,41 @@ module.exports = class DaisyIO{
 		}
 
 		return res;
+	}
+
+	static get_dummy_draw_from_diagram_(diagram, opt, err_)
+	{
+		const RenderingHandle = require('./renderer').RenderingHandle;
+		const Renderer = require('./renderer').Renderer;
+
+		if(!opt.hasOwnProperty('scale')){
+			DaisyIO.set_err_(err_, "warning", "Export", "internal nothing opt.scale.");
+			return null;
+		}
+
+		let dummy_elem = document.createElementNS('http://www.w3.org/2000/svg','svg');
+		let dummy_rhandle = new RenderingHandle(dummy_elem);
+		let draw = dummy_rhandle.get_draw();
+		if(null === draw){
+			DaisyIO.set_err_(err_, "warning", "Export", "internal dummy element can not generate.");
+			return null;
+		}
+
+		Renderer.rendering_(dummy_rhandle, diagram);
+
+		dummy_rhandle.get_focus_group().remove();
+
+		if(opt.hasOwnProperty('background_color')){
+			dummy_rhandle.get_background_group().rect('100%','100%')
+					.attr({
+						'fill':		opt.background_color,
+					});
+		}
+
+		dummy_rhandle.get_draw().size(diagram.width * opt.scale, diagram.height * opt.scale);
+		dummy_rhandle.get_root_group().scale(opt.scale, opt.scale);
+
+		return draw;
 	}
 
 	static write_export_png_from_diagram_(filepath, diagram, errs_)
@@ -244,6 +246,8 @@ let dataUriToBuffer = require('data-uri-to-buffer');
 
 	static write_export_plantuml_from_diagram_(filepath, diagram, errs_)
 	{
+		const Diagram = require('./diagram');
+
 		const strdata = Diagram.get_plantuml_string(diagram, errs_);
 		if(null === strdata){
 			console.debug(errs_);
