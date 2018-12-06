@@ -7,6 +7,25 @@ const Version = require('./version');
 const {Element, Message, Rect} = require('./element');
 
 module.exports = class Diagram{
+	static set_err_(err_, level, label, message)
+	{
+		err_.level = level;
+		err_.label = label;
+		err_.message = message;
+	}
+
+	static add_errs_(errs_, level, label, message)
+	{
+		let err_ = {};
+		DaisyIO.set_err_(err_, level, label, message);
+
+		if(! Array.isArray(errs_)){
+			console.error(errs_);
+			errs_ = [];
+		}
+		errs_.push(err_);
+	}
+
 	static create_element(diagram, kind, data)
 	{
 		let element = null;
@@ -104,23 +123,23 @@ module.exports = class Diagram{
 		return opt.elements;
 	}
 
-	static create_from_native_format_string(strdata, err_)
+	static create_from_native_format_string(strdata, errs_)
 	{
 		let native_doc = {};
 		try{
 			native_doc = JSON.parse(strdata);
 		}catch(err){
 			console.debug(err);
-			err_.message = err.message;
+			DaisyIO.add_errs_(errs_, 'error', "Diagram", err.message);
 			return null;
 		}
 
 		if(! native_doc.hasOwnProperty('diagram')){
-			err_.message = 'nothing property "diagram"';
+			DaisyIO.add_errs_(errs_, 'error', "Diagram", 'nothing property "diagram"');
 			return null;
 		}
 
-		const sanitized_diagram = Diagram.sanitize(native_doc.diagram, err_);
+		const sanitized_diagram = Diagram.sanitize(native_doc.diagram, errs_);
 		if(null === sanitized_diagram){
 			return null;
 		}
@@ -636,7 +655,7 @@ module.exports = class Diagram{
 		return false;
 	}
 
-	static sanitize(src_diagram, err_)
+	static sanitize(src_diagram, errs_)
 	{
 		//! @todo not implement
 		return ObjectUtil.deepcopy(src_diagram);

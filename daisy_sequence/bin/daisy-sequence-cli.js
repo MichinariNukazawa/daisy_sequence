@@ -35,20 +35,23 @@ function main()
 		process.exit(-1);
 	}
 
-	let err = {};
-	let diagram = DaisyIO.open_diagram_from_path(arg.open_filepath, err);
+	let errs_ = [];
+
+	let diagram = DaisyIO.open_diagram_from_path(arg.open_filepath, errs_);
+	for(let i = 0; i < errs_.length; i++){
+		process.stderr.write(sprintf("export[%2d/%2d]%8s:%s\n", i, errs_.length, errs_[i].level, errs_[i].message));
+	}
 	if(! diagram){
-		process.stderr.write(sprintf("error: can not open file `%s``%s`.\n", err.message, arg.open_filepath));
+		process.stderr.write(sprintf("error: can not open file `%s`.\n", arg.open_filepath));
 		process.exit(-1);
 	}
 
-	let errs = [];
-	const res = DaisyIO.write_export_diagram(arg.export_filepath, diagram, errs);
-	for(let i = 0; i < errs.length; i++){
-		process.stderr.write(sprintf("warning: export [%2d/%2d]:%8s:%s\n", i, errs.length, errs[i].level, errs[i].message));
+	const res = DaisyIO.write_export_diagram(arg.export_filepath, diagram, errs_);
+	for(let i = 0; i < errs_.length; i++){
+		process.stderr.write(sprintf("export[%2d/%2d]%8s:%s\n", i, errs_.length, errs_[i].level, errs_[i].message));
 	}
 	if(! res){
-		process.stderr.write(sprintf("error: can not export file `%s``%s`.\n", err.message, arg.export_filepath));
+		process.stderr.write(sprintf("error: can not export file `%s`.\n", arg.export_filepath));
 		process.exit(-1);
 	}
 }

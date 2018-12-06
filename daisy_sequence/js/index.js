@@ -148,19 +148,17 @@ window.onload = function(e){
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
 
 	if(null !== arg.open_filepath){
-		let err = {};
-		let doc_id = daisy.open_doc_from_path(arg.open_filepath, err);
+		let errs_ = [];
+		let doc_id = daisy.open_doc_from_path(arg.open_filepath, errs_);
+		for(let i = 0; i < errs_.length; i++){
+			process.stderr.write(sprintf("export[%2d/%2d]%8s:%s\n", i, errs_.length, errs_[i].level, errs_[i].message));
+		}
 		if(-1 === doc_id){
-			console.error(arg.open_filepath, err);
+			console.error(arg.open_filepath, errs_);
 			if(! arg.is_cli_mode){
-				console.warning(err);
-				message_dialog(err.level, err.label, err.message);
-			}else{
-				process.stderr.write(sprintf("%s: %s `%s`.\n", err.level, err.label, err.message));
+				message_dialog(errs_[0].level, errs_[0].label, errs_[0].message);
 			}
 		}
-	}else{
-		// NOP
 	}
 
 	if(null !== arg.export_filepath){
@@ -170,17 +168,10 @@ window.onload = function(e){
 			app.exit(1);
 		}
 
-		const ext = DaisyIO.get_ext_from_filepath(arg.export_filepath);
-
 		let errs_ = [];
 		let res = DaisyIO.write_export_diagram(arg.export_filepath, Doc.get_diagram(doc), errs_);
-		if(0 !== errs_.length){
-			process.stderr.write(sprintf("Export warnings. (%d)\n", errs_.length));
-			for(let i = 0; i < errs_.length; i++){
-				process.stderr.write(sprintf("(%2d/%2d)%s: %s\n",
-					i, errs_.length,
-					errs_[i].level, errs_[i].message));
-			}
+		for(let i = 0; i < errs_.length; i++){
+			process.stderr.write(sprintf("export[%2d/%2d]%8s:%s\n", i, errs_.length, errs_[i].level, errs_[i].message));
 		}
 		if(! res){
 			process.stderr.write(sprintf("Export error. `%s`\n", arg.export_filepath));

@@ -23,12 +23,12 @@ module.exports = class DaisyIO{
 		errs_.push(err_);
 	}
 
-	static open_diagram_from_path(filepath, err_)
+	static open_diagram_from_path(filepath, errs_)
 	{
 		const Diagram = require('./diagram');
 
 		if(typeof filepath !== 'string'){
-			DaisyIO.set_err_(err_, 'bug', "Open", "not filepath.");
+			DaisyIO.add_errs_(errs_, 'bug', "Open", "not filepath.");
 			return null;
 		}
 
@@ -37,11 +37,11 @@ module.exports = class DaisyIO{
 			strdata = fs.readFileSync(filepath, 'utf-8');
 		}catch(err){
 			console.error(err.message);
-			DaisyIO.set_err_(err_, 'warning', "Open", err.message);
+			DaisyIO.add_errs_(errs_, 'warning', "Open", err.message);
 			return null;
 		}
 
-		const diagram = Diagram.create_from_native_format_string(strdata, err_);
+		const diagram = Diagram.create_from_native_format_string(strdata, errs_);
 		return diagram;
 	}
 
@@ -74,7 +74,7 @@ module.exports = class DaisyIO{
 		// 周辺情報: 0x0pxのSVGを開くとeye of gnomeが読み込みエラーを起こす。
 
 		if(typeof filepath !== 'string'){
-			DaisyIO.set_errs_(errs_, 'bug', "Export", "not filepath.");
+			DaisyIO.add_errs_(errs_, 'bug', "Export", "not filepath.");
 			return null;
 		}
 

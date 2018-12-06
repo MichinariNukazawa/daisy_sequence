@@ -13,7 +13,7 @@ function message_dialog(strtype, strtitle, strmessage) {
 			{
 				type: strtype,
 				buttons: ['OK'],
-				title: strtitle,
+				title: ((typeof strtitle === 'string')? strtitle:'<none>'),
 				message: strmessage,
 			});
 }
@@ -260,10 +260,11 @@ var template = [
 			}
 			console.debug(filepath);
 
-			let err = {};
-			if(-1 == daisy.open_doc_from_path(filepath, err)){
-				console.error(err);
-				message_dialog(err.level, err.label, err.message);
+			let errs_ = [];
+			if(-1 == daisy.open_doc_from_path(filepath, errs_)){
+				console.error(errs_);
+				//! @todo shot other errors.
+				message_dialog(errs_[0].level, errs_[0].label, errs_[0].message);
 				return;
 			}
 
