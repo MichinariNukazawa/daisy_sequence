@@ -75,7 +75,6 @@ function process_argument(argv)
 
 	return arg;
 }
-const arg = process_argument(remote.process.argv);
 
 {
 	/** documentにドラッグされた場合 / ドロップされた場合 */
@@ -137,6 +136,7 @@ function initialize_drug_events()
 window.onload = function(e){
 	default_title = document.title;
 
+	const arg = process_argument(remote.process.argv);
 	console.log("#arg", arg);
 
 	tool = new Tool();
