@@ -47,6 +47,11 @@ module.exports.RenderingHandle = class RenderingHandle{
 		return this.groups.root_group;
 	}
 
+	get_background_group()
+	{
+		return this.groups.background_group;
+	}
+
 	get_lifeline_group()
 	{
 		return this.groups.lifeline_group;
@@ -62,14 +67,14 @@ module.exports.RenderingHandle = class RenderingHandle{
 		return this.groups.fragment_group;
 	}
 
+	get_editor_group()
+	{
+		return this.groups.editor_group;
+	}
+
 	get_focus_group()
 	{
 		return this.groups.focus_group;
-	}
-
-	get_background_group()
-	{
-		return this.groups.background_group;
 	}
 
 	clear()
@@ -81,7 +86,9 @@ module.exports.RenderingHandle = class RenderingHandle{
 		this.groups.spec_group			= this.get_root_group().group().addClass('dd__spec-group');
 		this.groups.other_group			= this.get_root_group().group().addClass('dd__other-group');
 		this.groups.fragment_group		= this.get_root_group().group().addClass('dd__fragment-group');
-		this.groups.focus_group			= this.get_root_group().group().addClass('dd__focus-group');
+
+		this.groups.editor_group		= this.get_root_group().group().addClass('dd__editor-group');
+		this.groups.focus_group			= this.get_editor_group().group().addClass('dd__focus-group');
 	}
 };
 
