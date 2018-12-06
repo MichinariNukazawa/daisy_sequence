@@ -84,6 +84,7 @@ module.exports = class DaisyIO{
 	{
 		const RenderingHandle = require('./renderer').RenderingHandle;
 		const Renderer = require('./renderer').Renderer;
+		const Diagram = require('./diagram');
 
 		if(!opt.hasOwnProperty('scale')){
 			DaisyIO.set_err_(err_, "warning", "Export", "internal nothing opt.scale.");
@@ -109,7 +110,9 @@ module.exports = class DaisyIO{
 					});
 		}
 
-		dummy_rhandle.get_draw().size(diagram.width * opt.scale, diagram.height * opt.scale);
+		const size = Diagram.get_size(diagram);
+
+		dummy_rhandle.get_draw().size(size.width * opt.scale, size.height * opt.scale);
 		dummy_rhandle.get_root_group().scale(opt.scale, opt.scale);
 
 		return draw;
