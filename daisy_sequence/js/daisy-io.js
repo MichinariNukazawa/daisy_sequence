@@ -45,25 +45,6 @@ module.exports = class DaisyIO{
 		return diagram;
 	}
 
-	static get_svg_string_from_diagram_(diagram, opt, err_)
-	{
-		const xml_formatter = require('xml-formatter');
-		const Version = require('./version');
-
-		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, opt, err_);
-		if(null === draw){
-			return null;
-		}
-
-		let s = draw.svg();
-
-		const h = sprintf("<!-- Generator: %s %s  -->", Version.get_name(), Version.get_version());
-		s = h + s;
-
-		let options = {indentation: '\t',};
-		return xml_formatter(s, options);
-	}
-
 	static get_ext_from_filepath(filepath)
 	{
 		return filepath.match(/\.[a-zA-Z0-9]*$/)[0];
@@ -249,5 +230,25 @@ let dataUriToBuffer = require('data-uri-to-buffer');
 
 		return true;
 	}
+
+	static get_svg_string_from_diagram_(diagram, opt, err_)
+	{
+		const xml_formatter = require('xml-formatter');
+		const Version = require('./version');
+
+		let draw = DaisyIO.get_dummy_draw_from_diagram_(diagram, opt, err_);
+		if(null === draw){
+			return null;
+		}
+
+		let s = draw.svg();
+
+		const h = sprintf("<!-- Generator: %s %s  -->", Version.get_name(), Version.get_version());
+		s = h + s;
+
+		let options = {indentation: '\t',};
+		return xml_formatter(s, options);
+	}
+
 };
 
