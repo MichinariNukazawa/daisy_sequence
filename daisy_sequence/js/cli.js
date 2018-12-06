@@ -17,6 +17,22 @@ module.exports = class Cli{
 			'err':			null,
 		};
 
+		//! @note selenium test dirty detection. many invalid args.
+		for(let i = 0; i < argv.length; i++){
+			if(argv[i].startsWith("--test-type=")){
+				//! @todo this message can not print in selenium test...
+				console.error("invalid args skip for selenium test.");
+				return arg;
+			}
+		}
+
+		if(4 < argv.length){
+			arg.err = {
+				'message': sprintf('invalid args num. %d', argv.length)
+			};
+			return arg;
+		}
+
 		if(typeof argv[1] === 'string'){
 			arg.open_filepath = argv[1];
 		}
@@ -24,8 +40,7 @@ module.exports = class Cli{
 		if(2 < argv.length){
 			if(argv[2] !== '-o'){
 				arg.err = {
-					'message': spirntf('invalid argment. `%s`', argv[2])
-					//'message': spirntf('invalid argment. `%s`', argv[2])
+					'message': sprintf('invalid argment. `%s`', argv[2])
 				};
 				return arg;
 			}
@@ -39,13 +54,6 @@ module.exports = class Cli{
 
 			arg.export_filepath = argv[3];
 			arg.is_cli_mode = true;
-		}
-
-		if(4 < argv.length){
-			arg.err = {
-				'message': sprintf('invalid args num. %d', argv.length)
-			};
-			return arg;
 		}
 
 		return arg;

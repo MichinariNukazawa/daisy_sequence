@@ -53,7 +53,7 @@ class MouseState{
 
 function process_argument(argv)
 {
-	if(argv[0].endsWith('electron') && argv[1] === '.'){
+	if(argv[0].endsWith('electron')){
 		argv.shift();
 	}
 	// console.log(argv);
