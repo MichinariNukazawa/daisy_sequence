@@ -174,10 +174,10 @@ module.exports = class Diagram{
 			const func_set_lifeline_ident_name_ = function(element, lifelines)
 			{
 				let ident_name = element.text;
-				ident_name = ident_name.replace(/\n/, "_");
-				ident_name = ident_name.replace(/[\[\]\s-,.?<>]/, "_");
-				ident_name = ident_name.replace(/[^A-Za-z_]/, "_");
-				ident_name = ident_name.replace(/_+/, "_");
+				ident_name = ident_name.replace(/\n/g, "_");
+				ident_name = ident_name.replace(/[\[\]\s-,.?<>]/g, "_");
+				ident_name = ident_name.replace(/[^A-Za-z_]/g, "_");
+				ident_name = ident_name.replace(/_+/g, "_");
 
 				// console.debug(sprintf("n:`%s` `%s`", element.text, ident_name));
 				return sprintf("%s_%d", ident_name, element.id);
