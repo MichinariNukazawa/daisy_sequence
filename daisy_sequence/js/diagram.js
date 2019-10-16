@@ -260,7 +260,11 @@ module.exports = class Diagram{
 			}
 
 			if('create' === message.message_kind){
-				strdata += sprintf("create %s\n", end_lifeline_ident_name);
+				if('[' === end_lifeline_ident_name || ']' === end_lifeline_ident_name){
+					// NOP
+				}else{
+					strdata += sprintf("create %s\n", end_lifeline_ident_name);
+				}
 			}
 
 			let arrow = "->";
@@ -297,7 +301,11 @@ module.exports = class Diagram{
 			}
 
 			if('stop' === message.message_kind){
-				strdata += sprintf("destroy %s\n", end_lifeline_ident_name);
+				if('[' === end_lifeline_ident_name || ']' === end_lifeline_ident_name){
+					// NOP
+				}else{
+					strdata += sprintf("destroy %s\n", end_lifeline_ident_name);
+				}
 			}
 
 			// ** turnback message spec end
