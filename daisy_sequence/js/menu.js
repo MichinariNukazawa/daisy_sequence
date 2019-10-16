@@ -8,7 +8,7 @@ const openAboutWindow = require('about-window').default;
 
 function message_dialog(strtype, strtitle, strmessage) {
 	const {dialog} = require('electron').remote;
-	dialog.showMessageBox(
+	dialog.showMessageBoxSync(
 			remote.getCurrentWindow(),
 			{
 				type: strtype,
@@ -20,7 +20,7 @@ function message_dialog(strtype, strtitle, strmessage) {
 
 function confirm_dialog(strtitle, strmessage) {
 	const {dialog} = require('electron').remote;
-	let choice = dialog.showMessageBox(
+	let choice = dialog.showMessageBoxSync(
 			remote.getCurrentWindow(),
 			{
 				type: 'question',
@@ -60,7 +60,7 @@ function open_dialog(default_filepath)
 	}
 	console.debug('open_filepath', open_filepath);
 
-	let filepath = dialog.showOpenDialog(
+	let filepath = dialog.showOpenDialogSync(
 			remote.getCurrentWindow(),
 			{
 				title: 'Open',
@@ -89,7 +89,7 @@ function save_dialog(title, default_filepath)
 		// 拡張子のみのファイルパスを作っておくとdialogが勝手にoverwrite確認をしてくれる
 		default_filepath = path.join(app.getPath('home'), '.' + 'daisysequence');
 	}
-	let filepath = dialog.showSaveDialog(
+	let filepath = dialog.showSaveDialogSync(
 			remote.getCurrentWindow(),
 			{
 				'title': title,
@@ -116,7 +116,7 @@ function export_dialog(default_filepath, format_name)
 	}else{
 		default_filepath = default_filepath.replace(/\.[a-zA-Z0-9]*$/, '.' + format_name);
 	}
-	let filepath = dialog.showSaveDialog(
+	let filepath = dialog.showSaveDialogSync(
 			remote.getCurrentWindow(),
 			{
 				title: 'Export',
