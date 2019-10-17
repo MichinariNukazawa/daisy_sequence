@@ -460,6 +460,7 @@ var template = [
 				return;
 			}
 
+			const {Element} = require('./js/element');
 			const elements = Element.get_child_elements(diagram.diagram_elements);
 			let focus = Doc.get_focus(daisy.get_current_doc());
 			Focus.append_elements(focus, elements);
@@ -491,6 +492,7 @@ var template = [
 				return;
 			}
 
+			const {Element} = require('./js/element');
 			const elements = Element.get_child_elements(diagram.diagram_elements);
 			let focus = Doc.get_focus(daisy.get_current_doc());
 			const focus_elements = Focus.get_elements(focus);
