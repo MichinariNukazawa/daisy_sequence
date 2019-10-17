@@ -600,7 +600,8 @@ module.exports = class Diagram{
 		Element.recursive(diagram.diagram_elements, func, opt);
 
 		if(null === opt.parent_obj){
-			console.error(id, opt.parent_obj);
+			// elementをdeleteする際に親子関係を無視しているためここにかかるのは問題ない。
+			console.warn(id, opt.parent_obj);
 			return;
 		}
 
