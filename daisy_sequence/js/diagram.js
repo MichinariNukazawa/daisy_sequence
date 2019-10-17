@@ -219,12 +219,13 @@ module.exports = class Diagram{
 
 		const escape_linefeed_ = function(str)
 		{
-			return str.replace(/\n/, "\\n");
+			return str.replace(/\n/g, "\\n");
 		};
 
 		const func_message_text_ = function(str)
 		{
-			return str.replace(/\n/, "\\n");
+			str = str.replace(/[\n]+$/g, "");
+			return str.replace(/\n/g, "\\n");
 		};
 		const func_get_lifeline_ident_name_ = function(element)
 		{
@@ -233,13 +234,16 @@ module.exports = class Diagram{
 		};
 		const func_lifeline_name_ = function(str)
 		{
-			str = str.replace(/\n/, "\\n");
+			str = str.replace(/[\n]+$/g, "");
+			str = str.replace(/\n/g, "\\n");
 			return '"' + str + '"';
 		};
 		const func_operand_text_ = function(str)
 		{
-			str = str.replace(/^\[/, "");
-			return str.replace(/\]$/, "");
+			// loopを見た目をUMLに合わせるために"[loop]"と囲い付きで書いていた
+			// 場合への対処だと思うが適当にしたのだと思われる。
+			str = str.replace(/^[\[]+/, "");
+			return str.replace(/[\]]+$/, "");
 		};
 
 		const func_plantuml_message_ = function(strdata, element, diagram, plantuml_opt)
@@ -325,9 +329,8 @@ module.exports = class Diagram{
 		{
 			const func_fragment_text_ = function(str)
 			{
-				str = "\t" + str;
-				str = str.replace(/\n/, "\n\t");
-				str = str.replace(/\t$/, "");
+				// plantuml上でnoteの内容文字列先頭にtabを付けたかった
+				str = str.replace(/^/g, "\t");
 				return str;
 			};
 
