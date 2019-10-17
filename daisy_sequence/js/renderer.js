@@ -139,6 +139,8 @@ module.exports.Renderer = class Renderer{
 
 	static draw_mouse_state_(rendering_handle, mouse_state)
 	{
+		const {Rect} = require('./element');
+
 		// ** mouse_state mode
 		switch(mouse_state.mode){
 			case 'focus_by_rect':
