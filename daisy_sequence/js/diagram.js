@@ -545,7 +545,7 @@ module.exports = class Diagram{
 			}
 		}
 
-		strdata += "\n@enduml";
+		strdata += "\n@enduml\n";
 
 		return strdata;
 	}
