@@ -17,7 +17,7 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 ROOT_DIR=${SCRIPT_DIR}/..
 SOURCE_DIR=${ROOT_DIR}/daisy_sequence
 
-APP_NAME=$(cat ${SOURCE_DIR}/package.json | grep '"name"' | sed -e 's/.\+:.*"\([-A-Za-z_0-9.]\+\)".\+/\1/g')
+APP_NAME=$(cat ${SOURCE_DIR}/package.json | grep '"name"' | sed -e 's/.*:.*"\(.*\)".*/\1/g')
 
 BUILD_DIR=${SOURCE_DIR}/release/osx/${APP_NAME}-darwin-x64
 PACKAGE_DIR=${SOURCE_DIR}/release/osx/${APP_NAME}-darwin-x64
@@ -28,7 +28,7 @@ if [ 1 -eq $# ] ; then
 	PACKAGE_POSTFIX="-$1"
 fi
 
-SHOW_VERSION=$(cat ${SOURCE_DIR}/package.json | grep "version" | sed -e 's/.\+:.*"\([0-9.]\+\)".\+/\1/g')
+SHOW_VERSION=$(cat ${SOURCE_DIR}/package.json | grep '"version"' | sed -e 's/.*:.*"\(.*\)".*/\1/g')
 
 GIT_HASH=$(git log --pretty=format:'%h' -n 1)
 GIT_STATUS_SHORT=$(git diff --stat | tail -1)
