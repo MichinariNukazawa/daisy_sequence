@@ -290,7 +290,11 @@ module.exports = class Diagram{
 			if(null !== end_lifeline){
 				switch(message.message_kind){
 					case 'sync':
-						strdata += sprintf("activate %s\n", end_lifeline_ident_name);
+						if(null === ObjectUtil.get_property_from_path(message, 'spec')){
+							// NOP
+						}else{
+							strdata += sprintf("activate %s\n", end_lifeline_ident_name);
+						}
 						break;
 					case 'reply':
 						strdata += sprintf("deactivate %s\n", start_lifeline_ident_name);
