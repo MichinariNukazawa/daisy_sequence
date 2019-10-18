@@ -45,6 +45,7 @@ package: package_desktop
 package_desktop:
 	rm -rf daisy_sequence/node_modules
 	cd daisy_sequence && npm install && npm audit fix
+	# notice: in macosx cli test do not running
 	make test
 	bash ./release/installer_win32_x64.sh
 	bash ./release/installer_darwin.sh
