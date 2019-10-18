@@ -474,6 +474,34 @@ module.exports = class Diagram{
 			'spec_ends':[],
 			'plantuml_ex_elems': [],
 		};
+		// ** 文字列化前処理として、elementの上下に配置する必要のあるものを収集しておく
+		for(let i = 0; i < plantuml_elems.length; i++){
+			const plantuml_elem = plantuml_elems[i];
+			switch(plantuml_elem.kind){
+				case 'message':
+					// *** repry_messageを持たないspecの末尾を収集しておく
+					if(null === ObjectUtil.get_property_from_path(plantuml_elem, 'spec')){
+						break;
+					}
+					if(null !== ObjectUtil.get_property_from_path(plantuml_elem, 'reply_message')){
+						break;
+					}
+					if(null === ObjectUtil.get_property_from_path(plantuml_elem, 'end.lifeline_id')){
+						break;
+					}
+					const lifeline_id = plantuml_elem.end.lifeline_id;
+					const lifeline = Diagram.get_element_from_id(diagram, lifeline_id);
+					const lifeline_ident_name = func_get_lifeline_ident_name_(lifeline);
+					plantuml_opt.plantuml_ex_elems.push({
+						'plantuml_ex_elem_kind': "spec_end",
+						'y_end': plantuml_elem.y + plantuml_elem.spec.height,
+						'lifeline_ident_name': lifeline_ident_name,
+					});
+				default:
+					// NOP
+			}
+		}
+		// ** elementおよびその上下に差し込まれるplantuml要素を上から文字列生成
 		for(let i = 0; i < plantuml_elems.length; i++){
 			let latest_y = 0;
 			switch(plantuml_elems[i].kind){
