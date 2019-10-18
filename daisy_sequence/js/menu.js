@@ -430,6 +430,23 @@ var template = [
 {
 	label: '&Edit',
 	submenu: [
+	// キーボード・ショートカット表示用のダミー(js/index.js onloadにて処理)
+	{
+		label: '&Cut',
+		accelerator: 'CmdOrCtrl+X',
+		selector: "cut:"
+	},
+	{
+		label: '&Copy',
+		accelerator: 'CmdOrCtrl+C',
+		selector: "copy:"
+	},
+	{
+		label: '&Paste',
+		accelerator: 'CmdOrCtrl+V',
+		selector: "paste:"
+	},
+	{type: 'separator'},
 	{
 		label: '&Undo',
 		accelerator: 'CmdOrCtrl+Z',
