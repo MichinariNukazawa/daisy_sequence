@@ -456,6 +456,13 @@ module.exports = class Diagram{
 		let strdata = "";
 		strdata += "@startuml\n";
 		strdata += sprintf("/' Generator: %s %s '/\n\n", Version.get_name(), Version.get_version());
+
+		// ** lifeline
+		lifelines = lifelines.sort(function(a, b){
+			if(a.x < b.x) return -1;
+			if(a.x > b.x) return 1;
+			return 0;
+		});
 		for(let i = 0; i < lifelines.length; i++){
 			strdata += sprintf("participant %s as %s\n",
 				func_lifeline_name_(lifelines[i].text),
