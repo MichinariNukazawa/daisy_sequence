@@ -53,7 +53,8 @@ class MouseState{
 
 function process_argument(argv)
 {
-	if(argv[0].endsWith('electron')){
+	// osx: "〜/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron"
+	if(argv[0].endsWith('lectron')){
 		argv.shift();
 	}
 	// console.log(argv);
