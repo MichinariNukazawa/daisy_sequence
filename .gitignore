@@ -53,6 +53,11 @@ doxygen/
 *.txt
 *.ai
 
+#
+.DS_Store
+Thumbs.db*
+
+
 
 node_modules/
 daisy_sequence-*/
