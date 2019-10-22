@@ -1163,6 +1163,7 @@ function callback_click_fragment_add_operand()
 		element = Diagram.get_parent_element_from_id(diagram, element.id);
 	}
 
+	const {Fragment} = require('./js/element');
 	Fragment.add_create_operand(element, diagram, {});
 
 	Renderer.rerendering(
