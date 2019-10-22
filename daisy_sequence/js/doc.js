@@ -67,130 +67,14 @@ class DocCollection{
 	}
 };
 
-function get_default_doc()
-{
-	let diagram_elements = [
-		{
-			'kind': 'lifeline',
-			'id': 0,
-			'x': 150,
-			'y': 20,
-			'text': 'Object1'
-		},
-		{
-			'kind': 'lifeline',
-			'id': 1,
-			'x': 300,
-			'y': 20,
-			'text': 'Object2'
-		},
-		{
-			'kind':		'message',
-			'id':		2,
-			'y':		90,
-			'start':	{'position_x': 20},		// from found
-			'end':		{'lifeline_id': 0},
-			'message_kind':	'sync',
-			'text':		'message\nfrom found',
-			'spec':		{
-				'kind':		'spec',
-				'id':		10,
-				'y_offset':	0,
-				'height':	300,
-			},
-		},
-		{
-			'kind':		'message',
-			'id':		3,
-			'y':		110,
-			'start':	{'lifeline_id': 0},
-			'end':		{'lifeline_id': 1},
-			'message_kind':	'create',			// create lifeline
-			'text':		'create lifeline',
-		},
-		{
-			'kind':		'message',
-			'id':		4,
-			'y':		160,
-			'start':	{'lifeline_id': 0},	// lifeline to lifeline
-			'end':		{'lifeline_id': 1},
-			'message_kind':	'sync',
-			'text':		'lifeline to lifeline',
-			'spec':		{
-				'kind':		'spec',
-				'id':		11,
-				'y_offset':	0,
-				'height':	20,
-			},
-			'reply_message':	{
-				'kind':		'message',
-				'id':		6,
-				'y':		220,
-				'message_kind':	'reply',	// reply
-				'text':		'message of reply',
-			},
-		},
-		{
-			'kind':		'message',
-			'id':		5,
-			'y':		190,
-			'start':	{'lifeline_id': 1},	// turnback to lifeline
-			'end':		{'lifeline_id': 1},
-			'message_kind':	'sync',
-			'text':		'turnback',
-		},
-		{
-			'kind':		'message',
-			'id':		7,
-			'y':		270,
-			'start':	{'lifeline_id': 0},
-			'end':		{'position_x': 420},				// lost
-			'message_kind':	'sync',
-			'text':		'message to lost',
-		},
-		{
-			'kind':		'message',
-			'id':		8,
-			'y':		300,
-			'start':	{'lifeline_id': 0},
-			'end':		{'position_x': 420},				// lost
-			'message_kind':	'stop',						// stop to lifeline
-			'text':		'stop to lifeline',
-		},
-		{
-			'kind':			'fragment',
-			'id':			12,
-			'x':			350,
-			'y':			250,
-			'width':		120,
-			'height':		40,
-			'is_auto_size':		true,
-			'fragment_kind':	'alt',
-			'background_opacity':	'0.1',
-			'text':			'text\nmemo fragment',
-		},
-		{
-			'kind':			'fragment',
-			'id':			13,
-			'x':			350,
-			'y':			350,
-			'width':		120,
-			'height':		40,
-			'is_auto_size':		false,
-			'fragment_kind':	'',
-			'background_opacity':	'0.1',
-			'text':			'text\nmemo fragment',
-		},
-	];
-
-	let diagram = {
-		'width': 500,
-		'height': 450,
-		'property': {
-			'lifeline_align_axis_y': 30,
-		},
-		'diagram_elements': diagram_elements,
-	};
+function get_default_doc(){
+	let err_ = {};
+	const filepath = path.join(__dirname, 'resource/default_document.daisysequence');
+	const diagram = DaisyIO.open_diagram_from_path(filepath, err_);
+	if(null === diagram){
+		console.warn(errs_);
+		return null;
+	}
 
 	const doc = Doc.create_from_diagram(diagram);
 

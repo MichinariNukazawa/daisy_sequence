@@ -1,0 +1,270 @@
+{
+	"editor_info": {
+		"application_name": "daisy_sequence",
+		"version": "201910.17.0"
+	},
+	"filetype": "daisy sequence",
+	"diagram": {
+		"width": 600,
+		"height": 660,
+		"property": {
+			"lifeline_align_axis_y": 30
+		},
+		"diagram_elements": [
+			{
+				"kind": "lifeline",
+				"id": 1,
+				"x": 390,
+				"y": 81,
+				"text": "Object2"
+			},
+			{
+				"kind": "lifeline",
+				"id": 0,
+				"x": 189,
+				"y": 30,
+				"text": "Object1"
+			},
+			{
+				"kind": "message",
+				"id": 2,
+				"y": 90,
+				"start": {
+					"position_x": 20
+				},
+				"end": {
+					"lifeline_id": 0
+				},
+				"message_kind": "sync",
+				"text": "message\nfrom found",
+				"spec": {
+					"kind": "spec",
+					"id": 10,
+					"y_offset": 0,
+					"height": 402
+				}
+			},
+			{
+				"kind": "message",
+				"id": 3,
+				"y": 110,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"lifeline_id": 1
+				},
+				"message_kind": "create",
+				"text": "create lifeline"
+			},
+			{
+				"kind": "message",
+				"id": 4,
+				"y": 146,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"lifeline_id": 1
+				},
+				"message_kind": "sync",
+				"text": "lifeline to lifeline",
+				"spec": {
+					"kind": "spec",
+					"id": 11,
+					"y_offset": 0,
+					"height": 123
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 6,
+					"y": 270,
+					"message_kind": "reply",
+					"text": "message of reply",
+					"start": {
+						"lifeline_id": 1
+					},
+					"end": {
+						"lifeline_id": 0
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 5,
+				"y": 160,
+				"start": {
+					"lifeline_id": 1
+				},
+				"end": {
+					"lifeline_id": 1
+				},
+				"message_kind": "sync",
+				"text": "turnback1",
+				"spec": null
+			},
+			{
+				"kind": "message",
+				"id": 7,
+				"y": 320,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 344,
+					"lifeline_id": -1
+				},
+				"message_kind": "sync",
+				"text": "message to lost"
+			},
+			{
+				"kind": "message",
+				"id": 8,
+				"y": 390,
+				"start": {
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 420
+				},
+				"message_kind": "stop",
+				"text": "stop to lifeline / empty"
+			},
+			{
+				"kind": "fragment",
+				"id": 12,
+				"x": 51,
+				"y": 306,
+				"width": 496,
+				"height": 123,
+				"is_auto_size": false,
+				"fragment_kind": "alt [v == 'aaa']",
+				"background_opacity": "0.1",
+				"text": "text\nmemo fragment",
+				"operands": [
+					{
+						"kind": "operand",
+						"id": 24,
+						"relate_y": 66,
+						"text": "[v == 'bbb']"
+					}
+				]
+			},
+			{
+				"kind": "fragment",
+				"id": 13,
+				"x": 427,
+				"y": 463,
+				"width": 120,
+				"height": 40,
+				"is_auto_size": false,
+				"fragment_kind": "",
+				"background_opacity": "0.1",
+				"text": "text\nmemo fragment"
+			},
+			{
+				"kind": "message",
+				"id": 15,
+				"y": 210,
+				"start": {
+					"position_x": 302,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 312,
+					"lifeline_id": 1
+				},
+				"message_kind": "sync",
+				"text": "turnback2",
+				"spec": {
+					"kind": "spec",
+					"id": 16,
+					"y_offset": 0,
+					"height": 25
+				}
+			},
+			{
+				"kind": "message",
+				"id": 17,
+				"y": 450,
+				"start": {
+					"position_x": 154,
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 292,
+					"lifeline_id": 1
+				},
+				"message_kind": "sync",
+				"text": "message",
+				"spec": {
+					"kind": "spec",
+					"id": 18,
+					"y_offset": 0,
+					"height": 25
+				},
+				"reply_message": {
+					"kind": "message",
+					"id": 19,
+					"y": 475,
+					"message_kind": "reply",
+					"text": "message of reply",
+					"start": {
+						"lifeline_id": 1
+					},
+					"end": {
+						"lifeline_id": 0
+					}
+				}
+			},
+			{
+				"kind": "message",
+				"id": 20,
+				"y": 521,
+				"start": {
+					"position_x": 300,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 165,
+					"lifeline_id": 0
+				},
+				"message_kind": "stop",
+				"text": "stop of lifeline"
+			},
+			{
+				"kind": "message",
+				"id": 21,
+				"y": 548,
+				"start": {
+					"position_x": 332,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 341,
+					"lifeline_id": 1
+				},
+				"message_kind": "sync",
+				"text": "message XX",
+				"spec": {
+					"kind": "spec",
+					"id": 22,
+					"y_offset": 0,
+					"height": 25
+				}
+			},
+			{
+				"kind": "fragment",
+				"id": 23,
+				"x": 279,
+				"y": 200,
+				"width": 256,
+				"height": 47,
+				"is_auto_size": false,
+				"fragment_kind": "opt [1 == 1]",
+				"background_opacity": 0.1,
+				"text": "0 == 0"
+			}
+		]
+	}
+}
