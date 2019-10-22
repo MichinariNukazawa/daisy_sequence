@@ -14,37 +14,37 @@ rm -rf ${OBJECT_DIR}/*
 mkdir -p ${OBJECT_DIR}
 
 ## exist input file
-[ -e ../daisy_sequence/default_document.daisysequence ]
+[ -e ../daisy_sequence/resource/default_document.daisysequence ]
 
 ## valid pattern
-${BIN} ../daisy_sequence/default_document.daisysequence -o ${OBJECT_DIR}/a.svg
+${BIN} ../daisy_sequence/resource/default_document.daisysequence -o ${OBJECT_DIR}/a.svg
 
 
 # invalid test
 ## nothing option
 set +e
-${BIN} ../daisy_sequence/default_document.daisysequence
+${BIN} ../daisy_sequence/resource/default_document.daisysequence
 RET=$?
 set -e
 [ 0 -ne $RET ]
 
 ## output path nothing
 set +e
-${BIN} ../daisy_sequence/default_document.daisysequence -o
+${BIN} ../daisy_sequence/resource/default_document.daisysequence -o
 RET=$?
 set -e
 [ 0 -ne $RET ]
 
 ## "-o" nothing
 set +e
-${BIN} ../daisy_sequence/default_document.daisysequence ${OBJECT_DIR}/a.svg
+${BIN} ../daisy_sequence/resource/default_document.daisysequence ${OBJECT_DIR}/a.svg
 RET=$?
 set -e
 [ 0 -ne $RET ]
 
 ## output dir nothing
 set +e
-${BIN} ../daisy_sequence/default_document.daisysequence -o ${OBJECT_DIR}/dir-not-exist/a.svg
+${BIN} ../daisy_sequence/resource/default_document.daisysequence -o ${OBJECT_DIR}/dir-not-exist/a.svg
 RET=$?
 set -e
 [ 0 -ne $RET ]
@@ -58,14 +58,14 @@ set -e
 
 ## no supported ext
 set +e
-${BIN} ../daisy_sequence/default_document.daisysequence -o ${OBJECT_DIR}/a.bmp
+${BIN} ../daisy_sequence/resource/default_document.daisysequence -o ${OBJECT_DIR}/a.bmp
 RET=$?
 set -e
 [ 0 -ne $RET ]
 
 ## over argument
 set +e
-${BIN} ../daisy_sequence/default_document.daisysequence -o ${OBJECT_DIR}/a.svg ${OBJECT_DIR}/b.svg
+${BIN} ../daisy_sequence/resource/default_document.daisysequence -o ${OBJECT_DIR}/a.svg ${OBJECT_DIR}/b.svg
 RET=$?
 set -e
 [ 0 -ne $RET ]
