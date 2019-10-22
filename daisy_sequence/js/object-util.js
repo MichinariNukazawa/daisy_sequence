@@ -25,12 +25,15 @@ module.exports = class ObjectUtil{
 
 	static removeKey(obj, keys)
 	{
-		if(obj instanceof Array){
+		if(null === obj){
+			console.debug("");
+		}else if(typeof obj === 'undefined'){
+			console.debug("");
+		}else if(obj instanceof Array){
 			obj.forEach(function(item){
 				ObjectUtil.removeKey(item,keys)
 			});
-		}
-		else if(typeof obj === 'object'){
+		}else if(typeof obj === 'object'){
 			Object.getOwnPropertyNames(obj).forEach(function(key){
 				if(keys.indexOf(key) !== -1)delete obj[key];
 				else ObjectUtil.removeKey(obj[key],keys);

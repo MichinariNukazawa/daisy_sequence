@@ -319,11 +319,15 @@ module.exports = class Diagram{
 			// ** turnback message spec end
 			if(null !== end_lifeline && start_lifeline_id === end_lifeline_id){
 				const spec_height = ((end_lifeline.hasOwnProperty('spce'))? end_lifeline.spec.height : 30);
-				plantuml_opt.plantuml_ex_elems.push({
-					'plantuml_ex_elem_kind': "spec_end",
-					'y_end': (end_lifeline.y + spec_height),
-					'lifeline_ident_name': end_lifeline_ident_name,
-				});
+				if(! message.hasOwnProperty('spce')){
+					console.debug("");
+				}else{
+					plantuml_opt.plantuml_ex_elems.push({
+						'plantuml_ex_elem_kind': "spec_end",
+						'y_end': (end_lifeline.y + spec_height),
+						'lifeline_ident_name': end_lifeline_ident_name,
+					});
+				}
 			}
 
 			return strdata;
@@ -483,6 +487,11 @@ module.exports = class Diagram{
 			const plantuml_elem = plantuml_elems[i];
 			switch(plantuml_elem.kind){
 				case 'message':
+
+					if(plantuml_elem.text.startsWith('turnback')){
+						console.log("");
+					}
+
 					// *** repry_messageを持たないspecの末尾を収集しておく
 					if(null === ObjectUtil.get_property_from_path(plantuml_elem, 'spec')){
 						break;
@@ -501,6 +510,7 @@ module.exports = class Diagram{
 						'y_end': plantuml_elem.y + plantuml_elem.spec.height,
 						'lifeline_ident_name': lifeline_ident_name,
 					});
+					break;
 				default:
 					// NOP
 			}
@@ -522,7 +532,7 @@ module.exports = class Diagram{
 				switch(plantuml_opt.plantuml_ex_elems[t].plantuml_ex_elem_kind){
 					case "spec_end":
 						if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
-							strdata += "' turnback end\n"
+							strdata += "' spec_end ex_elem in elem loop\n"
 							strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_ident_name);
 							plantuml_opt.plantuml_ex_elems.splice(t, 1);
 						}
@@ -530,7 +540,7 @@ module.exports = class Diagram{
 					case "fragment_end":
 						if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
 							strdata += "end\n";
-							strdata += sprintf("' fragment end %s\n\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
+							strdata += sprintf("' fragment_end ex_elem in elem loop %s\n\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
 							plantuml_opt.plantuml_ex_elems.splice(t, 1);
 						}
 						break;
@@ -565,20 +575,21 @@ module.exports = class Diagram{
 			switch(plantuml_opt.plantuml_ex_elems[t].plantuml_ex_elem_kind){
 				case "spec_end":
 					{
-						strdata += "' turnback end\n"
+						strdata += "' spec_end ex_elem\n"
 						strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_ident_name);
 					}
 					break;
 				case "fragment_end":
 					{
+						strdata += sprintf("' fragment end ex_elem %s\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
 						strdata += "end\n";
-						strdata += sprintf("' fragment end %s\n\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
+						strdata += "\n";
 					}
 					break;
 				case "operand":
 					{
-						const operand_text = func_operand_text_(plantuml_opt.plantuml_ex_elems[t].operand.text);
-						strdata += sprintf("else %s\n", operand_text);
+						strdata += "' operand ex_elem\n"
+						strdata += sprintf("else %s\n", func_operand_text_(plantuml_opt.plantuml_ex_elems[t].operand.text));
 					}
 					break;
 			}
