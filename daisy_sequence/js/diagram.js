@@ -337,8 +337,9 @@ module.exports = class Diagram{
 		{
 			const func_fragment_text_ = function(str)
 			{
-				// plantuml上でnoteの内容文字列先頭にtabを付けたかった
-				str = str.replace(/^/g, "\t");
+				// note内部の改行とtabはエスケープしなくて良い
+				// plantuml上でnoteの内容文字列先頭にtabを付ける
+				str = str.replace(/^/mg, "\t");
 				return str;
 			};
 
