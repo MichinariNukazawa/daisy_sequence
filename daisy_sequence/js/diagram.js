@@ -306,6 +306,8 @@ module.exports = class Diagram{
 					default:
 						// NOP
 				}
+			}else{
+				strdata += sprintf("' end lifeline %s\n", start_lifeline_ident_name);
 			}
 
 			if('stop' === message.message_kind){

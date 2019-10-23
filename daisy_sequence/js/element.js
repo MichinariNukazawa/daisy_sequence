@@ -449,8 +449,13 @@ module.exports.Message = class Message{
 
 	static get_start_lifeline_id(message)
 	{
-
-		if(message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id){
+		if(! message.hasOwnProperty('start')){
+			return -1;
+		}
+		if(! message.start.hasOwnProperty('lifeline_id')){
+			return -1;
+		}
+		if(0 <= message.start.lifeline_id){
 			return message.start.lifeline_id;
 		}
 
@@ -459,8 +464,13 @@ module.exports.Message = class Message{
 
 	static get_end_lifeline_id(message)
 	{
-
-		if(message.end.hasOwnProperty('lifeline_id') && 0 <= message.end.lifeline_id){
+		if(! message.hasOwnProperty('end')){
+			return -1;
+		}
+		if(! message.end.hasOwnProperty('lifeline_id')){
+			return -1;
+		}
+		if(0 <= message.end.lifeline_id){
 			return message.end.lifeline_id;
 		}
 
