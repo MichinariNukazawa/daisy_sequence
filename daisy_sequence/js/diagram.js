@@ -487,86 +487,93 @@ module.exports = class Diagram{
 		};
 		// ** 文字列化前処理として、elementの上下に配置する必要のあるものを収集しておく
 		for(let i = 0; i < plantuml_elems.length; i++){
-			const plantuml_elem = plantuml_elems[i];
-			switch(plantuml_elem.kind){
-				case 'message':
+			try{
+				const plantuml_elem = plantuml_elems[i];
+				switch(plantuml_elem.kind){
+					case 'message':
 
-					if(plantuml_elem.text.startsWith('turnback')){
-						console.log("");
-					}
+						if(plantuml_elem.text.startsWith('turnback')){
+							console.log("");
+						}
 
-					// *** repry_messageを持たないspecの末尾を収集しておく
-					if(null === ObjectUtil.get_property_from_path(plantuml_elem, 'spec')){
+						// *** repry_messageを持たないspecの末尾を収集しておく
+						if(null === ObjectUtil.get_property_from_path(plantuml_elem, 'spec')){
+							break;
+						}
+						if(null !== ObjectUtil.get_property_from_path(plantuml_elem, 'reply_message')){
+							break;
+						}
+						if(null === ObjectUtil.get_property_from_path(plantuml_elem, 'end.lifeline_id')){
+							break;
+						}
+						const lifeline_id = plantuml_elem.end.lifeline_id;
+						const lifeline = Diagram.get_element_from_id(diagram, lifeline_id);
+						const lifeline_ident_name = func_get_lifeline_ident_name_(lifeline);
+						plantuml_opt.plantuml_ex_elems.push({
+							'plantuml_ex_elem_kind': "spec_end",
+							'y_end': plantuml_elem.y + plantuml_elem.spec.height,
+							'lifeline_ident_name': lifeline_ident_name,
+						});
 						break;
-					}
-					if(null !== ObjectUtil.get_property_from_path(plantuml_elem, 'reply_message')){
-						break;
-					}
-					if(null === ObjectUtil.get_property_from_path(plantuml_elem, 'end.lifeline_id')){
-						break;
-					}
-					const lifeline_id = plantuml_elem.end.lifeline_id;
-					const lifeline = Diagram.get_element_from_id(diagram, lifeline_id);
-					const lifeline_ident_name = func_get_lifeline_ident_name_(lifeline);
-					plantuml_opt.plantuml_ex_elems.push({
-						'plantuml_ex_elem_kind': "spec_end",
-						'y_end': plantuml_elem.y + plantuml_elem.spec.height,
-						'lifeline_ident_name': lifeline_ident_name,
-					});
-					break;
-				default:
-					// NOP
+					default:
+						// NOP
+				}
+			}catch(err){
+				add_errs_(errs_, "bug", sprintf("exeption ex_elem %s", err.message));
+				continue;
 			}
 		}
 		// ** elementおよびその上下に差し込まれるplantuml要素を上から文字列生成
 		for(let i = 0; i < plantuml_elems.length; i++){
-			let latest_y = 0;
-			switch(plantuml_elems[i].kind){
-				case 'message':
-				case 'fragment':
-				latest_y = plantuml_elems[i].y;
-			}
-
-			// ** turnback message spec end
-			for(let t = plantuml_opt.spec_ends.length - 1; 0 <= t; t--){
-			}
-			// ** fragment end(not memo ex.alt, loop...)
-			for(let t = plantuml_opt.plantuml_ex_elems.length - 1; 0 <= t; t--){
-				switch(plantuml_opt.plantuml_ex_elems[t].plantuml_ex_elem_kind){
-					case "spec_end":
-						if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
-							strdata += "' spec_end ex_elem in elem loop\n"
-							strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_ident_name);
-							plantuml_opt.plantuml_ex_elems.splice(t, 1);
-						}
-						break;
-					case "fragment_end":
-						if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
-							strdata += "end\n";
-							strdata += sprintf("' fragment_end ex_elem in elem loop %s\n\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
-							plantuml_opt.plantuml_ex_elems.splice(t, 1);
-						}
-						break;
-					case "operand":
-						if(plantuml_opt.plantuml_ex_elems[t].y < latest_y){
-							const operand_text = func_operand_text_(plantuml_opt.plantuml_ex_elems[t].operand.text);
-							strdata += sprintf("else %s\n", operand_text);
-							plantuml_opt.plantuml_ex_elems.splice(t, 1);
-						}
-						break;
+			try{
+				let latest_y = 0;
+				switch(plantuml_elems[i].kind){
+					case 'message':
+					case 'fragment':
+					latest_y = plantuml_elems[i].y;
 				}
-			}
 
-			switch(plantuml_elems[i].kind){
-				case 'message':
-					strdata = func_plantuml_message_(strdata, plantuml_elems[i], diagram, plantuml_opt);
-					break;
-				case 'fragment':
-					strdata = func_plantuml_fragment_(strdata, plantuml_elems[i], diagram, plantuml_opt);
-					break;
-				default:
-			}
+				// ** fragment end(not memo ex.alt, loop...)
+				for(let t = plantuml_opt.plantuml_ex_elems.length - 1; 0 <= t; t--){
+					switch(plantuml_opt.plantuml_ex_elems[t].plantuml_ex_elem_kind){
+						case "spec_end":
+							if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
+								strdata += "' spec_end ex_elem in elem loop\n"
+								strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_ident_name);
+								plantuml_opt.plantuml_ex_elems.splice(t, 1);
+							}
+							break;
+						case "fragment_end":
+							if(plantuml_opt.plantuml_ex_elems[t].y_end < latest_y){
+								strdata += "end\n";
+								strdata += sprintf("' fragment_end ex_elem in elem loop %s\n\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
+								plantuml_opt.plantuml_ex_elems.splice(t, 1);
+							}
+							break;
+						case "operand":
+							if(plantuml_opt.plantuml_ex_elems[t].y < latest_y){
+								const operand_text = func_operand_text_(plantuml_opt.plantuml_ex_elems[t].operand.text);
+								strdata += sprintf("else %s\n", operand_text);
+								plantuml_opt.plantuml_ex_elems.splice(t, 1);
+							}
+							break;
+					}
+				}
 
+				switch(plantuml_elems[i].kind){
+					case 'message':
+						strdata = func_plantuml_message_(strdata, plantuml_elems[i], diagram, plantuml_opt);
+						break;
+					case 'fragment':
+						strdata = func_plantuml_fragment_(strdata, plantuml_elems[i], diagram, plantuml_opt);
+						break;
+					default:
+				}
+
+			}catch(err){
+				add_errs_(errs_, "bug", sprintf("exeption ex_elem %s", err.message));
+				continue;
+			}
 		}
 
 		plantuml_opt.plantuml_ex_elems.sort(function(a, b){
@@ -575,26 +582,31 @@ module.exports = class Diagram{
 			return 0;
 		});
 		for(let t = 0; t < plantuml_opt.plantuml_ex_elems.length; t++){
-			switch(plantuml_opt.plantuml_ex_elems[t].plantuml_ex_elem_kind){
-				case "spec_end":
-					{
-						strdata += "' spec_end ex_elem\n"
-						strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_ident_name);
-					}
-					break;
-				case "fragment_end":
-					{
-						strdata += sprintf("' fragment end ex_elem %s\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
-						strdata += "end\n";
-						strdata += "\n";
-					}
-					break;
-				case "operand":
-					{
-						strdata += "' operand ex_elem\n"
-						strdata += sprintf("else %s\n", func_operand_text_(plantuml_opt.plantuml_ex_elems[t].operand.text));
-					}
-					break;
+			try{
+				switch(plantuml_opt.plantuml_ex_elems[t].plantuml_ex_elem_kind){
+					case "spec_end":
+						{
+							strdata += "' spec_end ex_elem\n"
+							strdata += sprintf("deactivate %s\n", plantuml_opt.plantuml_ex_elems[t].lifeline_ident_name);
+						}
+						break;
+					case "fragment_end":
+						{
+							strdata += sprintf("' fragment end ex_elem %s\n", plantuml_opt.plantuml_ex_elems[t].fragment.kind);
+							strdata += "end\n";
+							strdata += "\n";
+						}
+						break;
+					case "operand":
+						{
+							strdata += "' operand ex_elem\n"
+							strdata += sprintf("else %s\n", func_operand_text_(plantuml_opt.plantuml_ex_elems[t].operand.text));
+						}
+						break;
+				}
+			}catch(err){
+				add_errs_(errs_, "bug", sprintf("exeption ex_elem %s", err.message));
+				continue;
 			}
 		}
 
