@@ -141,7 +141,7 @@ let dataUriToBuffer = require('data-uri-to-buffer');
 		// saveSvgAsPng(svg_elem, filepath, {scale: 3});
 		svgAsPngUri(svg_elem,
 			{
-				'scale': 4,
+				'scale': 2,
 				'backgroundColor': "#fff",
 			},
 			function(uri) {
@@ -159,7 +159,7 @@ let dataUriToBuffer = require('data-uri-to-buffer');
 		return true;
 }else{
 		const opt = {
-			'scale': 4,
+			'scale': 2,
 			'background_color': "#fff",
 		};
 		const strdata = DaisyIO.get_svg_string_from_diagram_(diagram, opt, err_);
