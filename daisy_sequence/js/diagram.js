@@ -290,6 +290,7 @@ module.exports = class Diagram{
 			if(null !== end_lifeline){
 				switch(message.message_kind){
 					case 'sync':
+					case 'async':
 						if(null === ObjectUtil.get_property_from_path(message, 'spec')){
 							// NOP
 						}else{
@@ -302,7 +303,6 @@ module.exports = class Diagram{
 					case 'stop':
 						strdata += sprintf("deactivate %s\n", end_lifeline_ident_name);
 						break;
-					case 'async':
 					default:
 						// NOP
 				}

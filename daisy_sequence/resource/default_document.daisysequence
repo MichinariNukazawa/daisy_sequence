@@ -1,12 +1,12 @@
 {
 	"editor_info": {
 		"application_name": "daisy_sequence",
-		"version": "201910.17.0"
+		"version": "201910.22.0"
 	},
 	"filetype": "daisy sequence",
 	"diagram": {
 		"width": 600,
-		"height": 660,
+		"height": 785,
 		"property": {
 			"lifeline_align_axis_y": 30
 		},
@@ -41,7 +41,7 @@
 					"kind": "spec",
 					"id": 10,
 					"y_offset": 0,
-					"height": 402
+					"height": 491
 				}
 			},
 			{
@@ -73,7 +73,7 @@
 					"kind": "spec",
 					"id": 11,
 					"y_offset": 0,
-					"height": 123
+					"height": 124
 				},
 				"reply_message": {
 					"kind": "message",
@@ -154,7 +154,7 @@
 				"kind": "fragment",
 				"id": 13,
 				"x": 427,
-				"y": 463,
+				"y": 454,
 				"width": 120,
 				"height": 40,
 				"is_auto_size": false,
@@ -195,32 +195,19 @@
 					"position_x": 292,
 					"lifeline_id": 1
 				},
-				"message_kind": "sync",
-				"text": "message",
+				"message_kind": "async",
+				"text": "message of async",
 				"spec": {
 					"kind": "spec",
 					"id": 18,
 					"y_offset": 0,
-					"height": 25
-				},
-				"reply_message": {
-					"kind": "message",
-					"id": 19,
-					"y": 475,
-					"message_kind": "reply",
-					"text": "message of reply",
-					"start": {
-						"lifeline_id": 1
-					},
-					"end": {
-						"lifeline_id": 0
-					}
+					"height": 111
 				}
 			},
 			{
 				"kind": "message",
 				"id": 20,
-				"y": 521,
+				"y": 612,
 				"start": {
 					"position_x": 300,
 					"lifeline_id": 1
@@ -235,9 +222,9 @@
 			{
 				"kind": "message",
 				"id": 21,
-				"y": 548,
+				"y": 649,
 				"start": {
-					"position_x": 332,
+					"position_x": 407,
 					"lifeline_id": 1
 				},
 				"end": {
@@ -264,6 +251,27 @@
 				"fragment_kind": "opt [1 == 1]",
 				"background_opacity": 0.1,
 				"text": "0 == 0"
+			},
+			{
+				"kind": "message",
+				"id": 25,
+				"y": 512,
+				"start": {
+					"position_x": 392,
+					"lifeline_id": 1
+				},
+				"end": {
+					"position_x": 406,
+					"lifeline_id": 1
+				},
+				"message_kind": "async",
+				"text": "turnback async",
+				"spec": {
+					"kind": "spec",
+					"id": 26,
+					"y_offset": 0,
+					"height": 199
+				}
 			}
 		]
 	}
