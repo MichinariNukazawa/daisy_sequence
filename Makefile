@@ -35,6 +35,7 @@ clean:
 	cd command-line-test && make clean
 	rm -rf release/release
 	rm -rf daisy_sequence/release
+	rm -rf daisy_sequence/node_modules
 
 doc:
 	cd document/user_manual/ && bash ./build.sh
