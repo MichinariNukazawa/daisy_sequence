@@ -40,6 +40,7 @@ input[type="checkbox"][disabled] + span{
 
 .box-container{
 	display: flex;
+	height: calc(99% - 32px);
 }
 
 .frame{
@@ -59,6 +60,7 @@ table th{
 
 #tool{
 	font-size:120%;
+	height: calc(99% - 48px);
 }
 
 #tool button{
@@ -94,7 +96,9 @@ table th{
 }
 
 #property-editor{
+	min-width: 270px;
 	font-size:120%;
+	overflow:	visible auto;
 }
 
 #canvas-header{
@@ -110,7 +114,7 @@ table th{
 #canvas-container{
 	border: solid 1px rgba(0, 0, 0, 0.3);
 	background: white;
-	position:absolute; top:54px; bottom:4px; left:296px; right:4px;
+	position:absolute; top:54px; bottom:4px; left:330px; right:4px;
 	overflow:	auto;
 	cursor: default;
 }
