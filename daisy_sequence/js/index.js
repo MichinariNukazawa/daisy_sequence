@@ -228,6 +228,8 @@ window.onload = function(e){
 	let canvas__diagram_height = document.getElementById('canvas__diagram-height');
 	add_event_listener_first_input_with_history(
 		canvas__diagram_height, callback_input_with_history_diagram_height);
+
+	document.getElementById('editor__document-sequence_number_kind').addEventListener('change', callback_change_document_sequence_number_kind, false);
 	document.getElementById('editor__document-lifeline-align-axis-y').addEventListener('change', callback_change_document_align_axis_y, false);
 
 	canvas__diagram_width.min = Diagram.MIN_SIZE();
@@ -503,16 +505,19 @@ function callback_current_doc_change(doc_id)
 	let canvas__diagram_width = document.getElementById('canvas__diagram-width');
 	let canvas__diagram_height = document.getElementById('canvas__diagram-height');
 	let editor__document_align_axis_y = document.getElementById('editor__document-lifeline-align-axis-y');
+	let editor__document_sequence_number_kind = document.getElementById('editor__document-sequence_number_kind');
 	if(-1 === doc_id){
 		canvas__diagram_width.disabled = true;
 		canvas__diagram_height.disabled = true;
 		editor__document_align_axis_y.disabled = true;
+		editor__document_sequence_number_kind.disabled = true;
 
 		document.title = default_title;
 	}else{
 		canvas__diagram_width.disabled = false;
 		canvas__diagram_height.disabled = false;
 		editor__document_align_axis_y.disabled = false;
+		editor__document_sequence_number_kind.disabled = false;
 
 		// console.log(doc_id);
 		const doc = doc_collection.get_doc_from_id(doc_id);
@@ -521,6 +526,7 @@ function callback_current_doc_change(doc_id)
 		canvas__diagram_width.value = size.width;
 		canvas__diagram_height.value = size.height;
 		editor__document_align_axis_y.checked = (null !== ObjectUtil.get_property_from_path(diagram, 'property.lifeline_align_axis_y'));
+		editor__document_sequence_number_kind.value = ObjectUtil.get_property_from_path(diagram, 'property.sequence_number_kind');
 
 		update_title_from_doc_id(doc_id);
 	}
@@ -1062,6 +1068,35 @@ function callback_change_message_spec()
 		let spec = Diagram.create_element(diagram, 'spec', {});
 		element.spec = spec;
 	}
+
+	Renderer.rerendering(
+		rendering_handle,
+		daisy.get_current_diagram(),
+		Doc.get_focus(daisy.get_current_doc()),
+		mouse_state,
+		tool.get_tool_kind());
+}
+
+function callback_change_document_sequence_number_kind()
+{
+	{
+		const diagram = daisy.get_current_diagram();
+		if(null === diagram){
+			return;
+		}
+
+		Doc.history_add(daisy.get_current_doc());
+	}
+
+	{
+		let diagram = daisy.get_current_diagram();
+		const v = document.getElementById('editor__document-sequence_number_kind').value;
+		ObjectUtil.makeMember(diagram, 'property.sequence_number_kind', v);
+		diagram.property.sequence_number_kind = v;
+		console.log("DEBUG", typeof(v), v, diagram);
+	}
+
+	callback_focus_change();
 
 	Renderer.rerendering(
 		rendering_handle,

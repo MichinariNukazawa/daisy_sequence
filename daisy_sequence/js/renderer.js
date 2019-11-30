@@ -1,5 +1,6 @@
 'use strict';
 
+const sprintf = require('sprintf-js').sprintf;
 const ObjectUtil = require('./object-util');
 //const {Element, Message, Rect, Spec, Point} = require('./element');
 const Diagram = require('./diagram');
@@ -211,6 +212,40 @@ module.exports.Renderer = class Renderer{
 
 		let draw = rendering_handle.get_draw();
 		draw.size(diagram.width, diagram.height);
+
+		{
+			let messages = [];
+			for(let i = 0; i < diagram.diagram_elements.length; i++){
+				if('message' === diagram.diagram_elements[i].kind){
+					let message = diagram.diagram_elements[i];
+					messages.push(message);
+					if(ObjectUtil.get_property_from_path(message, 'work.sequence_number')){
+						delete message.work.sequence_number;
+					}
+					// @todo 上記コード、これでは効かないのだけれどどういうこと？
+					//ObjectUtil.makeMember(message, 'work.sequence_number', {});
+
+				}
+			}
+			const sequence_number_kind = ObjectUtil.get_property_from_path(diagram, 'property.sequence_number_kind');
+			if(! sequence_number_kind){
+				// NOP
+			}else if('None' === sequence_number_kind || 'Nothing' === sequence_number_kind){
+				// NOP
+			}else if('Simple' === sequence_number_kind){
+				// sequence_number の情報を生成
+				messages.sort(function(a, b){
+					const ay = a.y;
+					const by = b.y;
+					return ay - by;
+				});
+				for(let i = 0; i < messages.length; i++){
+					ObjectUtil.makeMember(messages[i], 'work.sequence_number.str', sprintf("%03d: ", i + 1));
+				}
+			}else{
+				console.warn('invalid property.sequenc_number_kind:', sequence_number_kind);
+			}
+		}
 
 		for(let i = 0; i < diagram.diagram_elements.length; i++){
 			if('lifeline' === diagram.diagram_elements[i].kind){
@@ -518,10 +553,15 @@ module.exports.Renderer = class Renderer{
 		if(is_turnback){
 			text_point.y += 10;
 		}
+
 		const text_offset = [18, 2];
 		text_point.x += text_offset[0];
 		text_point.y += text_offset[1];
-		let text = other_group.text(message.text).move(text_point.x, text_point.y);
+		let message_text = message.text;
+		if(ObjectUtil.get_property_from_path(message, 'work.sequence_number.str')){
+			message_text = message.work.sequence_number.str + message_text;
+		}
+		let text = other_group.text(message_text).move(text_point.x, text_point.y);
 
 		let is_touch_start_side_lifeline
 			= (message.start.hasOwnProperty('lifeline_id') && 0 <= message.start.lifeline_id);

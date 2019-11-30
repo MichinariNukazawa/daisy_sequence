@@ -734,8 +734,13 @@ module.exports = class Diagram{
 
 	static sanitize(src_diagram, errs_)
 	{
-		//! @todo not implement
-		return ObjectUtil.deepcopy(src_diagram);
+		let diagram = ObjectUtil.deepcopy(src_diagram);
+		// ** 無い古いドキュメントへの互換性fix
+		if(! ObjectUtil.get_property_from_path(diagram, 'property.sequence_number_kind')){
+			console.log("compatibility fix: add diagram.property.sequence_number_kind = None");
+			ObjectUtil.makeMember(diagram, 'property.sequence_number_kind', "None");
+		}
+		return diagram;
 	}
 
 	static get_size(diagram)

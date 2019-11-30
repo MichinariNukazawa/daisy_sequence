@@ -14,10 +14,14 @@ test:
 ci-test:
 	make gui-cli-test
 	make cli-test
+	make feature-test
 
 cli-test:
 	bash ./invalid_test.sh $(BIN_CLI)
 	bash ./export_test.sh $(BIN_CLI)
+
+feature-test:
+	bash ./sequence_number_test.sh $(BIN_CLI)
 
 gui-cli-test:
 	bash ./gui_cli_test.sh $(BIN_GUI)

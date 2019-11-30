@@ -8,7 +8,8 @@
 		"width": 600,
 		"height": 785,
 		"property": {
-			"lifeline_align_axis_y": 30
+			"lifeline_align_axis_y": 30,
+			"sequence_number_kind": "Simple"
 		},
 		"diagram_elements": [
 			{
