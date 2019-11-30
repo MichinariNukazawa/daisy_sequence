@@ -10,6 +10,9 @@ Win/Mac/Linux対応。
 
 ![daisy sequence](document/image/daisy_sequence_201912.01.0.png)  
 
+# Download
+[Download for latest release](https://github.com/MichinariNukazawa/daisy_sequence/releases)  
+
 ## 特徴
 - マルチプラットフォーム(Windows/Mac/Linux)
 - 印刷/HiDPIにも使えるSVG/PNG書き出し
@@ -17,15 +20,13 @@ Win/Mac/Linux対応。
 - PlantUML書き出し
 - バージョン管理しやすいJSONテキストベースのネイティブファイルフォーマット
 
-# Download
-[Download for latest release](https://github.com/MichinariNukazawa/daisy_sequence/releases)  
-
 # License
 MIT  
 コントリビュートの際はライセンスに同意する必要があります  
 
 # Feature
 - Edit elements(Lifeline, Message, ExecutionSpecification (spec), Fragment, Operand)
+- Sequence Number auto numbering
 - Export for SVG/PNG/PlantUML(.puml)
 - CLI export (notice: non headless)
 
