@@ -468,6 +468,17 @@ module.exports = class Diagram{
 		strdata += "@startuml\n";
 		strdata += sprintf("/' Generator: %s %s '/\n\n", Version.get_name(), Version.get_version());
 
+		const sequence_number_kind = ObjectUtil.get_property_from_path(diagram, 'property.sequence_number_kind');
+		if(! sequence_number_kind){
+			// NOP
+		}else if('None' === sequence_number_kind || 'Nothing' === sequence_number_kind){
+			// NOP
+		}else if('Simple' === sequence_number_kind){
+			strdata += 'autonumber "000:"\n\n';
+		}else{
+			console.warn('invalid property.sequenc_number_kind:', sequence_number_kind);
+		}
+
 		// ** lifeline
 		lifelines = lifelines.sort(function(a, b){
 			if(a.x < b.x) return -1;
