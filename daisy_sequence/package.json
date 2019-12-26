@@ -50,7 +50,7 @@
     "xml-formatter": "^1.2.0"
   },
   "devDependencies": {
-    "electron": "^7.1.2",
+    "electron": "^7.1.7",
     "electron-installer-debian": "^2.0.1",
     "electron-packager": "^14.1.1",
     "intelli-espower-loader": "^1.0.1",
