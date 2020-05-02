@@ -22,6 +22,7 @@ cli-test:
 
 feature-test:
 	bash ./sequence_number_test.sh $(BIN_CLI)
+	bash ./export_dividers_test.sh $(BIN_CLI)
 
 gui-cli-test:
 	bash ./gui_cli_test.sh $(BIN_GUI)

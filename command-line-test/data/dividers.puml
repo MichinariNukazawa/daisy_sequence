@@ -1,0 +1,22 @@
+@startuml
+/' Generator: daisy_sequence 202005.02.0 '/
+
+autonumber "000:"
+
+participant "New Lifeline0" as New_Lifeline__0
+
+[->New_Lifeline__0: message
+
+== divider00 ==
+New_Lifeline__0->]: message
+' end lifeline New_Lifeline__0
+New_Lifeline__0->]: message
+' end lifeline New_Lifeline__0
+
+== divider01 ==
+
+== divider02 ==
+New_Lifeline__0->]: message
+' end lifeline New_Lifeline__0
+
+@enduml

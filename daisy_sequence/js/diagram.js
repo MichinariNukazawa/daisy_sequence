@@ -195,9 +195,8 @@ module.exports = class Diagram{
 					}
 					break;
 				case 'message':
-					opt.plantuml_elems.push(element);
-					break;
 				case 'fragment':
+				case 'divider':
 					opt.plantuml_elems.push(element);
 					break;
 				case 'spec':
@@ -579,6 +578,9 @@ module.exports = class Diagram{
 						break;
 					case 'fragment':
 						strdata = func_plantuml_fragment_(strdata, plantuml_elems[i], diagram, plantuml_opt);
+						break;
+					case 'divider':
+						strdata += sprintf("\n== %s ==\n", plantuml_elems[i].text);
 						break;
 					default:
 				}
