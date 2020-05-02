@@ -18,5 +18,9 @@ SOURCE_FILEPATH=../fileformat-example/dividers.daisysequence
 DST_FILEPATH_0=${OBJECT_DIR}/$(basename ${SOURCE_FILEPATH}).puml
 ${BIN} ${SOURCE_FILEPATH} -o ${DST_FILEPATH_0}
 
-diff ${DST_FILEPATH_0} data/dividers.puml
+#diff ${DST_FILEPATH_0}.puml data/dividers.puml.puml
+# アプリversionは判定に不要なので事前に削る
+sed "1,2d" ${DST_FILEPATH_0}  > ${OBJECT_DIR}/0.puml
+sed "1,2d" data/dividers.puml > ${OBJECT_DIR}/1.puml
+diff ${OBJECT_DIR}/0.puml ${OBJECT_DIR}/1.puml
 
