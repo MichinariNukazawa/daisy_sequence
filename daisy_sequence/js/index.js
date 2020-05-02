@@ -252,6 +252,8 @@ window.onload = function(e){
 
 	initialize_drug_events();
 
+	callback_current_doc_change(daisy.get_current_doc_id());
+
 	ad.start();
 }
 
@@ -498,38 +500,69 @@ function callback_on_save_doc(doc)
 	update_title_from_doc_id(daisy.get_current_doc_id());
 }
 
+function disable_all_edit_element()
+{
+	console.debug("call disable_all_edit_element()");
+
+	let elems;
+	elems = document.getElementsByTagName('input');
+	for (let index = 0; index < elems.length; ++index) {
+		elems[index].disabled = true;
+	}
+
+	elems = document.getElementsByTagName('textarea');
+	for (let index = 0; index < elems.length; ++index) {
+		elems[index].disabled = true;
+	}
+
+	elems = document.getElementsByTagName('button');
+	for (let index = 0; index < elems.length; ++index) {
+		elems[index].disabled = true;
+	}
+
+	elems = document.getElementsByTagName('select');
+	for (let index = 0; index < elems.length; ++index) {
+		elems[index].disabled = true;
+	}
+}
+
 function callback_current_doc_change(doc_id)
 {
 	document.getElementById('nodocument-message').style.display = ((-1 !== doc_id)? "none":"block");
+
+	if(-1 === doc_id){
+		disable_all_edit_element();
+		document.title = default_title;
+		return;
+	}
+
+	{
+		let telem = document.getElementById('tool');
+		let elems = telem.getElementsByTagName('button');
+		for (let index = 0; index < elems.length; ++index) {
+			elems[index].disabled = false;
+		}
+	}
 
 	let canvas__diagram_width = document.getElementById('canvas__diagram-width');
 	let canvas__diagram_height = document.getElementById('canvas__diagram-height');
 	let editor__document_align_axis_y = document.getElementById('editor__document-lifeline-align-axis-y');
 	let editor__document_sequence_number_kind = document.getElementById('editor__document-sequence_number_kind');
-	if(-1 === doc_id){
-		canvas__diagram_width.disabled = true;
-		canvas__diagram_height.disabled = true;
-		editor__document_align_axis_y.disabled = true;
-		editor__document_sequence_number_kind.disabled = true;
+	canvas__diagram_width.disabled = false;
+	canvas__diagram_height.disabled = false;
+	editor__document_align_axis_y.disabled = false;
+	editor__document_sequence_number_kind.disabled = false;
 
-		document.title = default_title;
-	}else{
-		canvas__diagram_width.disabled = false;
-		canvas__diagram_height.disabled = false;
-		editor__document_align_axis_y.disabled = false;
-		editor__document_sequence_number_kind.disabled = false;
+	// console.log(doc_id);
+	const doc = doc_collection.get_doc_from_id(doc_id);
+	const diagram = Doc.get_diagram(doc);
+	const size = Diagram.get_size(diagram);
+	canvas__diagram_width.value = size.width;
+	canvas__diagram_height.value = size.height;
+	editor__document_align_axis_y.checked = (null !== ObjectUtil.get_property_from_path(diagram, 'property.lifeline_align_axis_y'));
+	editor__document_sequence_number_kind.value = ObjectUtil.get_property_from_path(diagram, 'property.sequence_number_kind');
 
-		// console.log(doc_id);
-		const doc = doc_collection.get_doc_from_id(doc_id);
-		const diagram = Doc.get_diagram(doc);
-		const size = Diagram.get_size(diagram);
-		canvas__diagram_width.value = size.width;
-		canvas__diagram_height.value = size.height;
-		editor__document_align_axis_y.checked = (null !== ObjectUtil.get_property_from_path(diagram, 'property.lifeline_align_axis_y'));
-		editor__document_sequence_number_kind.value = ObjectUtil.get_property_from_path(diagram, 'property.sequence_number_kind');
-
-		update_title_from_doc_id(doc_id);
-	}
+	update_title_from_doc_id(doc_id);
 }
 
 function update_title_from_doc_id(doc_id)
