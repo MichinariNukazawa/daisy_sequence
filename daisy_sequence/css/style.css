@@ -25,13 +25,18 @@ button, select{
 	font-size:100%;
 }
 
+input[disabled], textarea[disabled]{
+	background:#efefef;
+	cursor:not-allowed; /* 禁止カーソル */
+}
+
 input[type="number"]{
 	text-align: right;
 	width: 70px;
 }
 
 input[type="checkbox"][disabled] + span{
-	color: #707070;
+	opacity: 0.7;
 }
 
 #editor__background-transparent-view{
