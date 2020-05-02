@@ -406,9 +406,10 @@ module.exports.Renderer = class Renderer{
 			lifeline.y = message_of_create.y - (24 + 5);
 		}
 
+		const TEXTOFFSET = 4;
 		// 空の名前を表示しようとすると、lifelineの表示が消えて位置計算もおかしくなるので、対処する
 		const show_name = (! /^\s*$/.test(lifeline.text))? lifeline.text : '-';
-		let text = lifeline_group.text(show_name).move(lifeline.x, lifeline.y).font({
+		let text = lifeline_group.text(show_name).move(lifeline.x + TEXTOFFSET, lifeline.y).font({
 			'fill': '#000' ,
 			'size': '24px',
 		});
@@ -436,7 +437,7 @@ module.exports.Renderer = class Renderer{
 				.attr(attr).radius(radius);
 		}else{
 			box = {
-				'x': b.x - padding,
+				'x': b.x - TEXTOFFSET,
 				'y': b.y - padding,
 				'width': b.width + (padding * 2) + offset[0],
 				'height': b.height + offset[1],
@@ -495,8 +496,9 @@ module.exports.Renderer = class Renderer{
 		let position = Message.get_position(message, diagram);
 		// console.log("%d %d %d", position.width, start_rank, end_rank);
 		const start_offset_x = start_rank * Spec.WIDTH();
-		position.x += start_offset_x;
-		position.width += (end_rank * Spec.WIDTH()) - start_offset_x;
+		const end_offset_x = end_rank * Spec.WIDTH();
+		position.x += start_offset_x - 1; // とりあえずの調整のための理由のない１
+		position.width += end_offset_x - start_offset_x;
 
 		if(! message.hasOwnProperty('work')){
 			message.work = {};
