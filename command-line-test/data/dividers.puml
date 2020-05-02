@@ -7,15 +7,15 @@ participant "New Lifeline0" as New_Lifeline__0
 
 [->New_Lifeline__0: message
 
-== divider00 ==
+== "divider00" ==
 New_Lifeline__0->]: message
 ' end lifeline New_Lifeline__0
 New_Lifeline__0->]: message
 ' end lifeline New_Lifeline__0
 
-== divider01 ==
+== "divider01" ==
 
-== divider02 ==
+== "divider02\nmulti line" ==
 New_Lifeline__0->]: message
 ' end lifeline New_Lifeline__0
 

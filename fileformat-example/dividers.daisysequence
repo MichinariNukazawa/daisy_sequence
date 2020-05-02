@@ -37,7 +37,7 @@
 			{
 				"kind": "message",
 				"id": 2,
-				"y": 187,
+				"y": 174,
 				"start": {
 					"position_x": 265,
 					"lifeline_id": 0
@@ -60,20 +60,20 @@
 				"kind": "divider",
 				"id": 4,
 				"x": 253,
-				"y": 223,
+				"y": 211,
 				"text": "divider01"
 			},
 			{
 				"kind": "divider",
 				"id": 5,
 				"x": 339,
-				"y": 260,
-				"text": "divider02"
+				"y": 257,
+				"text": "divider02\nmulti line"
 			},
 			{
 				"kind": "message",
 				"id": 6,
-				"y": 328,
+				"y": 342,
 				"start": {
 					"position_x": 269,
 					"lifeline_id": 0
@@ -88,7 +88,7 @@
 			{
 				"kind": "message",
 				"id": 7,
-				"y": 160,
+				"y": 147,
 				"start": {
 					"position_x": 273,
 					"lifeline_id": 0

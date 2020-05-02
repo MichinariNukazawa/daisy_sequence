@@ -233,8 +233,10 @@ module.exports = class Diagram{
 			const ident_name = ObjectUtil.get_property_from_path(element, 'work.ident_name');
 			return ident_name;
 		};
-		const func_lifeline_name_ = function(str)
+		const func_element_printname_linefeed_ = function(str)
 		{
+			// plantuml向けに改行をエスケープシーケンスへ置き換える。
+			// ついでに末尾の不要な改行を除去する。
 			str = str.replace(/[\n]+$/g, "");
 			str = str.replace(/\n/g, "\\n");
 			return '"' + str + '"';
@@ -488,7 +490,7 @@ module.exports = class Diagram{
 		});
 		for(let i = 0; i < lifelines.length; i++){
 			strdata += sprintf("participant %s as %s\n",
-				func_lifeline_name_(lifelines[i].text),
+				func_element_printname_linefeed_(lifelines[i].text),
 				func_get_lifeline_ident_name_(lifelines[i]));
 		}
 		strdata += "\n";
@@ -580,7 +582,7 @@ module.exports = class Diagram{
 						strdata = func_plantuml_fragment_(strdata, plantuml_elems[i], diagram, plantuml_opt);
 						break;
 					case 'divider':
-						strdata += sprintf("\n== %s ==\n", plantuml_elems[i].text);
+						strdata += sprintf("\n== %s ==\n", func_element_printname_linefeed_(plantuml_elems[i].text));
 						break;
 					default:
 				}
