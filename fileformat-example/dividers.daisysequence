@@ -1,0 +1,105 @@
+{
+	"editor_info": {
+		"application_name": "daisy_sequence",
+		"version": "202005.02.0"
+	},
+	"filetype": "daisy sequence",
+	"diagram": {
+		"width": 600,
+		"height": 400,
+		"property": {
+			"lifeline_align_axis_y": 30,
+			"sequence_number_kind": "Simple"
+		},
+		"diagram_elements": [
+			{
+				"kind": "lifeline",
+				"id": 0,
+				"x": 269,
+				"y": 30,
+				"text": "New Lifeline0"
+			},
+			{
+				"kind": "message",
+				"id": 1,
+				"y": 89,
+				"start": {
+					"position_x": 47,
+					"lifeline_id": -1
+				},
+				"end": {
+					"position_x": 262,
+					"lifeline_id": 0
+				},
+				"message_kind": "sync",
+				"text": "message"
+			},
+			{
+				"kind": "message",
+				"id": 2,
+				"y": 187,
+				"start": {
+					"position_x": 265,
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 509,
+					"lifeline_id": -1
+				},
+				"message_kind": "sync",
+				"text": "message"
+			},
+			{
+				"kind": "divider",
+				"id": 3,
+				"x": 281,
+				"y": 113,
+				"text": "divider00"
+			},
+			{
+				"kind": "divider",
+				"id": 4,
+				"x": 253,
+				"y": 223,
+				"text": "divider01"
+			},
+			{
+				"kind": "divider",
+				"id": 5,
+				"x": 339,
+				"y": 260,
+				"text": "divider02"
+			},
+			{
+				"kind": "message",
+				"id": 6,
+				"y": 328,
+				"start": {
+					"position_x": 269,
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 504,
+					"lifeline_id": -1
+				},
+				"message_kind": "sync",
+				"text": "message"
+			},
+			{
+				"kind": "message",
+				"id": 7,
+				"y": 160,
+				"start": {
+					"position_x": 273,
+					"lifeline_id": 0
+				},
+				"end": {
+					"position_x": 509,
+					"lifeline_id": -1
+				},
+				"message_kind": "sync",
+				"text": "message"
+			}
+		]
+	}
+}

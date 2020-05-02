@@ -1,12 +1,12 @@
 {
 	"editor_info": {
-		"application_name": "daisy diagram",
-		"version": "201804.04.0"
+		"application_name": "daisy_sequence",
+		"version": "202005.02.0"
 	},
 	"filetype": "daisy sequence",
 	"diagram": {
 		"width": 550,
-		"height": 1102,
+		"height": 1200,
 		"diagram_elements": [
 			{
 				"kind": "lifeline",
@@ -59,7 +59,7 @@
 			{
 				"kind": "message",
 				"id": 4,
-				"y": 185,
+				"y": 243,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -77,7 +77,7 @@
 				"reply_message": {
 					"kind": "message",
 					"id": 6,
-					"y": 900,
+					"y": 958,
 					"message_kind": "reply",
 					"text": "message of reply",
 					"start": {
@@ -91,7 +91,7 @@
 			{
 				"kind": "message",
 				"id": 5,
-				"y": 327,
+				"y": 385,
 				"start": {
 					"lifeline_id": 1,
 					"position_x": 313
@@ -111,7 +111,7 @@
 			{
 				"kind": "message",
 				"id": 8,
-				"y": 952,
+				"y": 1010,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -124,7 +124,7 @@
 			{
 				"kind": "message",
 				"id": 9,
-				"y": 1000,
+				"y": 1058,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -139,7 +139,7 @@
 				"kind": "fragment",
 				"id": 12,
 				"x": 23,
-				"y": 208,
+				"y": 266,
 				"width": 498.890625,
 				"height": 402,
 				"is_auto_size": false,
@@ -165,9 +165,9 @@
 				"kind": "fragment",
 				"id": 13,
 				"x": 335,
-				"y": 1045,
-				"width": 113.734375,
-				"height": 35.390625,
+				"y": 1103,
+				"width": 113.09375,
+				"height": 38.8125,
 				"is_auto_size": true,
 				"fragment_kind": "",
 				"background_opacity": 0.6,
@@ -176,7 +176,7 @@
 			{
 				"kind": "message",
 				"id": 14,
-				"y": 244,
+				"y": 302,
 				"start": {
 					"position_x": 279,
 					"lifeline_id": 1
@@ -196,7 +196,7 @@
 				"reply_message": {
 					"kind": "message",
 					"id": 22,
-					"y": 267,
+					"y": 325,
 					"message_kind": "reply",
 					"text": "reply",
 					"start": {
@@ -210,7 +210,7 @@
 			{
 				"kind": "message",
 				"id": 18,
-				"y": 396,
+				"y": 454,
 				"start": {
 					"position_x": 269,
 					"lifeline_id": 1
@@ -230,7 +230,7 @@
 				"reply_message": {
 					"kind": "message",
 					"id": 20,
-					"y": 781,
+					"y": 839,
 					"message_kind": "reply",
 					"text": "reply",
 					"start": {
@@ -244,7 +244,7 @@
 			{
 				"kind": "message",
 				"id": 24,
-				"y": 648,
+				"y": 706,
 				"start": {
 					"position_x": 152,
 					"lifeline_id": 0
@@ -260,7 +260,7 @@
 				"kind": "fragment",
 				"id": 29,
 				"x": 174,
-				"y": 311,
+				"y": 369,
 				"width": 281,
 				"height": 50,
 				"is_auto_size": false,
@@ -272,7 +272,7 @@
 				"kind": "fragment",
 				"id": 30,
 				"x": 54,
-				"y": 624,
+				"y": 682,
 				"width": 410,
 				"height": 50,
 				"is_auto_size": false,
@@ -284,7 +284,7 @@
 				"kind": "fragment",
 				"id": 31,
 				"x": 111,
-				"y": 815,
+				"y": 873,
 				"width": 314,
 				"height": 53,
 				"is_auto_size": false,
@@ -296,7 +296,7 @@
 				"kind": "fragment",
 				"id": 32,
 				"x": 69,
-				"y": 925,
+				"y": 983,
 				"width": 396.109375,
 				"height": 51.6875,
 				"is_auto_size": false,
@@ -307,7 +307,7 @@
 			{
 				"kind": "message",
 				"id": 33,
-				"y": 462,
+				"y": 520,
 				"start": {
 					"position_x": 154,
 					"lifeline_id": 0
@@ -322,7 +322,7 @@
 			{
 				"kind": "message",
 				"id": 34,
-				"y": 549,
+				"y": 607,
 				"start": {
 					"position_x": 150,
 					"lifeline_id": 0
@@ -338,7 +338,7 @@
 				"kind": "fragment",
 				"id": 35,
 				"x": 101,
-				"y": 424,
+				"y": 482,
 				"width": 408,
 				"height": 159,
 				"is_auto_size": false,
@@ -358,7 +358,7 @@
 				"kind": "fragment",
 				"id": 37,
 				"x": 106,
-				"y": 522,
+				"y": 580,
 				"width": 390,
 				"height": 50,
 				"is_auto_size": false,
@@ -370,7 +370,7 @@
 				"kind": "fragment",
 				"id": 38,
 				"x": 34,
-				"y": 702,
+				"y": 760,
 				"width": 471,
 				"height": 59,
 				"is_auto_size": false,
@@ -381,7 +381,7 @@
 			{
 				"kind": "message",
 				"id": 39,
-				"y": 736,
+				"y": 794,
 				"start": {
 					"position_x": 157,
 					"lifeline_id": 0
@@ -392,10 +392,18 @@
 				},
 				"message_kind": "sync",
 				"text": "message"
+			},
+			{
+				"kind": "divider",
+				"id": 40,
+				"x": 229,
+				"y": 178,
+				"text": "divider"
 			}
 		],
 		"property": {
-			"lifeline_align_axis_y": 30
+			"lifeline_align_axis_y": 30,
+			"sequence_number_kind": "None"
 		}
 	}
 }
