@@ -42,20 +42,20 @@
   "dependencies": {
     "about-window": "^1.13.2",
     "data-uri-to-buffer": "^3.0.0",
-    "save-svg-as-png": "^1.4.14",
+    "save-svg-as-png": "^1.4.17",
     "sprintf-js": "^1.1.2",
     "svg.js": "^2.7.1",
     "svg2png": "^4.1.1",
     "svgdom": "0.0.21",
-    "xml-formatter": "^1.2.0"
+    "xml-formatter": "^2.0.1"
   },
   "devDependencies": {
-    "electron": "^7.1.7",
-    "electron-installer-debian": "^2.0.1",
-    "electron-packager": "^14.1.1",
+    "electron": "^8.2.5",
+    "electron-installer-debian": "^3.0.0",
+    "electron-packager": "^14.2.1",
     "intelli-espower-loader": "^1.0.1",
-    "mocha": "^6.2.2",
+    "mocha": "^7.1.2",
     "power-assert": "^1.6.1",
-    "spectron": "^9.0.0"
+    "spectron": "^10.0.1"
   }
 }
