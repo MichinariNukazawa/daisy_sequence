@@ -423,15 +423,27 @@ module.exports.Renderer = class Renderer{
 		const offset = [12, 10];
 
 		let b = text.bbox();
-		let box = {
-			'x': b.x - padding,
-			'y': b.y - padding,
-			'width': b.width + (padding * 2) + offset[0],
-			'height': b.height + offset[1],
-		};
-		lifeline_group.rect(box.width, box.height).move(box.x, box.y)
-			.attr(attr).radius(radius);
-
+		let box = {};
+		if(Number.isNaN(b.x)){
+			// CLI用アプリによるsvg exportの際に、text.bbox()メンバの数値がすべてNaNになってしまうため、画像生成用のフォールバック
+			box = {
+				'x': lifeline.x - 1,
+				'y': lifeline.y + 4,
+				'width': 1,
+				'height': 24,
+			}
+			lifeline_group.rect(box.width, box.height).move(box.x, box.y)
+				.attr(attr).radius(radius);
+		}else{
+			box = {
+				'x': b.x - padding,
+				'y': b.y - padding,
+				'width': b.width + (padding * 2) + offset[0],
+				'height': b.height + offset[1],
+			};
+			lifeline_group.rect(box.width, box.height).move(box.x, box.y)
+				.attr(attr).radius(radius);
+		}
 		if(! lifeline.hasOwnProperty('work')){
 			lifeline.work = {};
 		}
@@ -442,8 +454,8 @@ module.exports.Renderer = class Renderer{
 
 		let line_point = {
 			// 'x': box.x + (box.width / 2),
-			'x': b.x,
-			'y': box.y + (box.height),
+			'x': lifeline.x,
+			'y': box.y + (box.height) + 3,
 		};
 		let y_end;
 		if(null === stop_message){
