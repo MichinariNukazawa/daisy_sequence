@@ -746,7 +746,8 @@ module.exports.Renderer = class Renderer{
 		let item_group = divider_group.group().addClass('dd__divider-item');
 
 		const text_point = {
-			'x': divider.x,
+			//'x': divider.x,
+			'x': 30,
 			'y': divider.y + 0,
 		}
 		
