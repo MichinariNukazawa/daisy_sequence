@@ -28,7 +28,6 @@ button, select{
 input[type="number"]{
 	text-align: right;
 	width: 70px;
-	direction: rtl;
 }
 
 input[type="checkbox"][disabled] + span{
