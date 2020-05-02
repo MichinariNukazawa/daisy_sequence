@@ -68,6 +68,11 @@ module.exports.RenderingHandle = class RenderingHandle{
 		return this.groups.fragment_group;
 	}
 
+	get_divider_group()
+	{
+		return this.groups.divider_group;
+	}
+
 	get_editor_group()
 	{
 		return this.groups.editor_group;
@@ -87,6 +92,7 @@ module.exports.RenderingHandle = class RenderingHandle{
 		this.groups.spec_group			= this.get_root_group().group().addClass('dd__spec-group');
 		this.groups.other_group			= this.get_root_group().group().addClass('dd__other-group');
 		this.groups.fragment_group		= this.get_root_group().group().addClass('dd__fragment-group');
+		this.groups.divider_group		= this.get_root_group().group().addClass('dd__divider-group');
 
 		this.groups.editor_group		= this.get_root_group().group().addClass('dd__editor-group');
 		this.groups.focus_group			= this.get_editor_group().group().addClass('dd__focus-group');
@@ -254,6 +260,8 @@ module.exports.Renderer = class Renderer{
 				// Renderer.draw_message(rendering_handle, diagram, diagram.diagram_elements[i], null);
 			}else if('fragment' === diagram.diagram_elements[i].kind){
 				Renderer.draw_fragment(rendering_handle, diagram.diagram_elements[i]);
+			}else if('divider' === diagram.diagram_elements[i].kind){
+				Renderer.draw_divider(rendering_handle, diagram, diagram.diagram_elements[i]);
 			}else{
 				console.error(i, diagram.diagram_elements[i]);
 				const msg = sprintf("internal error: invalid element kind `%s`(%d,%d)",
@@ -373,7 +381,7 @@ module.exports.Renderer = class Renderer{
 		for(let i = 0; i < elements.length; i++){
 			let rect = Rect.abs(Element.get_rect(elements[i]));
 			if(null === rect){
-				alert('internal error');
+				alert('internal error. (rect is null)');
 			}else{
 				rect = Rect.expand(rect, [3,3]);
 				let rect_ = focus_group.rect(rect.width, rect.height).move(rect.x, rect.y).attr({
@@ -716,6 +724,53 @@ module.exports.Renderer = class Renderer{
 		return fragment_group;
 	}
 
+	static draw_divider(rendering_handle, diagram, divider)
+	{
+		const {Rect} = require('./element');
+
+		let divider_group = rendering_handle.get_divider_group();
+		let item_group = divider_group.group().addClass('dd__divider-item');
+
+		const text_point = {
+			'x': divider.x,
+			'y': divider.y + 0,
+		}
+		
+		const show_text = (! /^\s*$/.test(divider.text))? divider.text : '-';
+		let text = item_group.text(show_text).move(text_point.x, text_point.y).font({
+			'fill': '#000' ,
+			'size': '24px',
+		});
+
+		let height = 24;
+		let position = {
+			'x': 0,
+			'y': divider.y,
+			'width': diagram.width,
+			'height': height,
+		};
+
+		for(let i = 0; i < 2; i++){
+			const y = position.y + (4 * i);
+			let line0 = item_group.line(
+				position.x, y,
+				position.width, y,
+			)
+				.stroke({
+					'width': '1.5',
+				})
+				.attr({
+					'opacity':	0.4,
+				});
+		}
+
+		// ** work.rect
+		if(! divider.hasOwnProperty('work')){
+			divider.work = {};
+		}
+		divider.work.rect = Object.assign({}, position);
+	}
+
 	static draw_operand(rendering_handle, operand, fragment, fragment_position)
 	{
 		let fragment_group = rendering_handle.get_fragment_group();
@@ -753,7 +808,6 @@ module.exports.Renderer = class Renderer{
 			operand.work = {};
 		}
 		operand.work.rect = Object.assign({}, position);
-
 	}
 
 	static draw_message_turnback(rendering_handle, position, is_spec)

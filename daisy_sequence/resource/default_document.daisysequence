@@ -1,12 +1,12 @@
 {
 	"editor_info": {
 		"application_name": "daisy_sequence",
-		"version": "201910.22.0"
+		"version": "202005.02.0"
 	},
 	"filetype": "daisy sequence",
 	"diagram": {
 		"width": 600,
-		"height": 785,
+		"height": 850,
 		"property": {
 			"lifeline_align_axis_y": 30,
 			"sequence_number_kind": "Simple"
@@ -107,7 +107,7 @@
 			{
 				"kind": "message",
 				"id": 7,
-				"y": 320,
+				"y": 392,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -121,7 +121,7 @@
 			{
 				"kind": "message",
 				"id": 8,
-				"y": 390,
+				"y": 462,
 				"start": {
 					"lifeline_id": 0
 				},
@@ -135,7 +135,7 @@
 				"kind": "fragment",
 				"id": 12,
 				"x": 51,
-				"y": 306,
+				"y": 378,
 				"width": 496,
 				"height": 123,
 				"is_auto_size": false,
@@ -155,7 +155,7 @@
 				"kind": "fragment",
 				"id": 13,
 				"x": 427,
-				"y": 454,
+				"y": 526,
 				"width": 120,
 				"height": 40,
 				"is_auto_size": false,
@@ -187,7 +187,7 @@
 			{
 				"kind": "message",
 				"id": 17,
-				"y": 450,
+				"y": 522,
 				"start": {
 					"position_x": 154,
 					"lifeline_id": 0
@@ -208,7 +208,7 @@
 			{
 				"kind": "message",
 				"id": 20,
-				"y": 612,
+				"y": 684,
 				"start": {
 					"position_x": 300,
 					"lifeline_id": 1
@@ -223,7 +223,7 @@
 			{
 				"kind": "message",
 				"id": 21,
-				"y": 649,
+				"y": 721,
 				"start": {
 					"position_x": 407,
 					"lifeline_id": 1
@@ -256,7 +256,7 @@
 			{
 				"kind": "message",
 				"id": 25,
-				"y": 512,
+				"y": 584,
 				"start": {
 					"position_x": 392,
 					"lifeline_id": 1
@@ -273,6 +273,13 @@
 					"y_offset": 0,
 					"height": 199
 				}
+			},
+			{
+				"kind": "divider",
+				"id": 27,
+				"x": 233,
+				"y": 317,
+				"text": "After Wake"
 			}
 		]
 	}

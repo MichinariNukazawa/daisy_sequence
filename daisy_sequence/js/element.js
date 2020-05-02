@@ -178,6 +178,9 @@ module.exports.Element = class Element{
 		}else if('fragment' === element.kind){
 			element.x = source_position.x + move.x;
 			element.y = source_position.y + move.y;
+		}else if('divider' === element.kind){
+			element.x = source_position.x + move.x;
+			element.y = source_position.y + move.y;
 		}
 
 		return true;

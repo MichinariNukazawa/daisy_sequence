@@ -50,6 +50,12 @@ class Tool{
 				'callback_mousedown':	Tool.callback_mousedown_add_fragment_,
 				'callback_mouseup':	Tool.callback_mouseup_create_element_tool_,
 			},
+			{
+				'kind':			'add_divider',
+				'element':		document.getElementById('tool__add-divider'),
+				'callback_mousedown':	Tool.callback_mousedown_add_divider_,
+				'callback_mouseup':	Tool.callback_mouseup_create_element_tool_,
+			},
 		];
 
 		this.tool_kind = this.tools[0].kind;
@@ -277,6 +283,29 @@ class Tool{
 
 		let focus = Doc.get_focus(daisy.get_current_doc());
 		Focus.set_element(focus, fragment);
+	}
+
+	static callback_mousedown_add_divider_(mouse_state)
+	{
+		{
+			Doc.history_add(daisy.get_current_doc());
+		}
+
+		let diagram = daisy.get_current_diagram();
+
+		let data = {
+			'x': mouse_state.point.x,
+			'y': mouse_state.point.y,
+			'text': 'divider',
+		};
+		let divider = Diagram.create_append_element(diagram, 'divider', data);
+		if(null === divider){
+			console.error('');
+			return;
+		}
+
+		let focus = Doc.get_focus(daisy.get_current_doc());
+		Focus.set_element(focus, divider);
 	}
 
 	static callback_mouseup_nop_(mouse_state)

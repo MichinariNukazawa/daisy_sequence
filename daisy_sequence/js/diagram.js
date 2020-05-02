@@ -39,6 +39,8 @@ module.exports = class Diagram{
 			element = Diagram.create_reply_message_(data);
 		}else if('fragment' === kind){
 			element = Diagram.create_fragment_(data);
+		}else if('divider' === kind){
+			element = Diagram.create_divider_(data);
 		}else if('operand' === kind){
 			element = Diagram.create_operand_(data);
 		}else{
@@ -1009,6 +1011,21 @@ module.exports = class Diagram{
 		spec = Object.assign(spec, src);
 
 		return spec;
+	}
+
+	static create_divider_(src)
+	{
+		let divider = {
+			'kind':			'divider',
+			'id':			-1,
+			'x':			100,
+			'y':			100,
+			'text':			'',
+		};
+
+		divider = Object.assign(divider, src);
+
+		return divider;
 	}
 
 	static create_operand_(src)
