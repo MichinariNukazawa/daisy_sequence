@@ -134,6 +134,43 @@ function initialize_drug_events()
 	};
 }
 
+function open_filepath(arg, errs_){
+	if(null === arg.open_filepath){
+		return true;
+	}
+
+	console.log("open_filepath:", arg.open_filepath);
+
+	if(typeof arg.open_filepath !== 'string'){
+		DaisyIO.add_errs_(errs_, 'bug', "Open", "filepath is not string (internal error).");
+		return false;
+	}
+
+	if(! /\.daisy.*$/.test(arg.open_filepath)){
+		// 拡張子に".daisy*"を含む("*.daisysequence")
+
+		if(/^-psn_0_[0-9]+$/.test(arg.open_filepath)){
+			// macosxで初回起動時に渡される場合のある""(ex. '-psn_0_2958034')
+			console.debug("through for macosx:", arg.open_filepath);
+			return true;
+		}
+
+		DaisyIO.add_errs_(errs_, 'warning', "Open", 'invalid extension (not ".daisy*").');
+		return false;
+	}
+
+	let doc_id = daisy.open_doc_from_path(arg.open_filepath, errs_);
+	if(-1 === doc_id){
+		console.error(arg.open_filepath, errs_);
+		if(! arg.is_cli_mode){
+			message_dialog(errs_[0].level, errs_[0].label, errs_[0].message);
+		}
+		return false;
+	}
+
+	return true;
+}
+
 window.onload = function(e){
 	default_title = document.title;
 
@@ -148,19 +185,11 @@ window.onload = function(e){
 	daisy = new Daisy(callback_focus_change, callback_history_change_doc);
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
 
-	if(null !== arg.open_filepath){
-		console.log("open_filepath:", arg.open_filepath);
+	let errs_ = [];
 
-		let errs_ = [];
-		let doc_id = daisy.open_doc_from_path(arg.open_filepath, errs_);
+	if(! open_filepath(arg, errs_)){
 		for(let i = 0; i < errs_.length; i++){
 			process.stderr.write(sprintf("export[%2d/%2d]%8s:%s\n", i, errs_.length, errs_[i].level, errs_[i].message));
-		}
-		if(-1 === doc_id){
-			console.error(arg.open_filepath, errs_);
-			if(! arg.is_cli_mode){
-				message_dialog(errs_[0].level, errs_[0].label, errs_[0].message);
-			}
 		}
 	}
 
