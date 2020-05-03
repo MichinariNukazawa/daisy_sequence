@@ -139,12 +139,7 @@ function open_filepath(arg, errs_){
 		return true;
 	}
 
-	console.log("open_filepath:", arg.open_filepath);
-
-	if(typeof arg.open_filepath !== 'string'){
-		DaisyIO.add_errs_(errs_, 'bug', "Open", "filepath is not string (internal error).");
-		return false;
-	}
+	console.debug("open_filepath:", typeof arg.open_filepath, arg.open_filepath);
 
 	if(! /\.daisy.*$/.test(arg.open_filepath)){
 		// 拡張子に".daisy*"を含む("*.daisysequence")

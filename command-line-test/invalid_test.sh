@@ -63,6 +63,13 @@ RET=$?
 set -e
 [ 0 -ne $RET ]
 
+## invalid argument '-psn_0_xxxxxx' in macosx (simulate)
+set +e
+${BIN} -psn_0_0000000
+RET=$?
+set -e
+[ 0 -ne $RET ]
+
 ## over argument
 set +e
 ${BIN} ../daisy_sequence/resource/default_document.daisysequence -o ${OBJECT_DIR}/a.svg ${OBJECT_DIR}/b.svg
