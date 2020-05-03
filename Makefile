@@ -11,9 +11,6 @@ run:
 run-open:
 	cd daisy_sequence && npm run run-open
 
-simple-run:
-	cd daisy_sequence && npm run build
-
 .PHONY: test uitest cli-test ci-test
 
 uitest:
@@ -27,6 +24,7 @@ ci-test:
 	cd command-line-test && make ci-test # cd test && make ci-test # depend linux binary
 
 clitest:
+	cd daisy_sequence && npm run pack:linux
 	cd command-line-test && make test # depend linux binary
 
 test:
