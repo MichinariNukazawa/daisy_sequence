@@ -149,6 +149,8 @@ window.onload = function(e){
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);
 
 	if(null !== arg.open_filepath){
+		console.log("open_filepath:", arg.open_filepath);
+
 		let errs_ = [];
 		let doc_id = daisy.open_doc_from_path(arg.open_filepath, errs_);
 		for(let i = 0; i < errs_.length; i++){
@@ -163,6 +165,11 @@ window.onload = function(e){
 	}
 
 	if(null !== arg.export_filepath){
+		if(typeof arg.export_filepath !== 'string'){
+			process.stderr.write(sprintf("can not open source file (internal error) `%s`.\n", arg.open_filepath));
+			app.exit(1);
+		}
+
 		const doc = daisy.get_current_doc();
 		if(null === doc){
 			process.stderr.write(sprintf("can not open source file `%s`.\n", arg.open_filepath));
