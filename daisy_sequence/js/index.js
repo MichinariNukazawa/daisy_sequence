@@ -145,7 +145,8 @@ function open_filepath(arg, errs_){
 		// 拡張子に".daisy*"を含む("*.daisysequence")
 
 		if(/^-psn_0_[0-9]+$/.test(arg.open_filepath)){
-			// macosxで初回起動時に渡される場合のある""(ex. '-psn_0_2958034')
+			// macosxでブラウザからダウンロードしたバイナリを初回起動した際に、
+			// 渡される場合のあるコマンドライン引数(ex. '-psn_0_2958034')を除外する。
 			console.debug("through for macosx:", arg.open_filepath);
 			return true;
 		}
