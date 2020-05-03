@@ -28,7 +28,7 @@ if [ 1 -eq $# ] ; then
 	PACKAGE_POSTFIX="-$1"
 fi
 
-SHOW_VERSION=$(cat ${SOURCE_DIR}/package.json | grep '"version"' | sed -e 's/.*:.*"\(.*\)".*/\1/g')
+SHOW_VERSION=$(cat ${SOURCE_DIR}/package.json | grep '"version"' | sed -e 's/.*:.*"\(.*\)".*/\1/g' | sed -e 's/\./_/g')
 
 GIT_HASH=$(git log --pretty=format:'%h' -n 1)
 GIT_STATUS_SHORT=$(git diff --stat | tail -1)
