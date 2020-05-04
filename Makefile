@@ -28,6 +28,7 @@ clitest:
 	cd command-line-test && make test # depend linux binary
 
 test:
+	cd daisy_sequence && npm install
 	make uitest
 	cd daisy_sequence && npm run pack:linux
 	make clitest
