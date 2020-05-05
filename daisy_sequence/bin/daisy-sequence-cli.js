@@ -4,7 +4,8 @@
 const sprintf = require('sprintf-js').sprintf;
 
 
-const window   = require('svgdom')
+const { createSVGWindow } = require('svgdom')
+const window = createSVGWindow()
 const SVG      = require('svg.js')(window)
 const document = window.document
 

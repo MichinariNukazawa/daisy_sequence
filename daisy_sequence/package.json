@@ -46,7 +46,7 @@
     "sprintf-js": "^1.1.2",
     "svg.js": "^2.7.1",
     "svg2png": "^4.1.1",
-    "svgdom": "0.0.21",
+    "svgdom": "0.1.4",
     "xml-formatter": "^2.0.1"
   },
   "devDependencies": {
