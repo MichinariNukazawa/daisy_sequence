@@ -176,7 +176,7 @@ window.onload = function(e){
 	tool = new Tool();
 	tool.add_callback_tool_change(callback_tool_change);
 
-	rendering_handle = new RenderingHandle('canvas');
+	rendering_handle = new RenderingHandle('canvas', 'editor');
 
 	daisy = new Daisy(callback_focus_change, callback_history_change_doc);
 	daisy.add_event_listener_current_doc_change(callback_current_doc_change);

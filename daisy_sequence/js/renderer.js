@@ -6,8 +6,9 @@ const ObjectUtil = require('./object-util');
 const Diagram = require('./diagram');
 
 module.exports.RenderingHandle = class RenderingHandle{
-	constructor(elemId)
+	constructor(elemId, rendering_mode)
 	{
+		this.rendering_mode = rendering_mode;
 		this.draw = null;
 		this.groups = [];
 
@@ -715,10 +716,14 @@ module.exports.Renderer = class Renderer{
 			if(! rendering_handle.resource.edge_icon_svg){
 				console.error("nothing rendering_handle.resource.edge_icon_svg");
 			}else{
-				group_edge_icon.svg(rendering_handle.resource.edge_icon_svg)
-					.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8).scale(0.5, 0.5).attr({
-						'opacity':	0.3,
-					});
+				if("editor" === rendering_handle.rendering_mode){
+					group_edge_icon.svg(rendering_handle.resource.edge_icon_svg)
+						.move(box.x + box.width - 16 - 8, box.y + box.height - 16 - 8)
+						.scale(0.5, 0.5)
+						.attr({
+							'opacity':	0.3,
+						});
+				}
 			}
 		}
 

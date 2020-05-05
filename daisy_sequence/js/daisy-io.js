@@ -92,7 +92,7 @@ module.exports = class DaisyIO{
 		}
 
 		let dummy_elem = document.createElementNS('http://www.w3.org/2000/svg','svg');
-		let dummy_rhandle = new RenderingHandle(dummy_elem);
+		let dummy_rhandle = new RenderingHandle(dummy_elem, 'export');
 		let draw = dummy_rhandle.get_draw();
 		if(null === draw){
 			DaisyIO.set_err_(err_, "warning", "Export", "internal dummy element can not generate.");
